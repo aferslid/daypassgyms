@@ -54,15 +54,16 @@ type PendingPosition = {
 } | null;
 
 function AddSpotMapClick({
-  isAdding,
+  isSelectingLocation,
   setPendingPosition,
 }: {
-  isAdding: boolean;
+  isSelectingLocation: boolean;
   setPendingPosition: (pos: PendingPosition) => void;
 }) {
   useMapEvents({
     click(e) {
-      if (!isAdding) return;
+      if (!isSelectingLocation) return;
+
       setPendingPosition({
         lat: e.latlng.lat,
         lng: e.latlng.lng,
@@ -88,6 +89,8 @@ export default function Map() {
   const [newSpotDescription, setNewSpotDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSelectingLocation, setIsSelectingLocation] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const [userPosition, setUserPosition] = useState<{
     lat: number;
@@ -248,8 +251,10 @@ export default function Map() {
     setNewSpotName("");
     setNewSpotType("water");
     setNewSpotDescription("");
-    setIsAdding(false);
-  };
+    setSelectedFile(null);
+    setIsSelectingLocation(false);
+    setShowAddForm(false);
+ };
 
   const recenterOnUser = () => {
     if (!userPosition || !mapRef.current) return;
@@ -322,11 +327,12 @@ export default function Map() {
       return;
     }
 
-    setIsAdding(true);
+    setIsSelectingLocation(false);
     setPendingPosition({
       lat: userPosition.lat,
       lng: userPosition.lng,
     });
+    setShowAddForm(true);
   };
 
   const handleSignUp = async () => {
@@ -480,7 +486,7 @@ export default function Map() {
         />
 
         <AddSpotMapClick
-          isAdding={isAdding}
+          isSelectingLocation={isSelectingLocation}
           setPendingPosition={setPendingPosition}
         />
 
@@ -623,16 +629,18 @@ export default function Map() {
       <div className="absolute top-4 right-4 z-[1000] pointer-events-auto flex flex-col gap-2">
         <button
           onClick={() => {
-            if (isAdding) {
+            if (isSelectingLocation || showAddForm) {
               resetAddForm();
             } else {
-              setIsAdding(true);
-            }
+              setIsSelectingLocation(true);
+              setShowAddForm(false);
+              setPendingPosition(null);
+           }
           }}
           className="bg-black text-white px-4 py-2 rounded-full shadow-lg"
         >
-          {isAdding ? "Annuler" : "Ajouter un spot"}
-        </button>
+          {isSelectingLocation || showAddForm ? "Annuler" : "Ajouter un spot"}
+          </button>
 
         <button
           onClick={handleAddAtMyPosition}
@@ -649,7 +657,27 @@ export default function Map() {
         </button>
       </div>
 
-      {isAdding && (
+      {isSelectingLocation && !showAddForm && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-auto">
+          Clique sur la carte pour choisir l’emplacement
+        </div>
+      )}
+
+      {isSelectingLocation && pendingPosition && !showAddForm && (
+        <div className="absolute top-32 left-1/2 -translate-x-1/2 z-[1000] pointer-events-auto">
+          <button
+           onClick={() => {
+            setIsSelectingLocation(false);
+            setShowAddForm(true);
+           }}
+           className="bg-green-600 text-white px-4 py-2 rounded-full shadow-lg"
+          >
+           ✓ Valider l’emplacement
+          </button>
+        </div>
+      )}
+
+      {showAddForm && (
         <div className="absolute left-1/2 -translate-x-1/2 top-20 z-1000 bg-white shadow-xl rounded-2xl p-4 w-[90%] max-w-md max-h-[70vh] overflow-y-auto pointer-events-auto">
           <h2 className="font-bold text-lg mb-2">Nouveau spot</h2>
 
