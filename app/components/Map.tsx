@@ -717,7 +717,7 @@ export default function Map() {
         </div>
       )}
 
-      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-56 sm:w-80 pointer-events-auto">
+      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[140px] sm:w-80 pointer-events-auto">
         {user && !profile ? (
           <div>
             <h2 className="font-bold text-lg mb-3">Choisis ton pseudo</h2>
@@ -739,7 +739,7 @@ export default function Map() {
 
             <button
               onClick={handleLogout}
-              className="inline-block bg-red-500 text-white rounded-lg px-3 py-1.5 text-sm"
+              className="w-full bg-red-500 text-white rounded-lg px-2 py-1 text-xs"
             >
               Se déconnecter
             </button>
@@ -751,7 +751,7 @@ export default function Map() {
             </p>
             <button
               onClick={handleLogout}
-              className="inline-block bg-red-500 text-white rounded-lg px-3 py-1.5 text-sm"
+              className="w-full bg-red-500 text-white rounded-lg px-2 py-1 text-xs"
             >
               Se déconnecter
             </button>
