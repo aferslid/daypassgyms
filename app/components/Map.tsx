@@ -739,7 +739,7 @@ export default function Map() {
 
             <button
               onClick={handleLogout}
-              className="bg-red-500 text-white rounded-lg px-3 py-1 text-xs w-full sm:w-auto"
+              className="bg-red-500 text-white rounded-lg px-2 py-1 text-xs w-full sm:w-auto"
             >
               Se déconnecter
             </button>
@@ -751,7 +751,7 @@ export default function Map() {
             </p>
             <button
               onClick={handleLogout}
-              className="bg-red-500 text-white rounded-lg px-3 py-1 text-xs w-full sm:w-auto"
+              className="bg-red-500 text-white rounded-lg px-2 py-1 text-xs w-full sm:w-auto"
             >
               Se déconnecter
             </button>
