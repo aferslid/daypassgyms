@@ -739,19 +739,19 @@ export default function Map() {
 
             <button
               onClick={handleLogout}
-              className="w-full bg-red-500 text-white rounded-lg px-3 py-2"
+              className="w-full sm:w-auto bg-red-500 text-white rounded-lg px-3 py-2 text-sm"
             >
               Se déconnecter
             </button>
           </div>
         ) : user ? (
           <div>
-            <p className="text-sm mb-2">
+            <p className="text-xs sm:text-sm mb-1">
               Connecté : <strong>{profile?.username || user.email}</strong>
             </p>
             <button
               onClick={handleLogout}
-              className="w-full bg-red-500 text-white rounded-lg px-3 py-2"
+              className="w-full sm:w-auto bg-red-500 text-white rounded-lg px-3 py-2 text-sm"
             >
               Se déconnecter
             </button>
