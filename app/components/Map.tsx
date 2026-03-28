@@ -650,7 +650,7 @@ export default function Map() {
       </div>
 
       {isAdding && (
-        <div className="absolute top-36 right-4 z-[1000] bg-white shadow-xl rounded-2xl p-4 w-80 pointer-events-auto">
+        <div className="absolute left-1/2 -translate-x-1/2 top-20 z-1000 bg-white shadow-xl rounded-2xl p-4 w-[90%] max-w-md max-h-[70vh] overflow-y-auto pointer-events-auto">
           <h2 className="font-bold text-lg mb-2">Nouveau spot</h2>
 
           <p className="text-sm text-gray-600 mb-3">
