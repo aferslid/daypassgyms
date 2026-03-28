@@ -120,28 +120,30 @@ export default function Map() {
   ];
 
   useEffect(() => {
-    fetch("/atm.geojson")
-      .then((res) => res.json())
-      .then((data) => setAtmData(data))
-      .catch((err) => console.error("Erreur chargement ATM:", err));
+  fetch("/atm.geojson")
+    .then((res) => res.json())
+    .then((data) => setAtmData(data))
+    .catch((err) => console.error("Erreur chargement ATM:", err));
 
-    fetch("/wc.geojson")
-      .then((res) => res.json())
-      .then((data) => setWcData(data))
-      .catch((err) => console.error("Erreur chargement WC:", err));
+  fetch("/wc.geojson")
+    .then((res) => res.json())
+    .then((data) => setWcData(data))
+    .catch((err) => console.error("Erreur chargement WC:", err));
 
-    const fetchSpots = async () => {
-      const { data, error } = await supabase.from("spots").select("*");
+  const fetchSpots = async () => {
+    const { data, error } = await supabase
+      .from("spots")
+      .select("*");
 
-      if (error) {
-        console.error("Erreur Supabase spots:", error);
-      } else {
-        setSpots((data as Spot[]) || []);
-      }
-    };
+    if (error) {
+      console.error("Erreur Supabase spots:", error);
+    } else {
+      setSpots((data as Spot[]) || []);
+    }
+  };
 
-    fetchSpots();
-  }, []);
+  fetchSpots();
+}, []);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
