@@ -717,7 +717,7 @@ export default function Map() {
         </div>
       )}
 
-      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-2 sm:p-4 w-[115px] sm:w-[220px] pointer-events-auto">
+      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-2 sm:p-4 w-[135px] sm:w-[220px] pointer-events-auto">
         {user && !profile ? (
           <div>
             <h2 className="font-bold text-lg mb-3">Choisis ton pseudo</h2>
