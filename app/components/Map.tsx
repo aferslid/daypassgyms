@@ -94,6 +94,16 @@ function MapBoundsUpdater({ setBounds }: { setBounds: any }) {
   return null;
 }
 
+function MapZoomUpdater({ setZoomLevel }: { setZoomLevel: any }) {
+  const map = useMapEvents({
+    zoomend: () => {
+      setZoomLevel(map.getZoom());
+    },
+  });
+
+  return null;
+}
+
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -111,6 +121,7 @@ export default function Map() {
   const [contributionsCount, setContributionsCount] = useState(0);
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
   const [bounds, setBounds] = useState<any>(null);
+  const [zoomLevel, setZoomLevel] = useState(6)
   
   const [userPosition, setUserPosition] = useState<{
     lat: number;
@@ -144,9 +155,22 @@ export default function Map() {
 
   useEffect(() => {
     const fetchSpots = async () => {
+      if (!bounds) return;
+
+      if ((category === "atm" || category === "wc") && zoomLevel < 11) {
+        setSpots([]);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("spots")
-        .select("*");
+        .select("*")
+        .eq("type", category)
+        .gte("lat", bounds.south)
+        .lte("lat", bounds.north)
+        .gte("lng", bounds.west)
+        .lte("lng", bounds.east)
+        .limit(2000);
 
       if (error) {
         console.error("Erreur Supabase spots:", error);
@@ -180,7 +204,7 @@ export default function Map() {
     };
 
   fetchSpots();
-}, [user]);
+}, [user, bounds, category, zoomLevel]);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
@@ -553,6 +577,8 @@ export default function Map() {
 
         <MapBoundsUpdater setBounds={setBounds} />
 
+        <MapZoomUpdater setZoomLevel={setZoomLevel} />
+
         <AddSpotMapClick
           isSelectingLocation={isSelectingLocation}
           setPendingPosition={setPendingPosition}
@@ -654,6 +680,12 @@ export default function Map() {
           </Marker>
         )}
       </MapContainer>
+
+      {(category === "atm" || category === "wc") && zoomLevel < 11 && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none">
+          Zoome davantage pour afficher les {category === "atm" ? "ATM" : "WC"}
+        </div>
+      )}
 
       <div className="absolute bottom-4 left-16 z-[1000] pointer-events-auto">
         <button
