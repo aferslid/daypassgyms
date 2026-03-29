@@ -80,7 +80,6 @@ export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
   const [category, setCategory] = useState<string | null>(null);
-  const [atmData, setAtmData] = useState<any>(null);
   const [spots, setSpots] = useState<Spot[]>([]);
 
   const [isAdding, setIsAdding] = useState(false);
@@ -125,11 +124,6 @@ export default function Map() {
   ];
 
   useEffect(() => {
-  fetch("/atm.geojson")
-    .then((res) => res.json())
-    .then((data) => setAtmData(data))
-    .catch((err) => console.error("Erreur chargement ATM:", err));
-
     const fetchSpots = async () => {
       const { data, error } = await supabase
         .from("spots")
@@ -587,31 +581,6 @@ export default function Map() {
             </Marker>
           ))}
       </MarkerClusterGroup>
-
-        {(showAll || category === "atm") &&
-          atmData &&
-          atmData.features.slice(0, 100).map((feature: any, index: number) => {
-            const coords = feature?.geometry?.coordinates;
-            if (!coords || coords.length < 2) return null;
-
-            return (
-              <Marker key={`atm-${index}`} position={[coords[1], coords[0]]} icon={getMarkerIcon("atm")}>
-                <Popup>
-                  <div>
-                    <strong>{feature.properties?.name || "ATM"}</strong>
-                    <br />
-                    {feature.properties?.operator ||
-                      feature.properties?.enseigne ||
-                      ""}
-                    <br />
-                    {feature.properties?.city ||
-                      feature.properties?.commune ||
-                      ""}
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          })}
 
         {fakePoints
           .filter((point) => showAll || point.type === category)
