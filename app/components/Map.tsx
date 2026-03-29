@@ -40,6 +40,7 @@ type Spot = {
   description: string | null;
   user_id?: string | null;
   photo_url?: string | null;
+  created_at?: string | null;
 };
 
 type Profile = {
@@ -521,10 +522,14 @@ export default function Map() {
                   <br />
                   {spot.description}
                   {spot.user_id && profilesMap[spot.user_id] && (
-                    <>                      
-                      <br />
+                    <div className="text-sm">
                       Ajouté par : {profilesMap[spot.user_id]}
-                    </>
+                    </div>
+                  )}
+                  {spot.created_at && (
+                    <span className="text-xs text-gray-500 block">
+                      {new Date(spot.created_at).toLocaleDateString("fr-FR")}
+                    </span>
                   )}
                   {spot.photo_url && (
                     <>
