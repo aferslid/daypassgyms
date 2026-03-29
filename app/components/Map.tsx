@@ -531,10 +531,15 @@ export default function Map() {
           </Marker>
         )}
 
+        <MarkerClusterGroup>
         {spots
           .filter((spot) => matchesCategory(spot.type))
           .map((spot) => (
-            <Marker key={`spot-${spot.id}`} position={[spot.lat, spot.lng]} icon={getMarkerIcon(spot.type)} >
+            <Marker
+              key={`spot-${spot.id}`}
+              position={[spot.lat, spot.lng]}
+              icon={getMarkerIcon(spot.type)}
+            >
               <Popup>
                 <div>
                   <strong>{spot.name}</strong>
@@ -542,16 +547,19 @@ export default function Map() {
                   {spot.type}
                   <br />
                   {spot.description}
+
                   {spot.user_id && profilesMap[spot.user_id] && (
                     <div className="text-sm">
                       Ajouté par : {profilesMap[spot.user_id]}
                     </div>
                   )}
+
                   {spot.created_at && (
                     <span className="text-xs text-gray-500 block">
                       {new Date(spot.created_at).toLocaleDateString("fr-FR")}
                     </span>
                   )}
+
                   {spot.photo_url && (
                     <>
                       <br />
@@ -578,6 +586,7 @@ export default function Map() {
               </Popup>
             </Marker>
           ))}
+      </MarkerClusterGroup>
 
         {(showAll || category === "atm") &&
           atmData &&
