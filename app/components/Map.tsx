@@ -92,7 +92,8 @@ export default function Map() {
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [contributionsCount, setContributionsCount] = useState(0);
-
+  const [showFiltersPanel, setShowFiltersPanel] = useState(false);
+  
   const [userPosition, setUserPosition] = useState<{
     lat: number;
     lng: number;
@@ -511,6 +512,13 @@ export default function Map() {
     });
   };
 
+  const categories = [
+    { value: "atm", label: "ATM", icon: "💳" },
+    { value: "wc", label: "WC", icon: "🚻" },
+    { value: "water", label: "Eau", icon: "🚰" },
+    { value: "charge", label: "Charge", icon: "🔌" },
+  ];
+
   return (
     <div className="h-screen w-full relative">
       <MapContainer
@@ -626,6 +634,40 @@ export default function Map() {
           </Marker>
         )}
       </MapContainer>
+
+      <div className="absolute bottom-4 left-16 z-[1000] pointer-events-auto">
+        <button
+          onClick={() => setShowFiltersPanel((prev) => !prev)}
+          className="bg-white shadow-lg rounded-full px-4 py-2 text-sm"
+        >
+          Filtres
+        </button>
+      </div>
+
+      <div className="absolute bottom-4 left-36 z-[1000] pointer-events-none">
+        <div className="bg-black text-white rounded-full px-4 py-2 text-sm shadow-lg">
+          {categories.find((c) => c.value === category)?.label}
+        </div>
+      </div>
+
+      {showFiltersPanel && (
+       <div className="absolute bottom-20 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 w-52 pointer-events-auto flex flex-col gap-2">
+        {categories.map((cat) => (
+         <button
+         key={cat.value}
+         onClick={() => {
+          setCategory(cat.value);
+          setShowFiltersPanel(false);
+         }}
+         className={`text-left px-3 py-2 rounded-xl ${
+          category === cat.value ? "bg-black text-white" : "bg-gray-100"
+         }`}
+        >
+          {cat.icon} {cat.label}
+         </button>
+        ))}
+       </div>
+      )}
 
       <div className="absolute top-4 right-4 z-[1000] pointer-events-auto flex flex-col gap-2">
         <button
@@ -765,115 +807,6 @@ export default function Map() {
           </div>
         )}
       </div>
-
-      <div className="absolute inset-0 z-[1000] pointer-events-none">
-        {/* Desktop filters */}
-        <div
-          className="hidden sm:flex absolute bottom-4 left-1/2 -translate-x-1/2 
-                    bg-white shadow-lg rounded-full px-4 py-2 gap-3
-                    pointer-events-auto"
-        >
-          <button
-            onClick={() => setCategory("atm")}
-            className={`px-3 py-1 rounded-full ${
-              category === "atm" ? "bg-blue-500 text-white" : "bg-gray-100"
-            }`}
-          >
-            💳 ATM
-          </button>
-
-          <button
-            onClick={() => setCategory("wc")}
-            className={`px-3 py-1 rounded-full ${
-              category === "wc" ? "bg-blue-500 text-white" : "bg-gray-100"
-            }`}
-          >
-            🚻 WC
-          </button>
-
-          <button
-            onClick={() => setCategory("water")}
-            className={`px-3 py-1 rounded-full ${
-              category === "water" ? "bg-blue-500 text-white" : "bg-gray-100"
-            }`}
-          >
-            🚰 Eau
-          </button>
-
-          <button
-            onClick={() => setCategory("charge")}
-            className={`px-3 py-1 rounded-full ${
-              category === "charge" ? "bg-blue-500 text-white" : "bg-gray-100"
-            }`}
-          >
-            🔌 Charge
-          </button>
-
-        </div>
-
-        {/* Mobile filter button */}
-        <div className="sm:hidden absolute bottom-4 left-4 pointer-events-auto">
-          <button
-            onClick={() => setShowMobileFilters((prev) => !prev)}
-            className="bg-white shadow-lg rounded-full px-4 py-2 text-sm"
-          >
-            Filtres
-          </button>
-
-          {showMobileFilters && (
-            <div className="mt-2 bg-white shadow-xl rounded-2xl p-2 flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  setCategory("atm");
-                  setShowMobileFilters(false);
-                }}
-                className={`px-3 py-2 rounded-xl text-left ${
-                  category === "atm" ? "bg-blue-500 text-white" : "bg-gray-100"
-                }`}
-              >
-                💳 ATM
-              </button>
-
-              <button
-                onClick={() => {
-                  setCategory("wc");
-                  setShowMobileFilters(false);
-                }}
-                className={`px-3 py-2 rounded-xl text-left ${
-                  category === "wc" ? "bg-blue-500 text-white" : "bg-gray-100"
-                }`}
-              >
-                🚻 WC
-              </button>
-
-              <button
-                onClick={() => {
-                  setCategory("water");
-                  setShowMobileFilters(false);
-                }}
-                className={`px-3 py-2 rounded-xl text-left ${
-                  category === "water" ? "bg-blue-500 text-white" : "bg-gray-100"
-                }`}
-              >
-                🚰 Eau
-              </button>
-
-              <button
-                onClick={() => {
-                  setCategory("charge");
-                  setShowMobileFilters(false);
-                }}
-                className={`px-3 py-2 rounded-xl text-left ${
-                  category === "charge" ? "bg-blue-500 text-white" : "bg-gray-100"
-                }`}
-              >
-                🔌 Charge
-              </button>
-
-            </div>
-          )}
-        </div>
       </div>
-    </div>
  );
 }
