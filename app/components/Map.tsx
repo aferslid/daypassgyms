@@ -131,13 +131,37 @@ export default function Map() {
 
       if (error) {
         console.error("Erreur Supabase spots:", error);
-      } else {
-        setSpots((data as Spot[]) || []);
+        return;
       }
+
+      let mergedSpots = (data as Spot[]) || [];
+
+      if (user) {
+        const { data: userData, error: userError } = await supabase
+          .from("spots")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (userError) {
+          console.error("Erreur chargement spots utilisateur:", userError);
+        } else {
+          const userSpots = (userData as Spot[]) || [];
+
+          const spotsMap = new globalThis.Map<number, Spot>();
+
+          [...mergedSpots, ...userSpots].forEach((spot) => {
+            spotsMap.set(spot.id, spot);
+          });
+
+          mergedSpots = Array.from(spotsMap.values());
+        }
+      }
+
+      setSpots(mergedSpots);
     };
 
   fetchSpots();
-}, []);
+}, [user]);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
