@@ -12,6 +12,7 @@ import { supabase } from "@/lib/supabase";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import AddSpotForm from "./AddSpotForm";
 
 // Fix icônes Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -299,7 +300,12 @@ export default function Map() {
     mapRef.current.setView([userPosition.lat, userPosition.lng], 16);
   };
 
-  const handleSaveSpot = async () => {
+  const handleSaveSpot = async (
+    name: string,
+    type: string,
+    description: string,
+    file: File | null
+  ) => {
     if (!pendingPosition) {
       alert("Choisis un emplacement.");
       return;
@@ -307,13 +313,13 @@ export default function Map() {
 
     let photoUrl = null;
 
-    if (selectedFile) {
-      const fileExt = selectedFile.name.split(".").pop();
+    if (file) {
+      const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}.${fileExt}`;
 
       const { error } = await supabase.storage
         .from("spot-photos")
-        .upload(`uploads/${fileName}`, selectedFile);
+        .upload(`uploads/${fileName}`, file);
 
       if (error) {
         console.error("Erreur upload photo:", error);
@@ -332,11 +338,11 @@ export default function Map() {
       .from("spots")
       .insert([
         {
-          name: newSpotName.trim(),
-          type: newSpotType,
+          name: name.trim(),
+          type: type,
           lat: pendingPosition.lat,
           lng: pendingPosition.lng,
-          description: newSpotDescription.trim() || null,
+          description: description.trim() || null,
           user_id: user?.id || null,
           photo_url: photoUrl,
           source: "user",
@@ -678,76 +684,12 @@ export default function Map() {
         </div>
       )}
 
-      {showAddForm && (
-        <div className="absolute left-1/2 -translate-x-1/2 top-20 z-1000 bg-white shadow-xl rounded-2xl p-4 w-[90%] max-w-md max-h-[70vh] overflow-y-auto pointer-events-auto">
-          <h2 className="font-bold text-lg mb-2">Nouveau spot</h2>
-
-          <p className="text-sm text-gray-600 mb-3">
-            Clique sur la carte ou utilise “Ajouter à ma position”.
-          </p>
-
-          {pendingPosition && (
-            <p className="text-xs text-gray-500 mb-3">
-              Lat: {pendingPosition.lat.toFixed(5)} | Lng:{" "}
-              {pendingPosition.lng.toFixed(5)}
-            </p>
-          )}
-
-          <input
-            type="text"
-            placeholder="Nom du spot"
-            value={newSpotName}
-            onChange={(e) => setNewSpotName(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 mb-3"
-          />
-
-          <select
-            value={newSpotType}
-            onChange={(e) => setNewSpotType(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 mb-3"
-          >
-            <option value="water">Eau potable / refill</option>
-            <option value="charge">Recharge</option>
-            <option value="wc">WC</option>
-            <option value="atm">ATM</option>
-          </select>
-
-          <label className="w-full cursor-pointer bg-gray-100 hover:bg-gray-200 border rounded-lg px-3 py-2 mb-3 block text-center">
-            📷 Ajouter / prendre une photo
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-              className="hidden"
-            />
-          </label>
-
-          {selectedFile && (
-            <img
-              src={URL.createObjectURL(selectedFile)}
-              alt="Preview"
-              className="w-full rounded-lg mt-2 mb-3 max-h-40 object-cover"
-            />
-          )}
-
-          <textarea
-            placeholder="Description"
-            value={newSpotDescription}
-            onChange={(e) => setNewSpotDescription(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 mb-3"
-            rows={3}
-          />
-
-          <button
-            onClick={handleSaveSpot}
-            disabled={isSaving}
-            className="w-full bg-blue-600 text-white rounded-lg px-3 py-2"
-          >
-            {isSaving ? "Enregistrement..." : "Enregistrer le spot"}
-          </button>
-        </div>
-      )}
+      <AddSpotForm
+        showAddForm={showAddForm}
+        isSaving={isSaving}
+        handleSaveSpot={handleSaveSpot}
+        resetAddForm={resetAddForm}
+      />
 
       <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-2 sm:p-4 w-[155px] sm:w-[220px] pointer-events-auto">
         {user && !profile ? (
