@@ -80,7 +80,6 @@ export default function Map() {
 
   const [category, setCategory] = useState<string | null>(null);
   const [atmData, setAtmData] = useState<any>(null);
-  const [wcData, setWcData] = useState<any>(null);
   const [spots, setSpots] = useState<Spot[]>([]);
 
   const [isAdding, setIsAdding] = useState(false);
@@ -130,22 +129,17 @@ export default function Map() {
     .then((data) => setAtmData(data))
     .catch((err) => console.error("Erreur chargement ATM:", err));
 
-  fetch("/wc.geojson")
-    .then((res) => res.json())
-    .then((data) => setWcData(data))
-    .catch((err) => console.error("Erreur chargement WC:", err));
+    const fetchSpots = async () => {
+      const { data, error } = await supabase
+        .from("spots")
+        .select("*");
 
-  const fetchSpots = async () => {
-    const { data, error } = await supabase
-      .from("spots")
-      .select("*");
-
-    if (error) {
-      console.error("Erreur Supabase spots:", error);
-    } else {
-      setSpots((data as Spot[]) || []);
-    }
-  };
+      if (error) {
+        console.error("Erreur Supabase spots:", error);
+      } else {
+        setSpots((data as Spot[]) || []);
+      }
+    };
 
   fetchSpots();
 }, []);
@@ -326,6 +320,8 @@ export default function Map() {
           description: newSpotDescription.trim() || null,
           user_id: user?.id || null,
           photo_url: photoUrl,
+          source: "user",
+          country: null,
         },
       ])
       .select();
@@ -601,33 +597,6 @@ export default function Map() {
                     {feature.properties?.city ||
                       feature.properties?.commune ||
                       ""}
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          })}
-
-        {(showAll || category === "wc") &&
-          wcData &&
-          wcData.features.slice(0, 100).map((feature: any, index: number) => {
-            const coords = feature?.geometry?.coordinates;
-            if (!coords || coords.length < 2) return null;
-
-            return (
-              <Marker key={`wc-${index}`} position={[coords[1], coords[0]]} icon={getMarkerIcon("wc")} >
-                <Popup>
-                  <div>
-                    <strong>
-                      {feature.properties?.nom ||
-                        feature.properties?.name ||
-                        "WC public"}
-                    </strong>
-                    <br />
-                    {feature.properties?.adresse ||
-                      feature.properties?.address ||
-                      ""}
-                    <br />
-                    {feature.properties?.arrondissement || "Paris"}
                   </div>
                 </Popup>
               </Marker>
