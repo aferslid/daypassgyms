@@ -92,6 +92,7 @@ export default function Map() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [contributionsCount, setContributionsCount] = useState(0);
 
   const [userPosition, setUserPosition] = useState<{
     lat: number;
@@ -237,6 +238,29 @@ export default function Map() {
 
     fetchProfiles();
   }, [profile]);
+
+  useEffect(() => {
+    if (!user) {
+      setContributionsCount(0);
+      return;
+    }
+
+    const fetchContributionsCount = async () => {
+      const { count, error } = await supabase
+        .from("spots")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Erreur compteur contributions:", error);
+        return;
+      }
+
+      setContributionsCount(count || 0);
+    };
+
+    fetchContributionsCount();
+  }, [user, spots]);
 
   const showAll = category === null;
 
@@ -782,8 +806,11 @@ export default function Map() {
           </div>
         ) : user ? (
           <div className="flex flex-col gap-2">
-            <p className="text-xs sm:text-sm mb-1">
+            <p className="text-xs sm:text-sm m-0 leading-tight">
               Connecté : <strong>{profile?.username || user.email}</strong>
+            </p>
+            <p className="text-xs text-gray-500 m-0 leading-tight">
+              Contributions : {contributionsCount}
             </p>
             <button
               onClick={handleLogout}
