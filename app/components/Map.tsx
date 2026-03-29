@@ -80,9 +80,8 @@ function AddSpotMapClick({
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
-  const [category, setCategory] = useState<string | null>(null);
+  const [category, setCategory] = useState<string>("atm");
   const [spots, setSpots] = useState<Spot[]>([]);
-
   const [isAdding, setIsAdding] = useState(false);
   const [pendingPosition, setPendingPosition] = useState<PendingPosition>(null);
   const [newSpotName, setNewSpotName] = useState("");
@@ -276,12 +275,7 @@ export default function Map() {
     fetchContributionsCount();
   }, [user, spots]);
 
-  const showAll = category === null;
-
   const matchesCategory = (spotType: string) => {
-    if (showAll) return true;
-    if (category === "water" && spotType === "water") return true;
-    if (category === "charge" && spotType === "charge") return true;
     return spotType === category;
   };
 
@@ -613,7 +607,7 @@ export default function Map() {
       </MarkerClusterGroup>
 
         {fakePoints
-          .filter((point) => showAll || point.type === category)
+          .filter((point) => point.type === category)
           .map((point) => (
             <Marker key={point.id} position={point.position} icon={getMarkerIcon(point.type)}>
               <Popup>
@@ -815,14 +809,6 @@ export default function Map() {
             🔌 Charge
           </button>
 
-          <button
-            onClick={() => setCategory(null)}
-            className={`px-3 py-1 rounded-full ${
-              category === null ? "bg-black text-white" : "bg-gray-200"
-            }`}
-          >
-            Tout
-          </button>
         </div>
 
         {/* Mobile filter button */}
@@ -884,17 +870,6 @@ export default function Map() {
                 🔌 Charge
               </button>
 
-              <button
-                onClick={() => {
-                  setCategory(null);
-                  setShowMobileFilters(false);
-                }}
-                className={`px-3 py-2 rounded-xl text-left ${
-                  category === null ? "bg-black text-white" : "bg-gray-200"
-                }`}
-              >
-                Tout
-              </button>
             </div>
           )}
         </div>
