@@ -77,6 +77,23 @@ function AddSpotMapClick({
   return null;
 }
 
+function MapBoundsUpdater({ setBounds }: { setBounds: any }) {
+  const map = useMapEvents({
+    moveend: () => {
+      const b = map.getBounds();
+
+      setBounds({
+        north: b.getNorth(),
+        south: b.getSouth(),
+        east: b.getEast(),
+        west: b.getWest(),
+      });
+    },
+  });
+
+  return null;
+}
+
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -93,6 +110,7 @@ export default function Map() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [contributionsCount, setContributionsCount] = useState(0);
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
+  const [bounds, setBounds] = useState<any>(null);
   
   const [userPosition, setUserPosition] = useState<{
     lat: number;
@@ -532,6 +550,8 @@ export default function Map() {
           attribution="&copy; OpenStreetMap"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+
+        <MapBoundsUpdater setBounds={setBounds} />
 
         <AddSpotMapClick
           isSelectingLocation={isSelectingLocation}
