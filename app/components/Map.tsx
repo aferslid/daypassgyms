@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -77,16 +77,45 @@ function AddSpotMapClick({
   return null;
 }
 
-function MapBoundsUpdater({ setBounds }: { setBounds: any }) {
+function MapBoundsUpdater({
+  setBounds,
+  isPopupOpenRef,
+}: {
+  setBounds: React.Dispatch<
+    React.SetStateAction<{
+      north: number;
+      south: number;
+      east: number;
+      west: number;
+    } | null>
+  >;
+  isPopupOpenRef: React.MutableRefObject<boolean>;
+}) {
   const map = useMapEvents({
     moveend: () => {
+      if (isPopupOpenRef.current) return;
+
       const b = map.getBounds();
 
-      setBounds({
+      const nextBounds = {
         north: b.getNorth(),
         south: b.getSouth(),
         east: b.getEast(),
         west: b.getWest(),
+      };
+
+      setBounds((prev) => {
+        if (
+          prev &&
+          prev.north === nextBounds.north &&
+          prev.south === nextBounds.south &&
+          prev.east === nextBounds.east &&
+          prev.west === nextBounds.west
+        ) {
+          return prev;
+        }
+
+        return nextBounds;
       });
     },
   });
@@ -98,6 +127,31 @@ function MapZoomUpdater({ setZoomLevel }: { setZoomLevel: any }) {
   const map = useMapEvents({
     zoomend: () => {
       setZoomLevel(map.getZoom());
+    },
+  });
+
+  return null;
+}
+
+function stopPopupPropagation(e: React.SyntheticEvent) {
+  e.stopPropagation();
+}
+
+function CloseSpotCardOnMapClick({
+  setSelectedSpot,
+  ignoreNextMapClickRef,
+}: {
+  setSelectedSpot: (spot: Spot | null) => void;
+  ignoreNextMapClickRef: { current: boolean };
+}) {
+  useMapEvents({
+    click: () => {
+      if (ignoreNextMapClickRef.current) {
+        ignoreNextMapClickRef.current = false;
+        return;
+      }
+
+      setSelectedSpot(null);
     },
   });
 
@@ -122,6 +176,10 @@ export default function Map() {
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
   const [bounds, setBounds] = useState<any>(null);
   const [zoomLevel, setZoomLevel] = useState(6)
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const isPopupOpenRef = useRef(false);
+  const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
+  const ignoreNextMapClickRef = useRef(false);
   
   const [userPosition, setUserPosition] = useState<{
     lat: number;
@@ -153,81 +211,62 @@ export default function Map() {
     },
   ];
 
-  useEffect(() => {
-    const fetchSpots = async () => {
-      if (!bounds) return;
+useEffect(() => {
+  const fetchSpots = async () => {
+    if (!bounds) return;
 
-      if ((category === "atm" || category === "wc") && zoomLevel < 11) {
-        setSpots([]);
-        return;
-      }
+    console.log("CATEGORY:", category);
+    console.log("BOUNDS:", bounds);
 
-      const { data, error } = await supabase
-        .from("spots")
-        .select("*")
-        .eq("type", category)
-        .gte("lat", bounds.south)
-        .lte("lat", bounds.north)
-        .gte("lng", bounds.west)
-        .lte("lng", bounds.east)
-        .limit(2000);
+    if ((category === "atm" || category === "wc") && zoomLevel < 11) {
+      setSpots([]);
+      return;
+    }
 
-      if (error) {
-        console.error("Erreur Supabase spots:", error);
-        return;
-      }
+    const { data, error } = await supabase
+      .from("spots")
+      .select("*")
+      .eq("type", category)
+      .gte("lat", bounds.south)
+      .lte("lat", bounds.north)
+      .gte("lng", bounds.west)
+      .lte("lng", bounds.east)
+      .order("id", { ascending: true })
+      .limit(2000);
 
-      let mergedSpots = (data as Spot[]) || [];
+    console.log("MAIN QUERY COUNT:", data?.length);
 
-      if (user) {
-        const { data: userData, error: userError } = await supabase
-          .from("spots")
-          .select("*")
-          .eq("user_id", user.id);
+    if (error) {
+      console.error("Erreur Supabase spots:", error);
+      return;
+    }
 
-        if (userError) {
-          console.error("Erreur chargement spots utilisateur:", userError);
-        } else {
-          const userSpots = (userData as Spot[]) || [];
+    setSpots((data as Spot[]) || []);
+  };
 
-          const spotsMap = new globalThis.Map<number, Spot>();
+  const timeout = setTimeout(() => {
+    fetchSpots();
+  }, 250);
 
-          [...mergedSpots, ...userSpots].forEach((spot) => {
-            spotsMap.set(spot.id, spot);
-          });
-
-          mergedSpots = Array.from(spotsMap.values());
-        }
-      }
-
-      setSpots(mergedSpots);
-    };
-
-  fetchSpots();
-}, [user, bounds, category, zoomLevel]);
+  return () => clearTimeout(timeout);
+}, [bounds, category, zoomLevel]);
 
   useEffect(() => {
-    if (!navigator.geolocation) return;
+  if (!navigator.geolocation) return;
 
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        setUserPosition({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      (error) => {
-        console.log("Erreur GPS", error);
-      },
-      {
-        enableHighAccuracy: true,
-      }
-    );
-
-    return () => {
-      navigator.geolocation.clearWatch(watchId);
-    };
-  }, []);
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      setUserPosition({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+    },
+    (error) => {
+      console.error(error);
+    },
+    { enableHighAccuracy: true }
+  );
+}, []);
 
   useEffect(() => {
     if (!userPosition || !mapRef.current || hasCenteredOnUser) return;
@@ -575,7 +614,7 @@ export default function Map() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <MapBoundsUpdater setBounds={setBounds} />
+        <MapBoundsUpdater setBounds={setBounds} isPopupOpenRef={isPopupOpenRef} />
 
         <MapZoomUpdater setZoomLevel={setZoomLevel} />
 
@@ -603,7 +642,15 @@ export default function Map() {
           </Marker>
         )}
 
-        <MarkerClusterGroup>
+        <MarkerClusterGroup
+        chunkedLoading
+        maxClusterRadius={35}
+        disableClusteringAtZoom={16}
+        spiderfyOnMaxZoom={true}
+        zoomToBoundsOnClick={true}
+        showCoverageOnHover={false}
+        spiderfyDistanceMultiplier={2}
+        >
         {spots
           .filter((spot) => matchesCategory(spot.type))
           .map((spot) => (
@@ -611,51 +658,13 @@ export default function Map() {
               key={`spot-${spot.id}`}
               position={[spot.lat, spot.lng]}
               icon={getMarkerIcon(spot.type)}
+              eventHandlers={{
+                click: () => {
+                  ignoreNextMapClickRef.current = true;
+                  setSelectedSpot(spot);
+                },
+              }}
             >
-              <Popup>
-                <div>
-                  <strong>{spot.name}</strong>
-                  <br />
-                  {spot.type}
-                  <br />
-                  {spot.description}
-
-                  {spot.user_id && profilesMap[spot.user_id] && (
-                    <div className="text-sm">
-                      Ajouté par : {profilesMap[spot.user_id]}
-                    </div>
-                  )}
-
-                  {spot.created_at && (
-                    <span className="text-xs text-gray-500 block">
-                      {new Date(spot.created_at).toLocaleDateString("fr-FR")}
-                    </span>
-                  )}
-
-                  {spot.photo_url && (
-                    <>
-                      <br />
-                      <img
-                        src={spot.photo_url}
-                        alt={spot.name}
-                        className="mt-2 rounded-lg w-full max-h-40 object-cover"
-                      />
-                    </>
-                  )}
-
-                  {user && spot.user_id === user.id && (
-                    <>
-                      <br />
-                      <button
-                        onClick={() => handleDeleteSpot(spot.id)}
-                        className="mt-2 bg-red-500 text-white px-3 py-1 rounded"
-                      >
-                        Supprimer
-                      </button>
-                    </>
-                  )}
-                </div>
-              </Popup>
             </Marker>
           ))}
       </MarkerClusterGroup>
@@ -680,6 +689,65 @@ export default function Map() {
           </Marker>
         )}
       </MapContainer>
+
+      {selectedSpot && (
+        <div
+          className="absolute left-1/2 -translate-x-1/2 bottom-24 z-[1200] w-[92%] max-w-md bg-white rounded-2xl shadow-2xl p-4 pointer-events-auto"
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-start gap-3">
+            <div>
+              <h3 className="text-lg font-bold">FICHE CUSTOM - {selectedSpot.name}</h3>
+              <p className="text-sm text-gray-600">{selectedSpot.type}</p>
+            </div>
+
+            <button
+              onClick={() => setSelectedSpot(null)}
+              className="text-gray-500 text-xl leading-none"
+            >
+              ×
+            </button>
+          </div>
+
+          {selectedSpot.description && (
+            <p className="mt-3 text-sm text-gray-800">{selectedSpot.description}</p>
+          )}
+
+          {selectedSpot.user_id && profilesMap[selectedSpot.user_id] && (
+            <div className="mt-3 text-sm">
+              Ajouté par : {profilesMap[selectedSpot.user_id]}
+            </div>
+          )}
+
+          {selectedSpot.created_at && (
+            <span className="text-xs text-gray-500 block mt-1">
+              {new Date(selectedSpot.created_at).toLocaleDateString("fr-FR")}
+            </span>
+          )}
+
+          {selectedSpot.photo_url && (
+            <img
+              src={selectedSpot.photo_url}
+              alt={selectedSpot.name}
+              className="mt-3 rounded-xl w-full max-h-52 object-cover"
+            />
+          )}
+
+          {user && selectedSpot.user_id === user.id && (
+            <button
+              onClick={() => {
+                handleDeleteSpot(selectedSpot.id);
+                setSelectedSpot(null);
+              }}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-xl"
+            >
+              Supprimer
+            </button>
+          )}
+        </div>
+      )}
 
       {(category === "atm" || category === "wc") && zoomLevel < 11 && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none">
