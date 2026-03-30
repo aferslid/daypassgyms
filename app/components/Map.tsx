@@ -715,7 +715,7 @@ useEffect(() => {
         </div>
       )}
 
-      <div className="absolute bottom-4 left-16 z-[1000] pointer-events-auto">
+      <div className="absolute bottom-20 sm:bottom-4 left-16 z-[1000] pointer-events-auto">
         <button
           onClick={() => setShowFiltersPanel((prev) => !prev)}
           className="bg-white shadow-lg rounded-full px-4 py-2 text-sm"
@@ -724,7 +724,7 @@ useEffect(() => {
         </button>
       </div>
 
-      <div className="absolute bottom-4 left-36 z-[1000] pointer-events-none">
+      <div className="absolute bottom-20 sm:bottom-4 left-36 z-[1000] pointer-events-none">
         <div className="bg-black text-white rounded-full px-4 py-2 text-sm shadow-lg">
           {categories.find((c) => c.value === category)?.label}
         </div>
