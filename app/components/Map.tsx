@@ -137,27 +137,6 @@ function stopPopupPropagation(e: React.SyntheticEvent) {
   e.stopPropagation();
 }
 
-function CloseSpotCardOnMapClick({
-  setSelectedSpot,
-  ignoreNextMapClickRef,
-}: {
-  setSelectedSpot: (spot: Spot | null) => void;
-  ignoreNextMapClickRef: { current: boolean };
-}) {
-  useMapEvents({
-    click: () => {
-      if (ignoreNextMapClickRef.current) {
-        ignoreNextMapClickRef.current = false;
-        return;
-      }
-
-      setSelectedSpot(null);
-    },
-  });
-
-  return null;
-}
-
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -178,8 +157,6 @@ export default function Map() {
   const [zoomLevel, setZoomLevel] = useState(6)
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const isPopupOpenRef = useRef(false);
-  const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
-  const ignoreNextMapClickRef = useRef(false);
   
   const [userPosition, setUserPosition] = useState<{
     lat: number;
@@ -652,21 +629,59 @@ useEffect(() => {
         spiderfyDistanceMultiplier={2}
         >
         {spots
-          .filter((spot) => matchesCategory(spot.type))
-          .map((spot) => (
-            <Marker
-              key={`spot-${spot.id}`}
-              position={[spot.lat, spot.lng]}
-              icon={getMarkerIcon(spot.type)}
-              eventHandlers={{
-                click: () => {
-                  ignoreNextMapClickRef.current = true;
-                  setSelectedSpot(spot);
-                },
-              }}
-            >
-            </Marker>
-          ))}
+        .filter((spot) => matchesCategory(spot.type))
+        .map((spot) => (
+          <Marker
+            key={`spot-${spot.id}`}
+            position={[spot.lat, spot.lng]}
+            icon={getMarkerIcon(spot.type)}
+          >
+            <Popup autoPan={false}>
+              <div>
+                <strong>{spot.name}</strong>
+                <br />
+                {spot.type}
+                <br />
+                {spot.description}
+
+                {spot.user_id && profilesMap[spot.user_id] && (
+                  <div className="text-sm">
+                    Ajouté par : {profilesMap[spot.user_id]}
+                  </div>
+                )}
+
+                {spot.created_at && (
+                  <span className="text-xs text-gray-500 block">
+                    {new Date(spot.created_at).toLocaleDateString("fr-FR")}
+                  </span>
+                )}
+
+                {spot.photo_url && (
+                  <>
+                    <br />
+                    <img
+                      src={spot.photo_url}
+                      alt={spot.name}
+                      className="mt-2 rounded-lg w-full max-h-40 object-cover"
+                    />
+                  </>
+                )}
+
+                {user && spot.user_id === user.id && (
+                  <>
+                    <br />
+                    <button
+                      onClick={() => handleDeleteSpot(spot.id)}
+                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      Supprimer
+                    </button>
+                  </>
+                )}
+              </div>
+            </Popup>
+          </Marker>
+        ))}
       </MarkerClusterGroup>
 
         {fakePoints
@@ -689,65 +704,6 @@ useEffect(() => {
           </Marker>
         )}
       </MapContainer>
-
-      {selectedSpot && (
-        <div
-          className="absolute left-1/2 -translate-x-1/2 bottom-24 z-[1200] w-[92%] max-w-md bg-white rounded-2xl shadow-2xl p-4 pointer-events-auto"
-          onClick={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-        >
-          <div className="flex justify-between items-start gap-3">
-            <div>
-              <h3 className="text-lg font-bold">FICHE CUSTOM - {selectedSpot.name}</h3>
-              <p className="text-sm text-gray-600">{selectedSpot.type}</p>
-            </div>
-
-            <button
-              onClick={() => setSelectedSpot(null)}
-              className="text-gray-500 text-xl leading-none"
-            >
-              ×
-            </button>
-          </div>
-
-          {selectedSpot.description && (
-            <p className="mt-3 text-sm text-gray-800">{selectedSpot.description}</p>
-          )}
-
-          {selectedSpot.user_id && profilesMap[selectedSpot.user_id] && (
-            <div className="mt-3 text-sm">
-              Ajouté par : {profilesMap[selectedSpot.user_id]}
-            </div>
-          )}
-
-          {selectedSpot.created_at && (
-            <span className="text-xs text-gray-500 block mt-1">
-              {new Date(selectedSpot.created_at).toLocaleDateString("fr-FR")}
-            </span>
-          )}
-
-          {selectedSpot.photo_url && (
-            <img
-              src={selectedSpot.photo_url}
-              alt={selectedSpot.name}
-              className="mt-3 rounded-xl w-full max-h-52 object-cover"
-            />
-          )}
-
-          {user && selectedSpot.user_id === user.id && (
-            <button
-              onClick={() => {
-                handleDeleteSpot(selectedSpot.id);
-                setSelectedSpot(null);
-              }}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-xl"
-            >
-              Supprimer
-            </button>
-          )}
-        </div>
-      )}
 
       {(category === "atm" || category === "wc") && zoomLevel < 11 && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none">
