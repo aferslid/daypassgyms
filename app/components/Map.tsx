@@ -133,10 +133,6 @@ function MapZoomUpdater({ setZoomLevel }: { setZoomLevel: any }) {
   return null;
 }
 
-function stopPopupPropagation(e: React.SyntheticEvent) {
-  e.stopPropagation();
-}
-
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -632,9 +628,17 @@ useEffect(() => {
         .filter((spot) => matchesCategory(spot.type))
         .map((spot) => (
           <Marker
-            key={`spot-${spot.id}`}
-            position={[spot.lat, spot.lng]}
-            icon={getMarkerIcon(spot.type)}
+          key={`spot-${spot.id}`}
+          position={[spot.lat, spot.lng]}
+          icon={getMarkerIcon(spot.type)}
+          eventHandlers={{
+            popupopen: () => {
+              isPopupOpenRef.current = true;
+            },
+            popupclose: () => {
+              isPopupOpenRef.current = false;
+            },
+          }}
           >
             <Popup autoPan={false}>
               <div>
