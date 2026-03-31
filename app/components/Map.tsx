@@ -705,6 +705,12 @@ useEffect(() => {
         </div>
       )}
 
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] 
+      bg-black/75 text-white rounded-full px-4 py-2 text-sm 
+      pointer-events-none">
+        {category.toUpperCase()} | zoom {zoomLevel} | {spots.length} spots
+      </div>
+
       <div className="absolute bottom-20 sm:bottom-4 left-16 z-[1000] pointer-events-auto">
         <button
           onClick={() => setShowFiltersPanel((prev) => !prev)}
