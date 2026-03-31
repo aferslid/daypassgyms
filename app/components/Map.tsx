@@ -545,6 +545,27 @@ useEffect(() => {
       color = "#f97316";
     }
 
+    if (type === "rest") {
+      icon = "🪑";
+      color = "#84cc16";
+    }
+    if (type === "coffee") {
+      icon = "☕";
+      color = "#92400e";
+    }
+    if (type === "luggage") {
+      icon = "🧳";
+      color = "#2563eb";
+    }
+    if (type === "wifi") {
+      icon = "📶";
+      color = "#14b8a6";
+    }
+    if (type === "mailbox") {
+      icon = "📮";
+      color = "#ef4444";
+    }
+
     return L.divIcon({
       html: `
         <div style="
@@ -567,10 +588,15 @@ useEffect(() => {
   };
 
   const categories = [
-    { value: "atm", label: "ATM", icon: "💳" },
-    { value: "wc", label: "WC", icon: "🚻" },
-    { value: "water", label: "Eau", icon: "🚰" },
-    { value: "charge", label: "Charge", icon: "🔌" },
+  { value: "atm", label: "ATM", icon: "🏧" },
+  { value: "wc", label: "WC", icon: "🚻" },
+  { value: "water", label: "Eau", icon: "💧" },
+  { value: "charge", label: "Charge", icon: "⚡" },
+  { value: "rest", label: "Repos", icon: "🪑" },
+  { value: "coffee", label: "Café", icon: "☕" },
+  { value: "luggage", label: "Bagage", icon: "🧳" },
+  { value: "wifi", label: "WiFi", icon: "📶" },
+  { value: "mailbox", label: "Boîte", icon: "📮" }
   ];
 
   return (

@@ -50,10 +50,15 @@ export default function AddSpotForm({
         onChange={(e) => setNewSpotType(e.target.value)}
         className="w-full border rounded-xl px-4 py-3 mb-3"
       >
-        <option value="water">Eau potable / refill</option>
-        <option value="wc">WC</option>
         <option value="atm">ATM</option>
+        <option value="wc">WC</option>
+        <option value="water">Eau</option>
         <option value="charge">Charge</option>
+        <option value="rest">Repos</option>
+        <option value="coffee">Café</option>
+        <option value="luggage">Bagage</option>
+        <option value="wifi">WiFi</option>
+        <option value="mailbox">Boîte</option>
       </select>
 
       <label className="w-full border rounded-xl px-4 py-3 mb-3 block cursor-pointer text-center">
