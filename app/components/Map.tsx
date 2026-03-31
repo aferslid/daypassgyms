@@ -26,13 +26,6 @@ L.Icon.Default.mergeOptions({
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-type FakePoint = {
-  id: number;
-  type: "water" | "charge";
-  position: [number, number];
-  name: string;
-};
-
 type Spot = {
   id: number;
   name: string;
@@ -168,21 +161,6 @@ export default function Map() {
   const [username, setUsername] = useState("");
   const [profilesMap, setProfilesMap] = useState<Record<string, string>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-
-  const fakePoints: FakePoint[] = [
-    {
-      id: 1,
-      type: "water",
-      position: [48.8606, 2.3376],
-      name: "Fontaine Louvre",
-    },
-    {
-      id: 2,
-      type: "charge",
-      position: [48.853, 2.3499],
-      name: "Recharge Café",
-    },
-  ];
 
 useEffect(() => {
   const fetchSpots = async () => {
@@ -713,20 +691,6 @@ useEffect(() => {
           </Marker>
         ))}
       </MarkerClusterGroup>
-
-        {fakePoints
-          .filter((point) => point.type === category)
-          .map((point) => (
-            <Marker key={point.id} position={point.position} icon={getMarkerIcon(point.type)}>
-              <Popup>
-                <div>
-                  <strong>{point.name}</strong>
-                  <br />
-                  {point.type}
-                </div>
-              </Popup>
-            </Marker>
-          ))}
 
         {pendingPosition && (
           <Marker position={[pendingPosition.lat, pendingPosition.lng]}>
