@@ -705,9 +705,8 @@ useEffect(() => {
         </div>
       )}
 
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] 
-      bg-black/75 text-white rounded-full px-4 py-2 text-sm 
-      pointer-events-none">
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-[1000]
+      bg-black/75 text-white rounded-full px-4 py-2 text-sm">
         {category.toUpperCase()} | zoom {zoomLevel} | {spots.length} spots
       </div>
 
