@@ -126,6 +126,46 @@ function MapZoomUpdater({ setZoomLevel }: { setZoomLevel: any }) {
   return null;
 }
 
+function createClusterCustomIcon(cluster: any) {
+  const count = cluster.getChildCount();
+
+  let size = 38;
+  let fontSize = 14;
+
+  if (count >= 10) {
+    size = 42;
+    fontSize = 15;
+  }
+
+  if (count >= 100) {
+    size = 48;
+    fontSize = 16;
+  }
+
+  return L.divIcon({
+    html: `
+      <div style="
+        width:${size}px;
+        height:${size}px;
+        border-radius:9999px;
+        background:#2563eb;
+        border:3px solid white;
+        box-shadow:0 6px 16px rgba(0,0,0,0.25);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:white;
+        font-weight:700;
+        font-size:${fontSize}px;
+      ">
+        ${count}
+      </div>
+    `,
+    className: "",
+    iconSize: [size, size],
+  });
+}
+
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -146,6 +186,18 @@ export default function Map() {
   const [zoomLevel, setZoomLevel] = useState(6)
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const isPopupOpenRef = useRef(false);
+
+  const categoriesRequiringZoom = [
+    "atm",
+    "wc",
+    "mailbox",
+    "water",
+    "charge",
+    "wifi",
+    "coffee",
+    "rest",
+    "luggage"
+  ];
   
   const [userPosition, setUserPosition] = useState<{
     lat: number;
@@ -169,7 +221,7 @@ useEffect(() => {
     console.log("CATEGORY:", category);
     console.log("BOUNDS:", bounds);
 
-    if ((category === "atm" || category === "wc") && zoomLevel < 11) {
+    if (categoriesRequiringZoom.includes(category) && zoomLevel < 11) {
       setSpots([]);
       return;
     }
@@ -627,6 +679,7 @@ useEffect(() => {
         zoomToBoundsOnClick={true}
         showCoverageOnHover={false}
         spiderfyDistanceMultiplier={2}
+        iconCreateFunction={createClusterCustomIcon}
         >
         {spots
         .filter((spot) => matchesCategory(spot.type))
@@ -699,9 +752,10 @@ useEffect(() => {
         )}
       </MapContainer>
 
-      {(category === "atm" || category === "wc") && zoomLevel < 11 && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none">
-          Zoome davantage pour afficher les {category === "atm" ? "ATM" : "WC"}
+      {categoriesRequiringZoom.includes(category) && zoomLevel < 11 && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] 
+        bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none">
+          Zoome davantage pour afficher les {category.toUpperCase()}
         </div>
       )}
 
