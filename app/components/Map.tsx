@@ -385,6 +385,8 @@ useEffect(() => {
     description: string,
     file: File | null
   ) => {
+    if (isSaving) return;
+      setIsSaving(true);
     if (!pendingPosition) {
       alert("Choisis un emplacement.");
       return;
