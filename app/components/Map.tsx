@@ -798,7 +798,7 @@ useEffect(() => {
        </div>
       )}
 
-      <div className="absolute top-4 right-4 z-[1000] pointer-events-auto flex flex-col gap-2">
+      <div className="absolute top-8 right-4 z-[1000] pointer-events-auto flex flex-col gap-2">
         <button
           onClick={() => {
             if (isSelectingLocation || showAddForm) {
