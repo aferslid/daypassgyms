@@ -186,6 +186,7 @@ export default function Map() {
   const [zoomLevel, setZoomLevel] = useState(6)
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const isPopupOpenRef = useRef(false);
+  const saveLockRef = useRef(false);
 
   const categoriesRequiringZoom = [
     "atm",
@@ -385,12 +386,17 @@ useEffect(() => {
     description: string,
     file: File | null
   ) => {
-    if (isSaving) return;
-      setIsSaving(true);
+    if (saveLockRef.current) return;
+    saveLockRef.current = true;
+    setIsSaving(true);
+
     if (!pendingPosition) {
       alert("Choisis un emplacement.");
-      return;
-    }
+      saveLockRef.current = false;
+      setIsSaving(false);
+      return
+    ;
+}
 
     let photoUrl = null;
 
@@ -446,6 +452,9 @@ useEffect(() => {
 
     resetAddForm();
     alert("Spot ajouté avec succès.");
+    saveLockRef.current = false;
+    setIsSaving(false);
+
   };
 
   const handleAddAtMyPosition = () => {
