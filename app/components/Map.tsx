@@ -850,6 +850,7 @@ useEffect(() => {
       )}
 
       <AddSpotForm
+        key={showAddForm ? "open" : "closed"}
         showAddForm={showAddForm}
         isSaving={isSaving}
         handleSaveSpot={handleSaveSpot}
