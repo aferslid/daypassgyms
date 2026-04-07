@@ -1,4 +1,4 @@
-import { useState} from "react"
+import { useEffect, useRef, useState } from "react"
 
 type PendingPosition = {
   lat: number;
@@ -27,6 +27,20 @@ export default function AddSpotForm({
   const [newSpotType, setNewSpotType] = useState("water");
   const [newSpotDescription, setNewSpotDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+  if (!showAddForm) {
+    setNewSpotName("");
+    setNewSpotType("water");
+    setNewSpotDescription("");
+    setSelectedFile(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
+  }, [showAddForm]);
 
   if (!showAddForm) return null;
 
@@ -64,6 +78,7 @@ export default function AddSpotForm({
       <label className="w-full border rounded-xl px-4 py-3 mb-3 block cursor-pointer text-center">
         📷 Ajouter / prendre une photo
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*"
           capture="environment"
