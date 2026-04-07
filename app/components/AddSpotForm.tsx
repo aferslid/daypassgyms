@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import imageCompression from "browser-image-compression";
 
 type PendingPosition = {
   lat: number;
@@ -31,6 +32,27 @@ export default function AddSpotForm({
   const galleryInputRef = useRef<HTMLInputElement | null>(null);
 
   if (!showAddForm) return null;
+
+  const handleImageChange = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0] || null;
+  if (!file) return;
+
+  try {
+    const compressedFile = await imageCompression(file, {
+      maxSizeMB: 0.4,
+      maxWidthOrHeight: 1200,
+      useWebWorker: true,
+      initialQuality: 0.75,
+    });
+
+    setSelectedFile(compressedFile);
+  } catch (error) {
+    console.error("Erreur compression image:", error);
+    setSelectedFile(file);
+  }
+};
 
   return (
     <div className="absolute left-1/2 -translate-x-1/2 top-20 z-[1000] bg-white shadow-xl rounded-2xl p-4 w-[90%] max-w-md max-h-[70vh] overflow-y-auto pointer-events-auto">
@@ -86,7 +108,7 @@ export default function AddSpotForm({
           accept="image/*"
           capture="environment"
           className="hidden"
-          onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+          onChange={handleImageChange}
         />
 
         <input
@@ -94,7 +116,7 @@ export default function AddSpotForm({
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+          onChange={handleImageChange}
         />
       </div>
 
