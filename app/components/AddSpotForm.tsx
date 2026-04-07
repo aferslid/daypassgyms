@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 type PendingPosition = {
   lat: number;
@@ -27,6 +27,8 @@ export default function AddSpotForm({
   const [newSpotType, setNewSpotType] = useState("water");
   const [newSpotDescription, setNewSpotDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
 
   if (!showAddForm) return null;
 
@@ -61,15 +63,40 @@ export default function AddSpotForm({
         <option value="mailbox">Boîte</option>
       </select>
 
-      <label className="w-full border rounded-xl px-4 py-3 mb-3 block cursor-pointer text-center">
-        📷 Ajouter / prendre une photo
+      <div className="grid grid-cols-2 gap-3 mb-3">
+        <button
+          type="button"
+          onClick={() => cameraInputRef.current?.click()}
+          className="border rounded-xl px-4 py-3 text-center"
+        >
+          📷 Prendre photo
+        </button>
+
+        <button
+          type="button"
+          onClick={() => galleryInputRef.current?.click()}
+          className="border rounded-xl px-4 py-3 text-center"
+        >
+          🖼️ Galerie
+        </button>
+
         <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+        />
+
+        <input
+          ref={galleryInputRef}
           type="file"
           accept="image/*"
           className="hidden"
           onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
         />
-      </label>
+      </div>
 
       {selectedFile && (
         <img
