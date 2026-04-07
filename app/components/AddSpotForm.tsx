@@ -137,15 +137,19 @@ export default function AddSpotForm({
 
       <button
         onClick={() =>
-        handleSaveSpot(
+          handleSaveSpot(
             newSpotName,
             newSpotType,
             newSpotDescription,
             selectedFile
-        )
+          )
         }
-        disabled={isSaving}
-        className="w-full bg-blue-600 text-white rounded-xl px-4 py-3"
+        disabled={isSaving || !newSpotName}
+        className={`w-full rounded-xl px-4 py-3 text-white ${
+          isSaving
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-600 active:scale-95"
+        }`}
       >
         {isSaving ? "Enregistrement..." : "Enregistrer le spot"}
       </button>
