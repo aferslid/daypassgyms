@@ -191,13 +191,19 @@ export default function Map() {
   const categoriesRequiringZoom = [
     "atm",
     "wc",
-    "mailbox",
     "water",
     "charge",
     "wifi",
     "coffee",
     "rest",
-    "luggage"
+    "luggage",
+    "mailbox",
+    "tourist_info",
+    "viewpoint",
+    "gym",
+    "street_workout",
+    "coworking",
+    "healthy_good",
   ];
   
   const [userPosition, setUserPosition] = useState<{
@@ -607,6 +613,36 @@ useEffect(() => {
       color = "#ef4444";
     }
 
+    if (type === "tourist_info") {
+  icon = "ℹ️";
+  color = "#0ea5e9";
+}
+
+if (type === "viewpoint") {
+  icon = "📍";
+  color = "#8b5cf6";
+}
+
+if (type === "gym") {
+  icon = "🏋️";
+  color = "#ef4444";
+}
+
+if (type === "street_workout") {
+  icon = "💪";
+  color = "#f97316";
+}
+
+if (type === "coworking") {
+  icon = "💻";
+  color = "#06b6d4";
+}
+
+if (type === "healthy_food") {
+  icon = "🥗";
+  color = "#22c55e";
+}
+
     return L.divIcon({
       html: `
         <div style="
@@ -637,7 +673,13 @@ useEffect(() => {
   { value: "coffee", label: "Café", icon: "☕" },
   { value: "luggage", label: "Bagage", icon: "🧳" },
   { value: "wifi", label: "WiFi", icon: "📶" },
-  { value: "mailbox", label: "Boîte", icon: "📮" }
+  { value: "mailbox", label: "Boîte", icon: "📮" },
+  { value: "tourist_info", label: "Info", icon: "ℹ️" },
+  { value: "viewpoint", label: "Vue", icon: "📍" },
+  { value: "gym", label: "Gym", icon: "🏋️" },
+  { value: "street_workout", label: "Street", icon: "💪" },
+  { value: "coworking", label: "Cowork", icon: "💻" },
+  { value: "healthy_food", label: "Healthy", icon: "🥗" }
   ];
 
   return (

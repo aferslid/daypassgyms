@@ -83,6 +83,12 @@ export default function AddSpotForm({
         <option value="luggage">Bagage</option>
         <option value="wifi">WiFi</option>
         <option value="mailbox">Boîte</option>
+        <option value="tourist_info">Office tourisme</option>
+        <option value="viewpoint">Point de vue</option>
+        <option value="gym">Gym</option>
+        <option value="street_workout">Street workout</option>
+        <option value="coworking">Coworking</option>
+        <option value="healthy_food">Healthy food</option>
       </select>
 
       <div className="grid grid-cols-2 gap-3 mb-3">
