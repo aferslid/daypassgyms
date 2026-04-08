@@ -31,6 +31,18 @@ export default function AddSpotForm({
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const galleryInputRef = useRef<HTMLInputElement | null>(null);
 
+  const getDescriptionTemplate = (type: string) => {
+  if (type === "gym") {
+    return "Day pass:\nShower:\nWiFi:\nOpening hours:\nNotes:";
+  }
+
+  if (type === "wifi") {
+    return "WiFi:\nPassword:\nNotes:";
+  }
+
+  return "";
+  };
+
   if (!showAddForm) return null;
 
   const handleImageChange = async (
@@ -52,7 +64,7 @@ export default function AddSpotForm({
     console.error("Erreur compression image:", error);
     setSelectedFile(file);
   }
-};
+  };
 
   return (
     <div className="absolute left-1/2 -translate-x-1/2 top-20 z-[1000] bg-white shadow-xl rounded-2xl p-4 w-[90%] max-w-md max-h-[70vh] overflow-y-auto pointer-events-auto">
@@ -71,9 +83,17 @@ export default function AddSpotForm({
 
       <select
         value={newSpotType}
-        onChange={(e) => setNewSpotType(e.target.value)}
+        onChange={(e) => {
+          const newType = e.target.value;
+          setNewSpotType(newType);
+
+          if (!newSpotDescription) {
+            setNewSpotDescription(getDescriptionTemplate(newType));
+          }
+        }}
         className="w-full border rounded-xl px-4 py-3 mb-3"
       >
+        
         <option value="atm">ATM</option>
         <option value="wc">WC</option>
         <option value="water">Eau</option>
