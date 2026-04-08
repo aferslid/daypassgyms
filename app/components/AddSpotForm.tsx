@@ -91,9 +91,9 @@ export default function AddSpotForm({
             setNewSpotDescription(getDescriptionTemplate(newType));
           }
         }}
-        className="w-full border rounded-xl px-4 py-3 mb-3"
+        className="w-full border rounded-xl px-4 py-3 mb-3 max-h-40 overflow-y-auto"
       >
-        
+
         <option value="atm">ATM</option>
         <option value="wc">WC</option>
         <option value="water">Eau</option>
