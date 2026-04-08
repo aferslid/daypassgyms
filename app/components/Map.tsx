@@ -833,7 +833,7 @@ if (type === "healthy_food") {
       </div>
 
       {showFiltersPanel && (
-       <div className="absolute bottom-20 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 w-52 pointer-events-auto flex flex-col gap-2">
+       <div className="absolute bottom-20 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 w-52 pointer-events-auto flex flex-col gap-2 max-h-64 overflow-y-auto">
         {categories.map((cat) => (
          <button
          key={cat.value}
