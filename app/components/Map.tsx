@@ -880,6 +880,14 @@ if (type === "healthy_food") {
         >
           📍 Recentrer sur moi
         </button>
+
+        <button
+          onClick={() => (window.location.href = "/profile")}
+          className="bg-white shadow-lg rounded-full px-4 py-2 text-sm"
+        >
+          Profile
+        </button>
+
       </div>
 
       {isSelectingLocation && !showAddForm && (
