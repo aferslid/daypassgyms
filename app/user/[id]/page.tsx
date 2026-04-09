@@ -32,6 +32,7 @@ export default function PublicProfilePage() {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isAddingFriend, setIsAddingFriend] = useState(false);
+  const [isFriend, setIsFriend] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -42,6 +43,17 @@ export default function PublicProfilePage() {
       } = await supabase.auth.getUser();
 
       setCurrentUserId(user?.id || null);
+
+      if (user?.id && user.id !== userId) {
+        const { data: existingFriend } = await supabase
+            .from("friends")
+            .select("id")
+            .eq("requester_id", user.id)
+            .eq("addressee_id", userId)
+            .maybeSingle();
+
+        setIsFriend(!!existingFriend);
+}
 
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
@@ -95,6 +107,8 @@ export default function PublicProfilePage() {
   const handleAddFriend = async () => {
     if (!currentUserId || !profile?.id) return;
 
+    setIsAddingFriend(true);
+
     const { error } = await supabase
         .from("friends")
         .insert({
@@ -102,12 +116,32 @@ export default function PublicProfilePage() {
         addressee_id: profile.id,
         });
 
+    setIsAddingFriend(false);
+
     if (error) {
         alert("Already added or error");
         return;
     }
 
+    setIsFriend(true);
     alert("Friend added");
+    };
+
+  const handleRemoveFriend = async () => {
+    if (!currentUserId || !profile?.id) return;
+
+    const { error } = await supabase
+        .from("friends")
+        .delete()
+        .eq("requester_id", currentUserId)
+        .eq("addressee_id", profile.id);
+
+    if (error) {
+        alert("Error removing friend");
+        return;
+    }
+
+    setIsFriend(false);
     };
 
 
@@ -140,11 +174,13 @@ export default function PublicProfilePage() {
         {currentUserId !== profile.id && (
         <div className="flex gap-2 mt-4 justify-center">
             <button
-            onClick={handleAddFriend}
+            onClick={isFriend ? handleRemoveFriend : handleAddFriend}
             disabled={isAddingFriend}
-            className="bg-black text-white px-4 py-2 rounded-xl disabled:opacity-50"
+            className={`px-4 py-2 rounded-xl text-white ${
+                isFriend ? "bg-red-500" : "bg-black"
+            } disabled:opacity-50`}
             >
-            {isAddingFriend ? "Adding..." : "Add friend"}
+            {isFriend ? "Remove friend" : isAddingFriend ? "Adding..." : "Add friend"}
             </button>
 
             <button className="bg-white border px-4 py-2 rounded-xl">
