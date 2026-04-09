@@ -68,14 +68,14 @@ export default function AddSpotForm({
 
   return (
     <div className="absolute left-1/2 -translate-x-1/2 top-20 z-[1000] bg-white shadow-xl rounded-2xl p-4 w-[90%] max-w-md max-h-[70vh] overflow-y-auto pointer-events-auto">
-      <h2 className="text-xl font-bold mb-2">Nouveau spot</h2>
+      <h2 className="text-xl font-bold mb-2">New spot</h2>
       <p className="text-sm text-gray-600 mb-4">
-        Clique sur la carte ou utilise “Ajouter à ma position”.
+        Fill in the details for this spot.
       </p>
 
       <input
         type="text"
-        placeholder="Nom du spot"
+        placeholder="Spot name"
         value={newSpotName}
         onChange={(e) => setNewSpotName(e.target.value)}
         className="w-full border rounded-xl px-4 py-3 mb-3"
@@ -96,15 +96,15 @@ export default function AddSpotForm({
 
         <option value="atm">ATM</option>
         <option value="wc">WC</option>
-        <option value="water">Eau</option>
+        <option value="water">Water</option>
         <option value="charge">Charge</option>
-        <option value="rest">Repos</option>
-        <option value="coffee">Café</option>
-        <option value="luggage">Bagage</option>
+        <option value="rest">Rest</option>
+        <option value="coffee">Coffee</option>
+        <option value="luggage">Luggage</option>
         <option value="wifi">WiFi</option>
-        <option value="mailbox">Boîte</option>
-        <option value="tourist_info">Office tourisme</option>
-        <option value="viewpoint">Point de vue</option>
+        <option value="mailbox">Mailbox</option>
+        <option value="tourist_info">Info Center</option>
+        <option value="viewpoint">Viewpoint</option>
         <option value="gym">Gym</option>
         <option value="street_workout">Street workout</option>
         <option value="coworking">Coworking</option>
@@ -117,7 +117,7 @@ export default function AddSpotForm({
           onClick={() => cameraInputRef.current?.click()}
           className="border rounded-xl px-4 py-3 text-center"
         >
-          📷 Prendre photo
+          📷 Take photo
         </button>
 
         <button
@@ -125,7 +125,7 @@ export default function AddSpotForm({
           onClick={() => galleryInputRef.current?.click()}
           className="border rounded-xl px-4 py-3 text-center"
         >
-          🖼️ Galerie
+          🖼️ Galery
         </button>
 
         <input
@@ -177,7 +177,7 @@ export default function AddSpotForm({
             : "bg-blue-600 active:scale-95"
         }`}
       >
-        {isSaving ? "Enregistrement..." : "Enregistrer le spot"}
+        {isSaving ? "Saving..." : "Save spot"}
       </button>
     </div>
   );

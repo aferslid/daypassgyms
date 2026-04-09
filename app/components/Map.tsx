@@ -459,7 +459,7 @@ useEffect(() => {
     }
 
     resetAddForm();
-    alert("Spot ajouté avec succès.");
+    alert("Spot successfully added.");
     saveLockRef.current = false;
     setIsSaving(false);
 
@@ -513,7 +513,7 @@ useEffect(() => {
       alert(error.message);
     } else {
       setUser(data.user);
-      alert("Connecté.");
+      alert("Connecté");
     }
   };
 
@@ -552,7 +552,7 @@ useEffect(() => {
   };
 
   const handleDeleteSpot = async (spotId: number) => {
-    const confirmed = window.confirm("Supprimer ce spot ?");
+    const confirmed = window.confirm("Delete this spot ?");
     if (!confirmed) return;
 
     const { error } = await supabase
@@ -567,7 +567,7 @@ useEffect(() => {
     }
 
     setSpots((prev) => prev.filter((spot) => spot.id !== spotId));
-    alert("Spot supprimé.");
+    alert("Spot deleted.");
   };
 
   const getMarkerIcon = (type: string) => {
@@ -669,15 +669,15 @@ if (type === "healthy_food") {
   const categories = [
   { value: "atm", label: "ATM", icon: "🏧" },
   { value: "wc", label: "WC", icon: "🚻" },
-  { value: "water", label: "Eau", icon: "💧" },
+  { value: "water", label: "Water", icon: "💧" },
   { value: "charge", label: "Charge", icon: "⚡" },
-  { value: "rest", label: "Repos", icon: "🪑" },
-  { value: "coffee", label: "Café", icon: "☕" },
-  { value: "luggage", label: "Bagage", icon: "🧳" },
+  { value: "rest", label: "Rest", icon: "🪑" },
+  { value: "coffee", label: "Coffee", icon: "☕" },
+  { value: "luggage", label: "Luggage", icon: "🧳" },
   { value: "wifi", label: "WiFi", icon: "📶" },
-  { value: "mailbox", label: "Boîte", icon: "📮" },
-  { value: "tourist_info", label: "Info", icon: "ℹ️" },
-  { value: "viewpoint", label: "Vue", icon: "📍" },
+  { value: "mailbox", label: "Mailbox", icon: "📮" },
+  { value: "tourist_info", label: "Info Center", icon: "ℹ️" },
+  { value: "viewpoint", label: "Viewpoint", icon: "📍" },
   { value: "gym", label: "Gym", icon: "🏋️" },
   { value: "street_workout", label: "Street", icon: "💪" },
   { value: "coworking", label: "Cowork", icon: "💻" },
@@ -796,7 +796,7 @@ if (type === "healthy_food") {
                       onClick={() => handleDeleteSpot(spot.id)}
                       className="mt-2 bg-red-500 text-white px-3 py-1 rounded"
                     >
-                      Supprimer
+                      Delete
                     </button>
                   </>
                 )}
@@ -830,7 +830,7 @@ if (type === "healthy_food") {
           onClick={() => setShowFiltersPanel((prev) => !prev)}
           className="bg-white shadow-lg rounded-full px-4 py-2 text-sm"
         >
-          Filtres
+          Filters
         </button>
       </div>
 
@@ -872,21 +872,21 @@ if (type === "healthy_food") {
           }}
           className="bg-black text-white px-4 py-2 rounded-full shadow-lg"
         >
-          {isSelectingLocation || showAddForm ? "Annuler" : "Ajouter un spot"}
+          {isSelectingLocation || showAddForm ? "Cancel" : "Add spot"}
           </button>
 
         <button
           onClick={handleAddAtMyPosition}
           className="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg"
         >
-          Ajouter à ma position
+          Add at my location
         </button>
 
         <button
           onClick={recenterOnUser}
           className="bg-white text-black px-4 py-2 rounded-full shadow-lg border"
         >
-          📍 Recentrer sur moi
+          📍 Center on me
         </button>
 
         <button
@@ -900,7 +900,7 @@ if (type === "healthy_food") {
 
       {isSelectingLocation && !showAddForm && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-auto">
-          Clique sur la carte pour choisir l’emplacement
+          Click on the map to choose location
         </div>
       )}
 
@@ -913,7 +913,7 @@ if (type === "healthy_food") {
            }}
            className="bg-green-600 text-white px-4 py-2 rounded-full shadow-lg"
           >
-           ✓ Valider l’emplacement
+           ✓ Confirm the location
           </button>
         </div>
       )}
@@ -956,7 +956,7 @@ if (type === "healthy_food") {
         ) : user ? (
           <div className="flex flex-col gap-2">
             <p className="text-xs sm:text-sm m-0 leading-tight">
-              Connecté : <strong>{profile?.username || user.email}</strong>
+              Connected : <strong>{profile?.username || user.email}</strong>
             </p>
             <p className="text-xs text-gray-500 m-0 leading-tight">
               Contributions : {contributionsCount}
@@ -965,7 +965,7 @@ if (type === "healthy_food") {
               onClick={handleLogout}
               className="bg-red-500 text-white rounded-lg px-2 py-1 text-xs w-full sm:w-auto"
             >
-              Se déconnecter
+              Log off
             </button>
           </div>
         ) : (
