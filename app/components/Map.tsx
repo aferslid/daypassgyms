@@ -467,7 +467,7 @@ useEffect(() => {
 
   const handleAddAtMyPosition = () => {
     if (!userPosition) {
-      alert("Position non encore disponible.");
+      alert("Position not yet available.");
       return;
     }
 
@@ -542,13 +542,13 @@ useEffect(() => {
       .single();
 
     if (error) {
-      console.error("Erreur create profile:", error);
+      console.error("Error creating profile:", error);
       alert(error.message);
       return;
     }
 
     setProfile(data as Profile);
-    alert("Pseudo créé !");
+    alert("Username created !");
   };
 
   const handleDeleteSpot = async (spotId: number) => {
@@ -561,7 +561,7 @@ useEffect(() => {
       .eq("id", spotId);
 
     if (error) {
-      console.error("Erreur suppression spot:", error);
+      console.error("Error deleting spot:", error);
       alert(error.message);
       return;
     }
