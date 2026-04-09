@@ -762,7 +762,13 @@ if (type === "healthy_food") {
 
                 {spot.user_id && profilesMap[spot.user_id] && (
                   <div className="text-sm">
-                    Ajouté par : {profilesMap[spot.user_id]}
+                    Added by:{" "}
+                    <span
+                      className="text-blue-600 cursor-pointer hover:underline"
+                      onClick={() => router.push(`/user/${spot.user_id}`)}
+                    >
+                      {profilesMap[spot.user_id]}
+                    </span>
                   </div>
                 )}
 

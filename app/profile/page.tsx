@@ -23,6 +23,7 @@ const getFlagEmoji = (code: string) => {
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
   const [contributions, setContributions] = useState(0);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const [username, setUsername] = useState("");
@@ -33,9 +34,12 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+        setLoading(false);
+        return;
+        }
 
       setUser(user);
 
@@ -63,6 +67,7 @@ export default function ProfilePage() {
         .eq("user_id", user.id);
 
       setContributions(count || 0);
+      setLoading(false);
     };
 
     fetchUser();
@@ -85,14 +90,50 @@ export default function ProfilePage() {
         .select();
 
     if (error) {
-        console.error("Erreur sauvegarde profil:", error);
+    console.error("Erreur sauvegarde profil:", error);
+
+    if (error.message.includes("unique")) {
+        alert("Username already taken");
+    } else {
         alert(error.message);
-        return;
+    }
+
+    return;
     }
 
     console.log("Profile saved:", data);
     alert("Profile saved");
     };
+
+    if (!user && !loading) {
+        return (
+            <div className="p-4 max-w-lg mx-auto w-full">
+            <button
+                onClick={() => router.push("/")}
+                className="mb-4 bg-black text-white px-4 py-2 rounded-xl"
+            >
+                ← Back to map
+            </button>
+
+            <div className="bg-white rounded-2xl shadow p-6 text-center">
+                <h1 className="text-xl font-bold mb-2">
+                Create an account
+                </h1>
+
+                <p className="text-gray-600 mb-4">
+                You need an account to access your profile.
+                </p>
+
+                <button
+                onClick={() => router.push("/")}
+                className="bg-blue-600 text-white px-4 py-2 rounded-xl"
+                >
+                Back to map
+                </button>
+            </div>
+            </div>
+        );
+        }
 
   return (
     <div className="p-4 max-w-lg mx-auto w-full">
