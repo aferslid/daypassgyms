@@ -13,6 +13,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import AddSpotForm from "./AddSpotForm";
+import { useRouter } from "next/navigation";
 
 // Fix icônes Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -187,6 +188,7 @@ export default function Map() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const isPopupOpenRef = useRef(false);
   const saveLockRef = useRef(false);
+  const router = useRouter();
 
   const categoriesRequiringZoom = [
     "atm",
@@ -882,7 +884,7 @@ if (type === "healthy_food") {
         </button>
 
         <button
-          onClick={() => (window.location.href = "/profile")}
+          onClick={() => router.push("/profile")}
           className="bg-white shadow-lg rounded-full px-4 py-2 text-sm"
         >
           Profile
