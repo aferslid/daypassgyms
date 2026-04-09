@@ -94,7 +94,7 @@ export default function ProfilePage() {
     };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
+    <div className="p-4 max-w-lg mx-auto w-full">
         <button
         onClick={() => router.push("/")}
         className="mb-4 bg-black text-white px-4 py-2 rounded-xl"
@@ -112,6 +112,12 @@ export default function ProfilePage() {
         <p>
             <strong>Contributions:</strong> {contributions}
         </p>
+
+        {bio && (
+        <p className="text-gray-600 mt-2">
+            {bio}
+        </p>
+        )}
 
         <div>
             <label className="block text-sm font-medium mb-1">Username</label>
@@ -134,6 +140,10 @@ export default function ProfilePage() {
 
         <div>
             <label className="block text-sm font-medium mb-1">Countries visited</label>
+
+            <p className="text-sm text-gray-500 mb-2">
+            Visited countries: {countries.length}
+            </p>
 
             <div className="flex gap-2 mb-3">
             <select
@@ -163,22 +173,18 @@ export default function ProfilePage() {
             </button>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mt-2">
             {countries.map((code) => {
                 const country = countryOptions.find((c) => c.code === code);
 
                 return (
-                <button
+                <div
                     key={code}
-                    type="button"
-                    onClick={() =>
-                    setCountries((prev) => prev.filter((c) => c !== code))
-                    }
-                    className="border rounded-xl px-3 py-2 bg-gray-50"
-                    title={country?.name || code}
+                    className="border rounded-xl px-3 py-2 bg-gray-50 text-sm"
+                    title={country?.name}
                 >
-                    {getFlagEmoji(code)} {country?.name}
-                </button>
+                    {getFlagEmoji(code)}
+                </div>
                 );
             })}
             </div>
