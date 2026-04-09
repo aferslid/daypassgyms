@@ -87,7 +87,7 @@ export default function ProfilePage() {
 
     if (error) {
         console.error("Erreur sauvegarde profil:", error);
-        alert("Error while saving profile");
+        alert(error.message);
         return;
     }
 
@@ -114,6 +114,8 @@ export default function ProfilePage() {
         <p>
             <strong>Contributions:</strong> {contributions}
         </p>
+
+        <p className="mb-2">Test flag: {getFlagEmoji("FR")}</p>
 
         <div>
             <label className="block text-sm font-medium mb-1">Username</label>
