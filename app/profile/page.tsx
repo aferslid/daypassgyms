@@ -72,14 +72,18 @@ export default function ProfilePage() {
   const handleSaveProfile = async () => {
     if (!user) return;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from("profiles")
-        .update({
-        username,
-        bio,
-        countries: countries.join(","),
-        })
-        .eq("id", user.id);
+        .upsert(
+        {
+            id: user.id,
+            username,
+            bio,
+            countries: countries.join(","),
+        },
+        { onConflict: "id" }
+        )
+        .select();
 
     if (error) {
         console.error("Erreur sauvegarde profil:", error);
@@ -87,6 +91,7 @@ export default function ProfilePage() {
         return;
     }
 
+    console.log("Profile saved:", data);
     alert("Profile saved");
     };
 
