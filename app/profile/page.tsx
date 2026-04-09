@@ -3,16 +3,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
+import countriesList from "world-countries";
 
-const countryOptions = [
-  { code: "FR", name: "France" },
-  { code: "GE", name: "Georgia" },
-  { code: "AL", name: "Albania" },
-  { code: "ZM", name: "Zambia" },
-  { code: "NA", name: "Namibia" },
-  { code: "CA", name: "Canada" },
-  { code: "HN", name: "Honduras" },
-];
+const countryOptions = countriesList
+  .map((country) => ({
+    code: country.cca2,
+    name: country.name.common,
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
 
 const getFlagEmoji = (code: string) => {
   return code
@@ -114,8 +112,6 @@ export default function ProfilePage() {
         <p>
             <strong>Contributions:</strong> {contributions}
         </p>
-
-        <p className="mb-2">Test flag: {getFlagEmoji("FR")}</p>
 
         <div>
             <label className="block text-sm font-medium mb-1">Username</label>
