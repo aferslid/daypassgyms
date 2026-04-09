@@ -807,16 +807,14 @@ if (type === "healthy_food") {
       </MarkerClusterGroup>
 
         {pendingPosition && (
-          <Marker position={[pendingPosition.lat, pendingPosition.lng]}>
-            <Popup>Nouvel emplacement sélectionné</Popup>
-          </Marker>
+          <Marker position={[pendingPosition.lat, pendingPosition.lng]}> </Marker>
         )}
       </MapContainer>
 
       {categoriesRequiringZoom.includes(category) && zoomLevel < 11 && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] 
         bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none">
-          Zoome davantage pour afficher les {category.toUpperCase()}
+          Zoom in to see {category.toUpperCase()}
         </div>
       )}
 

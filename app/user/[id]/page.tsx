@@ -30,10 +30,18 @@ export default function PublicProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [contributions, setContributions] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [isAddingFriend, setIsAddingFriend] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!userId) return;
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setCurrentUserId(user?.id || null);
 
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
@@ -84,6 +92,25 @@ export default function PublicProfilePage() {
     ? profile.countries.split(",").map((c: string) => c.trim()).filter(Boolean)
     : [];
 
+  const handleAddFriend = async () => {
+    if (!currentUserId || !profile?.id) return;
+
+    const { error } = await supabase
+        .from("friends")
+        .insert({
+        requester_id: currentUserId,
+        addressee_id: profile.id,
+        });
+
+    if (error) {
+        alert("Already added or error");
+        return;
+    }
+
+    alert("Friend added");
+    };
+
+
   return (
     <div className="p-4 max-w-lg mx-auto w-full">
       <button
@@ -108,6 +135,22 @@ export default function PublicProfilePage() {
           <p className="text-gray-600">
             {profile.bio}
           </p>
+        )}
+
+        {currentUserId !== profile.id && (
+        <div className="flex gap-2 mt-4 justify-center">
+            <button
+            onClick={handleAddFriend}
+            disabled={isAddingFriend}
+            className="bg-black text-white px-4 py-2 rounded-xl disabled:opacity-50"
+            >
+            {isAddingFriend ? "Adding..." : "Add friend"}
+            </button>
+
+            <button className="bg-white border px-4 py-2 rounded-xl">
+            Message
+            </button>
+        </div>
         )}
 
         <div>
