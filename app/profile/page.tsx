@@ -29,6 +29,7 @@ export default function ProfilePage() {
   const [bio, setBio] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [activeCountry, setActiveCountry] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -179,15 +180,41 @@ export default function ProfilePage() {
 
                 return (
                 <div
-                    key={code}
-                    className="border rounded-xl px-3 py-2 bg-gray-50 text-sm"
-                    title={country?.name}
+                key={code}
+                onClick={() =>
+                setActiveCountry((prev) => (prev === code ? null : code))
+                }
+                className="border rounded-xl px-3 py-2 bg-gray-50 text-sm cursor-pointer"
+                title={country?.name}
                 >
-                    {getFlagEmoji(code)}
+                {getFlagEmoji(code)}
                 </div>
                 );
             })}
             </div>
+
+            {activeCountry && (
+                <div className="mt-3 p-3 border rounded-xl bg-gray-50">
+                    <p className="text-sm mb-2">
+                    Selected country:{" "}
+                    <strong>
+                        {countryOptions.find((c) => c.code === activeCountry)?.name}
+                    </strong>
+                    </p>
+
+                    <button
+                    type="button"
+                    onClick={() => {
+                        setCountries((prev) => prev.filter((c) => c !== activeCountry));
+                        setActiveCountry(null);
+                    }}
+                    className="bg-red-500 text-white px-3 py-2 rounded-xl text-sm"
+                    >
+                    Remove country
+                    </button>
+                </div>
+                )}
+
         </div>
 
         <button
