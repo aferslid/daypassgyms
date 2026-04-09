@@ -145,11 +145,11 @@ export default function ProfilePage() {
             Visited countries: {countries.length}
             </p>
 
-            <div className="flex gap-2 mb-3">
+            <div className="flex flex-col sm:flex-row gap-2 mb-3 w-full">
             <select
                 value={selectedCountry}
                 onChange={(e) => setSelectedCountry(e.target.value)}
-                className="flex-1 border rounded-xl px-4 py-3"
+                className="w-full sm:flex-1 border rounded-xl px-4 py-3 min-w-0"
             >
                 <option value="">Select a country</option>
                 {countryOptions.map((country) => (
@@ -167,7 +167,7 @@ export default function ProfilePage() {
                 setCountries((prev) => [...prev, selectedCountry]);
                 setSelectedCountry("");
                 }}
-                className="bg-blue-600 text-white px-4 py-3 rounded-xl"
+                className="bg-blue-600 text-white px-4 py-3 rounded-xl w-full sm:w-auto"
             >
                 Add
             </button>
