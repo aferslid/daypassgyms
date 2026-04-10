@@ -293,6 +293,18 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     if (!user) {
       setProfile(null);
       return;
@@ -852,7 +864,7 @@ if (type === "healthy_food") {
        </div>
       )}
 
-      <div className="absolute top-8 right-4 z-[1000] pointer-events-auto flex flex-col gap-2">
+      <div className="absolute top-24 sm:top-8 right-3 sm:right-4 z-[1000] pointer-events-auto flex flex-col gap-2 w-[150px] sm:w-auto">
         <button
           onClick={() => {
             if (isSelectingLocation || showAddForm) {
@@ -863,28 +875,28 @@ if (type === "healthy_food") {
               setPendingPosition(null);
            }
           }}
-          className="bg-black text-white px-4 py-2 rounded-full shadow-lg"
+          className="bg-black text-white px-4 py-3 rounded-2xl shadow-lg active:scale-95 text-sm font-medium w-full"
         >
           {isSelectingLocation || showAddForm ? "Cancel" : "Add spot"}
           </button>
 
         <button
           onClick={handleAddAtMyPosition}
-          className="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg"
+          className="bg-blue-600 text-white px-4 py-3 rounded-2xl shadow-lg active:scale-95 text-sm font-medium w-full"
         >
           Add at my location
         </button>
 
         <button
           onClick={recenterOnUser}
-          className="bg-white text-black px-4 py-2 rounded-full shadow-lg border"
+          className="bg-white text-black px-4 py-3 rounded-2xl shadow-lg border active:scale-95 text-sm font-medium w-full"
         >
           📍 Center on me
         </button>
 
         <button
           onClick={() => router.push("/profile")}
-          className="bg-white shadow-lg rounded-full px-4 py-2 text-sm"
+          className="bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-medium active:scale-95 w-full"
         >
           Profile
         </button>
@@ -919,7 +931,7 @@ if (type === "healthy_food") {
         resetAddForm={resetAddForm}
       />
 
-      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[170px] sm:w-[220px] pointer-events-auto">
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 sm:left-4 sm:translate-x-0 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[calc(100%-24px)] max-w-[360px] sm:w-[220px] pointer-events-auto">
         {user && !profile ? (
           <div>
             <h2 className="font-bold text-lg mb-3">Pick a username</h2>
