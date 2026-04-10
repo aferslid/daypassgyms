@@ -400,6 +400,11 @@ useEffect(() => {
   ) => {
     if (saveLockRef.current) return;
 
+    if (!user) {
+      alert("You need to sign in to add a spot.");
+      return;
+    }
+
     if (!pendingPosition) {
       alert("Choisis un emplacement.");
       return;
@@ -473,6 +478,11 @@ useEffect(() => {
   };
 
   const handleAddAtMyPosition = () => {
+    if (!user) {
+      alert("You need to sign in to add a spot.");
+      return;
+    }
+
     if (!userPosition) {
       alert("Position not yet available.");
       return;
@@ -867,13 +877,18 @@ if (type === "healthy_food") {
       <div className="absolute top-8 right-4 z-[1000] pointer-events-auto flex flex-col gap-2">
         <button
           onClick={() => {
+            if (!user) {
+              alert("You need to sign in to add a spot.");
+              return;
+            }
+
             if (isSelectingLocation || showAddForm) {
               resetAddForm();
             } else {
               setIsSelectingLocation(true);
               setShowAddForm(false);
               setPendingPosition(null);
-           }
+            }
           }}
           className="bg-black text-white px-4 py-3 rounded-2xl shadow-lg active:scale-95 text-sm font-medium w-full"
         >
