@@ -922,7 +922,7 @@ if (type === "healthy_food") {
       <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[170px] sm:w-[220px] pointer-events-auto">
         {user && !profile ? (
           <div>
-            <h2 className="font-bold text-lg mb-3">Choose your username</h2>
+            <h2 className="font-bold text-lg mb-3">Pick a username</h2>
 
             <input
               type="text"
@@ -936,7 +936,7 @@ if (type === "healthy_food") {
               onClick={handleCreateProfile}
               className="w-full bg-black text-white rounded-lg px-3 py-2 mb-3"
             >
-              Validate username
+              Set username
             </button>
 
             <button
@@ -963,7 +963,7 @@ if (type === "healthy_food") {
           </div>
         ) : (
           <div>
-            <h2 className="font-bold text-base sm:text-lg mb-3">Connexion</h2>
+            <h2 className="font-bold text-base sm:text-lg mb-3">Sign in</h2>
 
             <input
               type="email"
@@ -986,14 +986,14 @@ if (type === "healthy_food") {
                 onClick={handleSignUp}
                 className="flex-1 bg-black text-white rounded-lg px-3 py-2 text:sm"
               >
-                Create account
+                Sign up
               </button>
 
               <button
                 onClick={handleLogin}
                 className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2 text:sm"
               >
-                Connexion
+                Sign in
               </button>
             </div>
           </div>
