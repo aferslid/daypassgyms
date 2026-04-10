@@ -919,10 +919,10 @@ if (type === "healthy_food") {
         resetAddForm={resetAddForm}
       />
 
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 sm:left-4 sm:translate-x-0 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[92%] max-w-[360px] sm:w-[220px] pointer-events-auto">
+      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[170px] sm:w-[220px] pointer-events-auto">
         {user && !profile ? (
           <div>
-            <h2 className="font-bold text-lg mb-3">Choisis ton pseudo</h2>
+            <h2 className="font-bold text-lg mb-3">Choose your username</h2>
 
             <input
               type="text"
@@ -936,14 +936,14 @@ if (type === "healthy_food") {
               onClick={handleCreateProfile}
               className="w-full bg-black text-white rounded-lg px-3 py-2 mb-3"
             >
-              Valider pseudo
+              Validate username
             </button>
 
             <button
               onClick={handleLogout}
               className="bg-red-500 text-white rounded-lg px-2 py-1 text-xs w-full sm:w-auto"
             >
-              Se déconnecter
+              Log off
             </button>
           </div>
         ) : user ? (
@@ -963,14 +963,14 @@ if (type === "healthy_food") {
           </div>
         ) : (
           <div>
-            <h2 className="font-bold text-lg mb-3">Connexion</h2>
+            <h2 className="font-bold text-base sm:text-lg mb-3">Connexion</h2>
 
             <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 mb-3"
+              className="w-full border rounded-lg px-3 py-2 mb-3 text:sm"
             />
 
             <input
@@ -978,20 +978,20 @@ if (type === "healthy_food") {
               placeholder="Mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 mb-3"
+              className="w-full border rounded-lg px-3 py-2 mb-3 text:sm"
             />
 
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-col gap-2">
               <button
                 onClick={handleSignUp}
-                className="flex-1 bg-black text-white rounded-lg px-3 py-2"
+                className="flex-1 bg-black text-white rounded-lg px-3 py-2 text:sm"
               >
-                Créer compte
+                Create account
               </button>
 
               <button
                 onClick={handleLogin}
-                className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2"
+                className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2 text:sm"
               >
                 Connexion
               </button>
