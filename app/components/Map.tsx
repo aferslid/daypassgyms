@@ -174,10 +174,6 @@ export default function Map() {
   const [spots, setSpots] = useState<Spot[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [pendingPosition, setPendingPosition] = useState<PendingPosition>(null);
-  const [newSpotName, setNewSpotName] = useState("");
-  const [newSpotType, setNewSpotType] = useState("water");
-  const [newSpotDescription, setNewSpotDescription] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -205,7 +201,7 @@ export default function Map() {
     "gym",
     "street_workout",
     "coworking",
-    "healthy_good",
+    "healthy_food",
   ];
   
   const [userPosition, setUserPosition] = useState<{
@@ -375,10 +371,6 @@ useEffect(() => {
 
   const resetAddForm = () => {
     setPendingPosition(null);
-    setNewSpotName("");
-    setNewSpotType("water");
-    setNewSpotDescription("");
-    setSelectedFile(null);
     setIsSelectingLocation(false);
     setShowAddForm(false);
  };
@@ -395,74 +387,77 @@ useEffect(() => {
     file: File | null
   ) => {
     if (saveLockRef.current) return;
-    saveLockRef.current = true;
-    setIsSaving(true);
 
     if (!pendingPosition) {
       alert("Choisis un emplacement.");
-      saveLockRef.current = false;
-      setIsSaving(false);
-      return
-    ;
-}
-
-    let photoUrl = null;
-
-    if (file) {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-
-      const { error } = await supabase.storage
-        .from("spot-photos")
-        .upload(`uploads/${fileName}`, file);
-
-      if (error) {
-        console.error("Erreur upload photo:", error);
-        alert("Erreur upload photo");
-        return;
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("spot-photos")
-        .getPublicUrl(`uploads/${fileName}`);
-
-      photoUrl = publicUrlData.publicUrl;
-    }
-
-    const { data, error } = await supabase
-      .from("spots")
-      .insert([
-        {
-          name: name.trim(),
-          type: type,
-          lat: pendingPosition.lat,
-          lng: pendingPosition.lng,
-          description: description.trim() || null,
-          user_id: user?.id || null,
-          photo_url: photoUrl,
-          source: "user",
-          country: null,
-        },
-      ])
-      .select();
-
-    setIsSaving(false);
-
-    if (error) {
-      console.error("Erreur insertion spot:", error);
-      alert(error.message);
       return;
     }
 
-    if (data && data.length > 0) {
-      setSpots((prev) => [...prev, data[0] as Spot]);
+    saveLockRef.current = true;
+    setIsSaving(true);
+
+    try {
+      let photoUrl = null;
+
+      if (file) {
+        const fileExt = file.name.split(".").pop() || "jpg";
+        const fileName = `${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2)}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("spot-photos")
+          .upload(`uploads/${fileName}`, file);
+
+        if (uploadError) {
+          console.error("Erreur upload photo:", uploadError);
+          alert("Erreur upload photo");
+          return;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from("spot-photos")
+          .getPublicUrl(`uploads/${fileName}`);
+
+        photoUrl = publicUrlData.publicUrl;
+      }
+
+      const { data, error } = await supabase
+        .from("spots")
+        .insert([
+          {
+            name: name.trim(),
+            type,
+            lat: pendingPosition.lat,
+            lng: pendingPosition.lng,
+            description: description.trim() || null,
+            user_id: user?.id || null,
+            photo_url: photoUrl,
+            source: "user",
+            country: null,
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error("Erreur insertion spot:", error);
+        alert(error.message);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        setSpots((prev) => [...prev, data[0] as Spot]);
+      }
+
+      resetAddForm();
+      alert("Spot successfully added.");
+    } catch (err) {
+      console.error("Unexpected error while saving spot:", err);
+      alert("Unexpected error while saving spot.");
+    } finally {
+      saveLockRef.current = false;
+      setIsSaving(false);
     }
-
-    resetAddForm();
-    alert("Spot successfully added.");
-    saveLockRef.current = false;
-    setIsSaving(false);
-
   };
 
   const handleAddAtMyPosition = () => {
@@ -986,7 +981,7 @@ if (type === "healthy_food") {
               className="w-full border rounded-lg px-3 py-2 mb-3"
             />
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 onClick={handleSignUp}
                 className="flex-1 bg-black text-white rounded-lg px-3 py-2"

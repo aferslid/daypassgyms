@@ -125,7 +125,7 @@ export default function AddSpotForm({
           onClick={() => galleryInputRef.current?.click()}
           className="border rounded-xl px-4 py-3 text-center"
         >
-          🖼️ Galery
+          🖼️ Gallery
         </button>
 
         <input
