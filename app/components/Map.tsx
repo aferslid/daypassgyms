@@ -931,7 +931,7 @@ if (type === "healthy_food") {
         resetAddForm={resetAddForm}
       />
 
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 sm:left-4 sm:translate-x-0 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[calc(100%-24px)] max-w-[360px] sm:w-[220px] pointer-events-auto">
+      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[170px] sm:w-[220px] pointer-events-auto">
         {user && !profile ? (
           <div>
             <h2 className="font-bold text-lg mb-3">Pick a username</h2>
