@@ -864,7 +864,7 @@ if (type === "healthy_food") {
        </div>
       )}
 
-      <div className="absolute top-24 sm:top-8 right-3 sm:right-4 z-[1000] pointer-events-auto flex flex-col gap-2 w-[150px] sm:w-auto">
+      <div className="absolute top-8 right-4 z-[1000] pointer-events-auto flex flex-col gap-2">
         <button
           onClick={() => {
             if (isSelectingLocation || showAddForm) {
