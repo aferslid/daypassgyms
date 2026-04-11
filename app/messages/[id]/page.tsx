@@ -31,8 +31,8 @@ export default function MessagesPage() {
   const [isMutualFriend, setIsMutualFriend] = useState(false);
 
   const conversationMessages = useMemo(() => {
-    return messages.sort(
-      (a, b) =>
+    return [...messages].sort(
+        (a, b) =>
         new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
     );
   }, [messages]);
@@ -149,18 +149,32 @@ export default function MessagesPage() {
 
     setSending(true);
 
-    const { error } = await supabase.from("messages").insert({
-      sender_id: currentUserId,
-      receiver_id: otherUserId,
-      content: newMessage.trim(),
-    });
+    const messageContent = newMessage.trim();
+
+    const { data, error } = await supabase
+    .from("messages")
+    .insert({
+        sender_id: currentUserId,
+        receiver_id: otherUserId,
+        content: messageContent,
+    })
+    .select()
+    .single();
 
     setSending(false);
 
     if (error) {
-      console.error("Error sending message:", error);
-      alert(error.message);
-      return;
+    console.error("Error sending message:", error);
+    alert(error.message);
+    return;
+    }
+
+    if (data) {
+    setMessages((prev) => {
+        const exists = prev.some((msg) => msg.id === data.id);
+        if (exists) return prev;
+        return [...prev, data as Message];
+    });
     }
 
     setNewMessage("");
