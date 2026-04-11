@@ -38,6 +38,7 @@ type Spot = {
   photo_url?: string | null;
   created_at?: string | null;
   details?: Record<string, any> | null;
+  source?: string | null;
 };
 
 type Profile = {
@@ -779,6 +780,9 @@ if (type === "healthy_food") {
                 <br />
                 <p className="text-sm text-gray-600 whitespace-pre-line">
                 {spot.description}
+                </p>
+                <p className="text-xs text-gray-400 mt-2">
+                  Source: {spot.source === "user" ? "Community" : spot.source || "Unknown"}
                 </p>
                 {spot.details?.location_type && (
                   <>
