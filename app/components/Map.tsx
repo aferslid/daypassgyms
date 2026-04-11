@@ -973,14 +973,14 @@ if (type === "healthy_food") {
               setPendingPosition(null);
             }
           }}
-          className="bg-black text-white px-4 py-3 rounded-2xl shadow-lg active:scale-95 text-sm font-medium w-full"
+          className="bg-black text-white px-4 py-3 rounded-2xl shadow-lg border active:scale-95 text-sm font-medium w-full"
         >
           {isSelectingLocation || showAddForm ? "Cancel" : "Add spot"}
           </button>
 
         <button
           onClick={handleAddAtMyPosition}
-          className="bg-blue-600 text-white px-4 py-3 rounded-2xl shadow-lg active:scale-95 text-sm font-medium w-full"
+          className="bg-blue-600 text-white px-4 py-3 rounded-2xl shadow-lg border active:scale-95 text-sm font-medium w-full"
         >
           Add at my location
         </button>
@@ -994,7 +994,7 @@ if (type === "healthy_food") {
 
         <button
           onClick={() => router.push("/profile")}
-          className="bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-medium active:scale-95 w-full text-black placeholder-gray-400"
+          className="bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-medium border active:scale-95 w-full text-black placeholder-gray-400"
         >
           Profile
         </button>

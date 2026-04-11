@@ -37,6 +37,13 @@ export default function ProfilePage() {
   const [isSearching, setIsSearching] = useState(false);
   const [addingFriendId, setAddingFriendId] = useState<string | null>(null);
 
+  const [friendsList, setFriendsList] = useState<any[]>([]);
+  const [receivedRequests, setReceivedRequests] = useState<any[]>([]);
+  const [sentRequests, setSentRequests] = useState<any[]>([]);
+  const [showFriends, setShowFriends] = useState(false);
+  const [showReceived, setShowReceived] = useState(false);
+  const [showSent, setShowSent] = useState(false);
+
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -77,6 +84,11 @@ export default function ProfilePage() {
 
     fetchUser();
   }, []);
+
+  useEffect(() => {
+  if (!user) return;
+  loadFriendData();
+  }, [user]);
 
     const handleSaveProfile = async () => {
         if (!user) return;
@@ -158,6 +170,92 @@ export default function ProfilePage() {
         }
 
         alert("Friend added");
+        loadFriendData();
+    };
+
+    const loadFriendData = async () => {
+        if (!user) return;
+
+        const { data: sentData, error: sentError } = await supabase
+            .from("friends")
+            .select("requester_id, addressee_id")
+            .eq("requester_id", user.id);
+
+        if (sentError) {
+            console.error("Error loading sent requests:", sentError);
+            return;
+        }
+
+        const { data: receivedData, error: receivedError } = await supabase
+            .from("friends")
+            .select("requester_id, addressee_id")
+            .eq("addressee_id", user.id);
+
+        if (receivedError) {
+            console.error("Error loading received requests:", receivedError);
+            return;
+        }
+
+        const sent = sentData || [];
+        const received = receivedData || [];
+
+        const sentIds = new Set(sent.map((row) => row.addressee_id));
+        const receivedIds = new Set(received.map((row) => row.requester_id));
+
+        const mutualIds = [...sentIds].filter((id) => receivedIds.has(id));
+        const receivedOnlyIds = [...receivedIds].filter((id) => !sentIds.has(id));
+        const sentOnlyIds = [...sentIds].filter((id) => !receivedIds.has(id));
+
+        const allIds = [...new Set([...mutualIds, ...receivedOnlyIds, ...sentOnlyIds])];
+
+        if (allIds.length === 0) {
+            setFriendsList([]);
+            setReceivedRequests([]);
+            setSentRequests([]);
+            return;
+        }
+
+        const { data: profilesData, error: profilesError } = await supabase
+            .from("profiles")
+            .select("id, username, bio")
+            .in("id", allIds);
+
+        if (profilesError) {
+            console.error("Error loading related profiles:", profilesError);
+            return;
+        }
+
+        const profilesMap = new Map((profilesData || []).map((p) => [p.id, p]));
+
+        setFriendsList(mutualIds.map((id) => profilesMap.get(id)).filter(Boolean));
+        setReceivedRequests(
+            receivedOnlyIds.map((id) => profilesMap.get(id)).filter(Boolean)
+        );
+        setSentRequests(sentOnlyIds.map((id) => profilesMap.get(id)).filter(Boolean));
+    };
+
+    const handleAddBack = async (targetUserId: string) => {
+        if (!user) return;
+
+        setAddingFriendId(targetUserId);
+
+        const { error } = await supabase
+            .from("friends")
+            .insert({
+            requester_id: user.id,
+            addressee_id: targetUserId,
+            });
+
+        setAddingFriendId(null);
+
+        if (error) {
+            console.error("Add back error:", error);
+            alert(error.message);
+            return;
+        }
+
+        alert("Friend added");
+        loadFriendData();
     };
 
     if (!user && !loading) {
@@ -379,6 +477,178 @@ export default function ProfilePage() {
         {!isSearching && searchTerm.trim() && searchResults.length === 0 && (
             <p className="text-sm text-gray-500">No users found.</p>
         )}
+        </div>
+
+        <div className="border-t pt-4 space-y-3">
+        <h2 className="text-lg font-semibold">Connections</h2>
+
+        <div className="border rounded-xl overflow-hidden">
+            <button
+            type="button"
+            onClick={() => setShowFriends((prev) => !prev)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 text-left"
+            >
+            <span className="font-medium">Friends ({friendsList.length})</span>
+            <span>{showFriends ? "−" : "+"}</span>
+            </button>
+
+            {showFriends && (
+            <div className="p-3 space-y-3">
+                {friendsList.length === 0 ? (
+                <p className="text-sm text-gray-500">No friends yet.</p>
+                ) : (
+                friendsList.map((friend) => (
+                    <div
+                    key={friend.id}
+                    className="border rounded-xl p-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                    <div>
+                        <p className="font-semibold text-black">
+                        {friend.username || "Unnamed user"}
+                        </p>
+                        {friend.bio && (
+                        <p className="text-sm text-gray-600 line-clamp-2">
+                            {friend.bio}
+                        </p>
+                        )}
+                    </div>
+
+                    <div className="flex gap-2">
+                        <button
+                        type="button"
+                        onClick={() => router.push(`/user/${friend.id}`)}
+                        className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
+                        >
+                        View profile
+                        </button>
+
+                        <button
+                        type="button"
+                        className="bg-black text-white px-4 py-2 rounded-xl opacity-60"
+                        disabled
+                        >
+                        Message
+                        </button>
+                    </div>
+                    </div>
+                ))
+                )}
+            </div>
+            )}
+        </div>
+
+        <div className="border rounded-xl overflow-hidden">
+            <button
+            type="button"
+            onClick={() => setShowReceived((prev) => !prev)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 text-left"
+            >
+            <span className="font-medium">
+                Requests received ({receivedRequests.length})
+            </span>
+            <span>{showReceived ? "−" : "+"}</span>
+            </button>
+
+            {showReceived && (
+            <div className="p-3 space-y-3">
+                {receivedRequests.length === 0 ? (
+                <p className="text-sm text-gray-500">No received requests.</p>
+                ) : (
+                receivedRequests.map((person) => (
+                    <div
+                    key={person.id}
+                    className="border rounded-xl p-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                    <div>
+                        <p className="font-semibold text-black">
+                        {person.username || "Unnamed user"}
+                        </p>
+                        {person.bio && (
+                        <p className="text-sm text-gray-600 line-clamp-2">
+                            {person.bio}
+                        </p>
+                        )}
+                    </div>
+
+                    <div className="flex gap-2">
+                        <button
+                        type="button"
+                        onClick={() => router.push(`/user/${person.id}`)}
+                        className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
+                        >
+                        View profile
+                        </button>
+
+                        <button
+                        type="button"
+                        onClick={() => handleAddBack(person.id)}
+                        disabled={addingFriendId === person.id}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-xl disabled:opacity-50"
+                        >
+                        {addingFriendId === person.id ? "Adding..." : "Add back"}
+                        </button>
+                    </div>
+                    </div>
+                ))
+                )}
+            </div>
+            )}
+        </div>
+
+        <div className="border rounded-xl overflow-hidden">
+            <button
+            type="button"
+            onClick={() => setShowSent((prev) => !prev)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 text-left"
+            >
+            <span className="font-medium">Requests sent ({sentRequests.length})</span>
+            <span>{showSent ? "−" : "+"}</span>
+            </button>
+
+            {showSent && (
+            <div className="p-3 space-y-3">
+                {sentRequests.length === 0 ? (
+                <p className="text-sm text-gray-500">No sent requests.</p>
+                ) : (
+                sentRequests.map((person) => (
+                    <div
+                    key={person.id}
+                    className="border rounded-xl p-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                    <div>
+                        <p className="font-semibold text-black">
+                        {person.username || "Unnamed user"}
+                        </p>
+                        {person.bio && (
+                        <p className="text-sm text-gray-600 line-clamp-2">
+                            {person.bio}
+                        </p>
+                        )}
+                    </div>
+
+                    <div className="flex gap-2">
+                        <button
+                        type="button"
+                        onClick={() => router.push(`/user/${person.id}`)}
+                        className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
+                        >
+                        View profile
+                        </button>
+
+                        <button
+                        type="button"
+                        className="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl"
+                        disabled
+                        >
+                        Pending
+                        </button>
+                    </div>
+                    </div>
+                ))
+                )}
+            </div>
+            )}
+        </div>
         </div>
 
         <button
