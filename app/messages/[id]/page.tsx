@@ -111,33 +111,37 @@ export default function MessagesPage() {
     if (!currentUserId || !otherUserId || !isMutualFriend) return;
 
     const channel = supabase
-      .channel(`messages-${currentUserId}-${otherUserId}`)
-      .on(
+    .channel(`messages-${currentUserId}-${otherUserId}`)
+    .on(
         "postgres_changes",
         {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
         },
         (payload) => {
-          const newRow = payload.new as Message;
+        console.log("Realtime payload received:", payload);
 
-          const isInConversation =
+        const newRow = payload.new as Message;
+
+        const isInConversation =
             (newRow.sender_id === currentUserId &&
-              newRow.receiver_id === otherUserId) ||
+            newRow.receiver_id === otherUserId) ||
             (newRow.sender_id === otherUserId &&
-              newRow.receiver_id === currentUserId);
+            newRow.receiver_id === currentUserId);
 
-          if (!isInConversation) return;
+        if (!isInConversation) return;
 
-          setMessages((prev) => {
+        setMessages((prev) => {
             const exists = prev.some((msg) => msg.id === newRow.id);
             if (exists) return prev;
             return [...prev, newRow];
-          });
+        });
         }
-      )
-      .subscribe();
+    )
+    .subscribe((status) => {
+        console.log("Realtime subscription status:", status);
+    });
 
     return () => {
       supabase.removeChannel(channel);
