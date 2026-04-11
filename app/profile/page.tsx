@@ -316,7 +316,7 @@ export default function ProfilePage() {
 
         <h1 className="text-2xl font-bold mb-4">Profile</h1>
 
-        <div className="bg-white text-black rounded-2xl shadow p-4 space-y-4 border border-gray-200">
+        <div className="bg-white text-black rounded-2xl shadow-lg p-6 space-y-4 border border-gray-200">
         <p>
             <strong>Email:</strong> {user?.email}
         </p>
@@ -337,7 +337,7 @@ export default function ProfilePage() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full border rounded-xl px-4 py-3 text-black placeholder-gray-400"
+            className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black/10 text-black placeholder-gray-400"
             />
         </div>
 
@@ -346,7 +346,7 @@ export default function ProfilePage() {
             <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="w-full border rounded-xl px-4 py-3 min-h-[100px] text-black placeholder-gray-400"
+            className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black/10 text-black placeholder-gray-400"
             />
         </div>
 
@@ -429,7 +429,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="border-t pt-4">
-        <h2 className="text-lg font-semibold mb-3">Find travelers</h2>
+        <h2 className="text-lg font-semibold mt-6 mb-2 text-gray-800">Find travelers</h2>
 
         <div className="flex flex-col sm:flex-row gap-2 mb-3">
             <input
@@ -443,7 +443,7 @@ export default function ProfilePage() {
             <button
             type="button"
             onClick={handleSearchUsers}
-            className="bg-black text-white px-4 py-3 rounded-xl w-full sm:w-auto"
+            className="bg-black text-white px-4 py-3 rounded-xl hover:opacity-90 transition w-full sm:w-auto"
             >
             {isSearching ? "Searching..." : "Search"}
             </button>
@@ -499,7 +499,7 @@ export default function ProfilePage() {
         <div className="border-t pt-4 space-y-3">
         <h2 className="text-lg font-semibold">Connections</h2>
 
-        <div className="border rounded-xl overflow-hidden">
+        <div className="border border-gray-200 rounded-xl p-4 bg-grayz-50 overflow-hidden">
             <button
             type="button"
             onClick={() => setShowFriends((prev) => !prev)}
@@ -554,7 +554,7 @@ export default function ProfilePage() {
             )}
         </div>
 
-        <div className="border rounded-xl overflow-hidden">
+        <div className="border border-gray-200 rounded-xl p-4 bg-grayz-50 overflow-hidden">
             <button
             type="button"
             onClick={() => setShowReceived((prev) => !prev)}
@@ -612,7 +612,7 @@ export default function ProfilePage() {
             )}
         </div>
 
-        <div className="border rounded-xl overflow-hidden">
+        <div className="border border-gray-200 rounded-xl p-4 bg-grayz-50 overflow-hidden">
             <button
             type="button"
             onClick={() => setShowSent((prev) => !prev)}

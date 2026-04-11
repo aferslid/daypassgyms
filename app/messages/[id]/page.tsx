@@ -265,8 +265,8 @@ export default function MessagesPage() {
                   <div
                     className={`max-w-[80%] px-4 py-3 rounded-2xl ${
                       isMine
-                        ? "bg-black text-white"
-                        : "bg-gray-100 text-black"
+                        ? "bg-black text-white shadow-sm "
+                        : "bg-gray-100 text-black shadow-sm "
                     }`}
                   >
                     <p className="whitespace-pre-wrap break-words">
