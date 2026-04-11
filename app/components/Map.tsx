@@ -501,21 +501,21 @@ useEffect(() => {
 
   const handleSignUp = async () => {
     if (!email || !password) {
-      alert("Email et mot de passe requis");
+      alert("Email and password are required.");
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
       alert(error.message);
-    } else {
-      setUser(data.user);
-      alert("Compte créé. Vérifie ton email si nécessaire.");
+      return;
     }
+
+    alert("Account created. Please confirm your email before signing in.");
   };
 
   const handleLogin = async () => {
@@ -546,29 +546,27 @@ useEffect(() => {
 
   const handleCreateProfile = async () => {
     if (!user || !username.trim()) {
-      alert("Pseudo requis");
+      alert("Username required");
       return;
     }
 
     const { data, error } = await supabase
       .from("profiles")
-      .insert([
-        {
-          id: user.id,
-          username: username.trim(),
-        },
-      ])
+      .update({
+        username: username.trim(),
+      })
+      .eq("id", user.id)
       .select()
       .single();
 
     if (error) {
-      console.error("Error creating profile:", error);
+      console.error("Error updating profile:", error);
       alert(error.message);
       return;
     }
 
     setProfile(data as Profile);
-    alert("Username created !");
+    alert("Username saved!");
   };
 
   const handleDeleteSpot = async (spotId: number) => {
