@@ -119,7 +119,8 @@ export default function PublicProfilePage() {
     setIsAddingFriend(false);
 
     if (error) {
-        alert("Already added or error");
+        console.error("Add friend error:", error);
+        alert(error.message);
         return;
     }
 
@@ -137,7 +138,8 @@ export default function PublicProfilePage() {
         .eq("addressee_id", profile.id);
 
     if (error) {
-        alert("Error removing friend");
+        console.error("Remove friend error:", error);
+        alert(error.message);
         return;
     }
 
