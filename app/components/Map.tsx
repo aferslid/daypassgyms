@@ -915,7 +915,7 @@ if (type === "healthy_food") {
 
       {categoriesRequiringZoom.includes(category) && zoomLevel < 11 && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] 
-        bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none">
+        bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none text-black placeholder-gray-400">
           Zoom in to see {category.toUpperCase()}
         </div>
       )}
@@ -996,7 +996,7 @@ if (type === "healthy_food") {
 
         <button
           onClick={() => router.push("/profile")}
-          className="bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-medium active:scale-95 w-full"
+          className="bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-medium active:scale-95 w-full text-black placeholder-gray-400"
         >
           Profile
         </button>
