@@ -1041,7 +1041,7 @@ if (type === "healthy_food") {
               placeholder="Pseudo"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 mb-3"
+              className="w-full border rounded-lg px-3 py-2 mb-3 text-black placeholder-gray-400"
             />
 
             <button
@@ -1082,7 +1082,7 @@ if (type === "healthy_food") {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 mb-3 text:sm"
+              className="w-full border rounded-lg px-3 py-2 mb-3 text:sm text-black placeholder-gray-400"
             />
 
             <input
@@ -1090,7 +1090,7 @@ if (type === "healthy_food") {
               placeholder="Mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 mb-3 text:sm"
+              className="w-full border rounded-lg px-3 py-2 mb-3 text:sm text-black placeholder-gray-400"
             />
 
             <div className="flex flex-col gap-2">
