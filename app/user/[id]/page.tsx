@@ -82,7 +82,7 @@ export default function PublicProfilePage() {
   }, [userId]);
 
   if (loading) {
-    return <div className="p-4 max-w-lg mx-auto w-full">Loading profile...</div>;
+    return <div className="p-4 max-w-lg mx-auto w-full text-black">Loading profile...</div>;
   }
 
   if (!profile) {
@@ -154,19 +154,19 @@ export default function PublicProfilePage() {
         ← Back to map
       </button>
 
-      <h1 className="text-2xl font-bold mb-4">Traveler profile</h1>
+      <h1 className="text-2xl font-bold mb-4 text-black">Traveler profile</h1>
 
-      <div className="bg-white rounded-2xl shadow p-4 space-y-4">
-        <p>
+      <div className="bg-white text-black rounded-2xl shadow p-4 space-y-4 border border-gray-2000">
+        <p className="text-black">
           <strong>Username:</strong> {profile.username}
         </p>
 
-        <p>
+        <p className="text-black">
           <strong>Contributions:</strong> {contributions}
         </p>
 
         {profile.bio && (
-          <p className="text-gray-600">
+          <p className="text-gray-700">
             {profile.bio}
           </p>
         )}
@@ -183,15 +183,15 @@ export default function PublicProfilePage() {
             {isFriend ? "Remove friend" : isAddingFriend ? "Adding..." : "Add friend"}
             </button>
 
-            <button className="bg-white border px-4 py-2 rounded-xl">
+            <button className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl">
             Message
             </button>
         </div>
         )}
 
         <div>
-          <p className="font-medium mb-2">Countries visited</p>
-          <p className="text-sm text-gray-500 mb-2">
+          <p className="font-medium mb-2 text-black">Countries visited</p>
+          <p className="text-sm text-gray-600 mb-2">
             {countries.length} countries visited
           </p>
 
@@ -202,7 +202,7 @@ export default function PublicProfilePage() {
               return (
                 <div
                   key={code}
-                  className="border rounded-xl px-3 py-2 bg-gray-50 text-sm"
+                  className="border border-gray-200 rounded-xl px-3 py-2 bg-gray-50 text-sm text-black"
                 >
                   {getFlagEmoji(code)}
                 </div>
