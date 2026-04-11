@@ -13,7 +13,8 @@ type AddSpotFormProps = {
     name: string,
     type: string,
     description: string,
-    file: File | null
+    file: File | null,
+    details: Record<string, any>
   ) => void;
   resetAddForm: () => void;
 };
@@ -30,18 +31,33 @@ export default function AddSpotForm({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const galleryInputRef = useRef<HTMLInputElement | null>(null);
+  const [details, setDetails] = useState<Record<string, any>>({});
 
-  const getDescriptionTemplate = (type: string) => {
-  if (type === "gym") {
-    return "Day pass:\nShower:\nWiFi:\nOpening hours:\nNotes:";
-  }
-
-  if (type === "wifi") {
-    return "WiFi:\nPassword:\nNotes:";
-  }
-
-  return "";
-  };
+  const renderYesNoField = (
+    label: string,
+    keyName: string
+  ) => (
+    <div className="mb-3">
+      <label className="block text-sm font-medium mb-1">{label}</label>
+      <select
+        value={details[keyName] ?? ""}
+        onChange={(e) =>
+          setDetails((prev) => ({
+            ...prev,
+            [keyName]:
+              e.target.value === ""
+                ? undefined
+                : e.target.value === "yes",
+          }))
+        }
+        className="w-full border rounded-xl px-4 py-3"
+      >
+        <option value="">Select</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+  );
 
   if (!showAddForm) return null;
 
@@ -86,10 +102,7 @@ export default function AddSpotForm({
         onChange={(e) => {
           const newType = e.target.value;
           setNewSpotType(newType);
-
-          if (!newSpotDescription) {
-            setNewSpotDescription(getDescriptionTemplate(newType));
-          }
+          setDetails({});
         }}
         className="w-full border rounded-xl px-4 py-3 mb-3 max-h-40 overflow-y-auto"
       >
@@ -154,6 +167,183 @@ export default function AddSpotForm({
         />
       )}
 
+      {newSpotType === "atm" && (
+        <>
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">ATM fees</label>
+            <input
+              type="number"
+              step="0.01"
+              placeholder="Example: 3"
+              value={details.fee_value ?? ""}
+              onChange={(e) =>
+                setDetails((prev) => ({
+                  ...prev,
+                  fee_value:
+                    e.target.value === "" ? undefined : Number(e.target.value),
+                }))
+              }
+              className="w-full border rounded-xl px-4 py-3"
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Fee type</label>
+            <select
+              value={details.fee_type ?? ""}
+              onChange={(e) =>
+                setDetails((prev) => ({
+                  ...prev,
+                  fee_type: e.target.value || undefined,
+                }))
+              }
+              className="w-full border rounded-xl px-4 py-3"
+            >
+              <option value="">Select</option>
+              <option value="currency">Currency</option>
+              <option value="percent">Percent</option>
+            </select>
+          </div>
+
+          {details.fee_type === "currency" && (
+            <div className="mb-3">
+              <label className="block text-sm font-medium mb-1">Currency</label>
+              <input
+                type="text"
+                placeholder="EUR, USD, GEL..."
+                value={details.currency ?? ""}
+                onChange={(e) =>
+                  setDetails((prev) => ({
+                    ...prev,
+                    currency: e.target.value || undefined,
+                  }))
+                }
+                className="w-full border rounded-xl px-4 py-3"
+              />
+            </div>
+          )}
+
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">ATM location</label>
+            <select
+              value={details.location_type ?? ""}
+              onChange={(e) =>
+                setDetails((prev) => ({
+                  ...prev,
+                  location_type: e.target.value || undefined,
+                }))
+              }
+              className="w-full border rounded-xl px-4 py-3"
+            >
+              <option value="">Select</option>
+              <option value="inside">Inside</option>
+              <option value="outside">Outside</option>
+            </select>
+          </div>
+        </>
+      )}
+
+      {newSpotType === "wc" && (
+        <>
+          {renderYesNoField("Free", "free")}
+          {renderYesNoField("PMR access", "pmr")}
+        </>
+      )}
+
+      {newSpotType === "water" && (
+        <>
+          {renderYesNoField("Drinkable", "drinkable")}
+        </>
+      )}
+
+      {newSpotType === "charge" && (
+        <>
+          {renderYesNoField("Consumption required", "consumption_required")}
+        </>
+      )}
+
+      {newSpotType === "wifi" && (
+        <>
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">WiFi name</label>
+            <input
+              type="text"
+              placeholder="Network name"
+              value={details.network_name ?? ""}
+              onChange={(e) =>
+                setDetails((prev) => ({
+                  ...prev,
+                  network_name: e.target.value || undefined,
+                }))
+              }
+              className="w-full border rounded-xl px-4 py-3"
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <input
+              type="text"
+              placeholder="WiFi password"
+              value={details.password ?? ""}
+              onChange={(e) =>
+                setDetails((prev) => ({
+                  ...prev,
+                  password: e.target.value || undefined,
+                }))
+              }
+              className="w-full border rounded-xl px-4 py-3"
+            />
+          </div>
+        </>
+      )}
+
+      {newSpotType === "gym" && (
+        <>
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Day pass price</label>
+            <input
+              type="number"
+              step="0.01"
+              placeholder="Example: 10"
+              value={details.day_pass_price ?? ""}
+              onChange={(e) =>
+                setDetails((prev) => ({
+                  ...prev,
+                  day_pass_price:
+                    e.target.value === "" ? undefined : Number(e.target.value),
+                }))
+              }
+              className="w-full border rounded-xl px-4 py-3"
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Currency</label>
+            <input
+              type="text"
+              placeholder="EUR, USD, GEL..."
+              value={details.currency ?? ""}
+              onChange={(e) =>
+                setDetails((prev) => ({
+                  ...prev,
+                  currency: e.target.value || undefined,
+                }))
+              }
+              className="w-full border rounded-xl px-4 py-3"
+            />
+          </div>
+
+          {renderYesNoField("Shower", "shower")}
+        </>
+      )}
+
+      {newSpotType === "coworking" && (
+        <>
+          {renderYesNoField("Reservation required", "reservation_required")}
+        </>
+      )}
+
       <textarea
         placeholder="Description"
         value={newSpotDescription}
@@ -167,7 +357,10 @@ export default function AddSpotForm({
             newSpotName,
             newSpotType,
             newSpotDescription,
-            selectedFile
+            selectedFile,
+            Object.fromEntries(
+              Object.entries(details).filter(([, value]) => value !== undefined)
+            )
           )
         }
         disabled={isSaving || !newSpotName}

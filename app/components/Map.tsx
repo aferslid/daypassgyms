@@ -37,6 +37,7 @@ type Spot = {
   user_id?: string | null;
   photo_url?: string | null;
   created_at?: string | null;
+  details?: Record<string, any> | null;
 };
 
 type Profile = {
@@ -396,7 +397,8 @@ useEffect(() => {
     name: string,
     type: string,
     description: string,
-    file: File | null
+    file: File | null,
+    details: Record<string, any>
   ) => {
     if (saveLockRef.current) return;
 
@@ -452,6 +454,7 @@ useEffect(() => {
             photo_url: photoUrl,
             source: "user",
             country: null,
+            details: details,
           },
         ])
         .select();
@@ -776,6 +779,88 @@ if (type === "healthy_food") {
                 {spot.type}
                 <br />
                 {spot.description}
+
+                {spot.details?.location_type && (
+                  <>
+                    <br />
+                    ATM: {spot.details.location_type}
+                  </>
+                )}
+
+                {spot.details?.fee_value !== undefined && (
+                  <>
+                    <br />
+                    Fees: {spot.details.fee_value}
+                    {spot.details.fee_type === "percent" ? "%" : ""}
+                    {spot.details.fee_type === "currency" && spot.details.currency
+                      ?  `${spot.details.currency}`
+                      : ""}
+                  </>
+                )}
+
+                {spot.details?.free !== undefined && (
+                  <>
+                    <br />
+                    Free: {spot.details.free ? "Yes" : "No"}
+                  </>
+                )}
+
+                {spot.details?.pmr !== undefined && (
+                  <>
+                    <br />
+                    PMR: {spot.details.pmr ? "Yes" : "No"}
+                  </>
+                )}
+
+                {spot.details?.drinkable !== undefined && (
+                  <>
+                    <br />
+                    Drinkable: {spot.details.drinkable ? "Yes" : "No"}
+                  </>
+                )}
+
+                {spot.details?.consumption_required !== undefined && (
+                  <>
+                    <br />
+                    Consumption required: {spot.details.consumption_required ? "Yes" : "No"}
+                  </>
+                )}
+
+                {spot.details?.network_name && (
+                  <>
+                    <br />
+                    WiFi: {spot.details.network_name}
+                  </>
+                )}
+
+                {spot.details?.password && (
+                  <>
+                    <br />
+                    Password: {spot.details.password}
+                  </>
+                )}
+
+                {spot.details?.day_pass_price !== undefined && (
+                  <>
+                    <br />
+                    Day pass: {spot.details.day_pass_price}
+                    {spot.details.currency ?  `${spot.details.currency}` : ""}
+                  </>
+                )}
+
+                {spot.details?.shower !== undefined && (
+                  <>
+                    <br />
+                    Shower: {spot.details.shower ? "Yes" : "No"}
+                  </>
+                )}
+
+                {spot.details?.reservation_required !== undefined && (
+                  <>
+                    <br />
+                    Reservation required: {spot.details.reservation_required ? "Yes" : "No"}
+                  </>
+                )}
 
                 {spot.user_id && profilesMap[spot.user_id] && (
                   <div className="text-sm">
