@@ -88,7 +88,7 @@ function MapBoundsUpdater({
 }) {
   const map = useMapEvents({
     moveend: () => {
-      if (isPopupOpenRef.current) return;
+      
 
       const b = map.getBounds();
 
@@ -223,6 +223,7 @@ export default function Map() {
 useEffect(() => {
   const fetchSpots = async () => {
     if (!bounds) return;
+
 
     console.log("CATEGORY:", category);
     console.log("BOUNDS:", bounds);
@@ -776,8 +777,9 @@ if (type === "healthy_food") {
                 <br />
                 {spot.type}
                 <br />
+                <p className="text-sm text-gray-600 whitespace-pre-line">
                 {spot.description}
-
+                </p>
                 {spot.details?.location_type && (
                   <>
                     <br />
@@ -882,10 +884,13 @@ if (type === "healthy_food") {
                   <>
                     <br />
                     <img
-                      src={spot.photo_url}
-                      alt={spot.name}
-                      className="mt-2 rounded-lg w-full max-h-40 object-cover"
-                    />
+                    src={spot.photo_url}
+                    alt={spot.name}
+                    className="w-full rounded-xl mb-2 max-h-48 object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
                   </>
                 )}
 
