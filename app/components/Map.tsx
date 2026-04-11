@@ -1103,7 +1103,7 @@ if (type === "healthy_food") {
 
               <button
                 onClick={handleLogin}
-                className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2 text:sm"
+                className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2 text:sm text-black placeholder-gray-400"
               >
                 Sign in
               </button>
