@@ -1075,7 +1075,7 @@ if (type === "healthy_food") {
           </div>
         ) : (
           <div>
-            <h2 className="font-bold text-base sm:text-lg mb-3">Sign in</h2>
+            <h2 className="font-bold text-base sm:text-lg mb-3 text-black placeholder-gray-400">Sign in</h2>
 
             <input
               type="email"
@@ -1103,7 +1103,7 @@ if (type === "healthy_food") {
 
               <button
                 onClick={handleLogin}
-                className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2 text:sm text-black placeholder-gray-400"
+                className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2 text:sm"
               >
                 Sign in
               </button>
