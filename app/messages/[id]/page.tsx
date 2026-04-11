@@ -185,6 +185,10 @@ export default function MessagesPage() {
     setNewMessage("");
   };
 
+  useEffect(() => {
+  bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   if (loading) {
     return (
       <div className="p-4 max-w-2xl mx-auto w-full">
@@ -220,10 +224,6 @@ export default function MessagesPage() {
       </div>
     );
   }
-
-  useEffect(() => {
-  bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   return (
     <div className="p-4 max-w-2xl mx-auto w-full">
