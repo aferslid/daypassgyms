@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { supabase } from "../../../lib/supabase";
 import { useParams, useRouter } from "next/navigation";
 
@@ -29,6 +29,7 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [isMutualFriend, setIsMutualFriend] = useState(false);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const conversationMessages = useMemo(() => {
     return [...messages].sort(
@@ -220,6 +221,10 @@ export default function MessagesPage() {
     );
   }
 
+  useEffect(() => {
+  bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <div className="p-4 max-w-2xl mx-auto w-full">
       <div className="mb-4 flex gap-2">
@@ -279,6 +284,7 @@ export default function MessagesPage() {
               );
             })
           )}
+        <div ref={bottomRef} />
         </div>
 
         <div className="border-t border-gray-200 p-4 flex gap-2">
