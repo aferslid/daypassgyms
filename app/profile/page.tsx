@@ -36,6 +36,7 @@ export default function ProfilePage() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [addingFriendId, setAddingFriendId] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const [friendsList, setFriendsList] = useState<any[]>([]);
   const [receivedRequests, setReceivedRequests] = useState<any[]>([]);
@@ -124,6 +125,7 @@ export default function ProfilePage() {
 
     const handleSearchUsers = async () => {
         const trimmed = searchTerm.trim();
+        setHasSearched(true);
 
         if (!trimmed) {
             setSearchResults([]);
@@ -135,7 +137,7 @@ export default function ProfilePage() {
         const { data, error } = await supabase
             .from("profiles")
             .select("id, username, bio")
-            .ilike("username", `%${trimmed}%`)
+            .ilike("username", `${trimmed}%`)
             .limit(20);
 
         setIsSearching(false);
@@ -306,7 +308,7 @@ export default function ProfilePage() {
         }
 
   return (
-    <div className="p-4 max-w-lg mx-auto w-full">
+    <div className="p-4 max-w-lg mx-auto w-full bg-gray-50 min-h-screen">
         <button
         onClick={() => router.push("/")}
         className="mb-4 bg-black text-white px-4 py-2 rounded-xl"
@@ -314,9 +316,14 @@ export default function ProfilePage() {
         ← Back to map
         </button>
 
-        <h1 className="text-2xl font-bold mb-4">Profile</h1>
+        <div className="mb-2">
+        <h1 className="text-2xl font-bold text-black">My Profile</h1>
+        <p className="text-sm text-gray-500">
+            Manage your traveler identity
+        </p>
+        </div>
 
-        <div className="bg-white text-black rounded-2xl shadow-lg p-6 space-y-4 border border-gray-200">
+        <div className="text-sm space-y-1 mb-2">
         <p>
             <strong>Email:</strong> {user?.email}
         </p>
@@ -332,7 +339,7 @@ export default function ProfilePage() {
         )}
 
         <div>
-            <label className="block text-sm font-medium mb-1">Username</label>
+            <label className="text-sm text-black-500 mt-5 block font-medium mb-1">Username</label>
             <input
             type="text"
             value={username}
@@ -342,11 +349,11 @@ export default function ProfilePage() {
         </div>
 
         <div>
-            <label className="block text-sm font-medium mb-1">Bio</label>
+            <label className="text-sm text-black-500 mt-4 block font-medium mb-1">Bio</label>
             <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black/10 text-black placeholder-gray-400"
+            className="w-full bg-white rounded-xl px-4 py-3 min-h-[140px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black/10 text-black placeholder-gray-400"
             />
         </div>
 
@@ -428,15 +435,18 @@ export default function ProfilePage() {
 
         </div>
 
-        <div className="border-t pt-4">
-        <h2 className="text-lg font-semibold mt-6 mb-2 text-gray-800">Find travelers</h2>
+        <div className="mt-6 pt-4 border-t border-black-200">
+        <h2 className="text-lg font-semibold mb-3 text-gray-900">Find travelers</h2>
 
         <div className="flex flex-col sm:flex-row gap-2 mb-3">
             <input
             type="text"
             placeholder="Search by username"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setHasSearched(false);
+            }}
             className="w-full sm:flex-1 border rounded-xl px-4 py-3 text-black placeholder-gray-400"
             />
 
@@ -491,7 +501,7 @@ export default function ProfilePage() {
             </div>
         )}
 
-        {!isSearching && searchTerm.trim() && searchResults.length === 0 && (
+        {!isSearching && hasSearched && searchResults.length === 0 && (
             <p className="text-sm text-gray-500">No users found.</p>
         )}
         </div>
