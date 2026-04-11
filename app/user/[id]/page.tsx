@@ -204,14 +204,18 @@ export default function PublicProfilePage() {
                 </button>
 
                 <button
-                    disabled={!isMutualFriend}
-                    className={`px-4 py-2 rounded-xl ${
+                disabled={!isMutualFriend}
+                onClick={() => {
+                    if (!isMutualFriend) return;
+                    router.push(`/messages/${profile.id}`);
+                }}
+                className={`px-4 py-2 rounded-xl ${
                     isMutualFriend
-                        ? "bg-black text-white"
-                        : "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
-                    }`}
+                    ? "bg-black text-white"
+                    : "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
+                }`}
                 >
-                    Message
+                Message
                 </button>
                 </div>
 
