@@ -258,6 +258,23 @@ export default function ProfilePage() {
         loadFriendData();
     };
 
+    if (loading) {
+        return (
+            <div className="p-4 max-w-lg mx-auto w-full">
+            <button
+                onClick={() => router.push("/")}
+                className="mb-4 bg-black text-white px-4 py-2 rounded-xl"
+            >
+                ← Back to map
+            </button>
+
+            <div className="bg-white text-black rounded-2xl shadow p-4 border border-gray-200">
+                Loading profile...
+            </div>
+            </div>
+        );
+    }
+
     if (!user && !loading) {
         return (
             <div className="p-4 max-w-lg mx-auto w-full">

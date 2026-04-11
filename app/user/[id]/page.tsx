@@ -103,18 +103,7 @@ export default function PublicProfilePage() {
   }
 
   if (!profile) {
-    return (
-      <div className="p-4 max-w-lg mx-auto w-full">
-        <button
-          onClick={() => router.push("/")}
-          className="mb-4 bg-black text-white px-4 py-2 rounded-xl"
-        >
-          ← Back to map
-        </button>
-
-        <p>Profile not found.</p>
-      </div>
-    );
+    return <div>Profile not found</div>;
   }
 
   const countries = profile.countries
@@ -168,12 +157,21 @@ export default function PublicProfilePage() {
 
   return (
     <div className="p-4 max-w-lg mx-auto w-full">
-      <button
-        onClick={() => router.push("/")}
-        className="mb-4 bg-black text-white px-4 py-2 rounded-xl"
-      >
-        ← Back to map
-      </button>
+      <div className="mb-4 flex gap-2">
+        <button
+            onClick={() => router.push("/")}
+            className="bg-black text-white px-4 py-2 rounded-xl"
+        >
+            ← Back to map
+        </button>
+
+        <button
+            onClick={() => router.push("/profile")}
+            className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
+        >
+            ← Back to profile
+        </button>
+      </div>
 
       <h1 className="text-2xl font-bold mb-4 text-black">Traveler profile</h1>
 
@@ -207,10 +205,10 @@ export default function PublicProfilePage() {
 
                 <button
                     disabled={!isMutualFriend}
-                    className={`px-4 py-2 rounded-xl border ${
+                    className={`px-4 py-2 rounded-xl ${
                     isMutualFriend
-                        ? "bg-white text-black border-gray-300"
-                        : "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                        ? "bg-black text-white"
+                        : "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
                     }`}
                 >
                     Message
