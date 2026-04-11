@@ -33,6 +33,7 @@ export default function PublicProfilePage() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isAddingFriend, setIsAddingFriend] = useState(false);
   const [isFriend, setIsFriend] = useState(false);
+  const [isMutualFriend, setIsMutualFriend] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -45,15 +46,31 @@ export default function PublicProfilePage() {
       setCurrentUserId(user?.id || null);
 
       if (user?.id && user.id !== userId) {
-        const { data: existingFriend } = await supabase
+        const { data: existingFriend, error: existingFriendError } = await supabase
             .from("friends")
-            .select("id")
+            .select("requester_id, addressee_id")
             .eq("requester_id", user.id)
             .eq("addressee_id", userId)
             .maybeSingle();
 
+        if (existingFriendError) {
+            console.error("Error checking sent friend request:", existingFriendError);
+        }
+
+        const { data: reverseFriend, error: reverseFriendError } = await supabase
+            .from("friends")
+            .select("requester_id, addressee_id")
+            .eq("requester_id", userId)
+            .eq("addressee_id", user.id)
+            .maybeSingle();
+
+        if (reverseFriendError) {
+            console.error("Error checking reverse friend request:", reverseFriendError);
+        }
+
         setIsFriend(!!existingFriend);
-}
+        setIsMutualFriend(!!existingFriend && !!reverseFriend);
+      }
 
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
@@ -125,6 +142,7 @@ export default function PublicProfilePage() {
     }
 
     setIsFriend(true);
+    setIsMutualFriend(false);
     alert("Friend added");
     };
 
@@ -144,6 +162,7 @@ export default function PublicProfilePage() {
     }
 
     setIsFriend(false);
+    setIsMutualFriend(false);
     };
 
 
@@ -173,23 +192,39 @@ export default function PublicProfilePage() {
           </p>
         )}
 
-        {currentUserId !== profile.id && (
-        <div className="flex gap-2 mt-4 justify-center">
-            <button
-            onClick={isFriend ? handleRemoveFriend : handleAddFriend}
-            disabled={isAddingFriend}
-            className={`px-4 py-2 rounded-xl text-white ${
-                isFriend ? "bg-red-500" : "bg-black"
-            } disabled:opacity-50`}
-            >
-            {isFriend ? "Remove friend" : isAddingFriend ? "Adding..." : "Add friend"}
-            </button>
+         {currentUserId !== profile.id && (
+            <>
+                <div className="flex gap-2 mt-4 justify-center">
+                <button
+                    onClick={isFriend ? handleRemoveFriend : handleAddFriend}
+                    disabled={isAddingFriend}
+                    className={`px-4 py-2 rounded-xl text-white ${
+                    isFriend ? "bg-red-500" : "bg-black"
+                    } disabled:opacity-50`}
+                >
+                    {isFriend ? "Remove friend" : isAddingFriend ? "Adding..." : "Add friend"}
+                </button>
 
-            <button className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl">
-            Message
-            </button>
-        </div>
-        )}
+                <button
+                    disabled={!isMutualFriend}
+                    className={`px-4 py-2 rounded-xl border ${
+                    isMutualFriend
+                        ? "bg-white text-black border-gray-300"
+                        : "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                    }`}
+                >
+                    Message
+                </button>
+                </div>
+
+                {!isMutualFriend && (
+                <p className="text-xs text-gray-500 text-center mt-2">
+                    Messaging is available only when both users added each other.
+                </p>
+                )}
+            </>
+            )}
+    
 
         <div>
           <p className="font-medium mb-2 text-black">Countries visited</p>
