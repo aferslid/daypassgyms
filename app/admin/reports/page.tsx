@@ -45,6 +45,50 @@ export default function AdminReportsPage() {
   const [deletingSpotId, setDeletingSpotId] = useState<number | null>(null);
   const [ignoringReportId, setIgnoringReportId] = useState<number | null>(null);
 
+  const [improvements, setImprovements] = useState<any[]>([]);
+  const [loadingImprovements, setLoadingImprovements] = useState(false);
+
+  const reloadAll = async () => {
+    await loadReports();
+    await fetchImprovements();
+  };
+
+  const fetchImprovements = async () => {
+    try {
+        setLoadingImprovements(true);
+
+        const { data, error } = await supabase
+        .from("spot_improvements")
+        .select(`
+            id,
+            spot_id,
+            user_id,
+            comment,
+            photo_url,
+            created_at,
+            spots (
+            id,
+            name,
+            type,
+            lat,
+            lng
+            )
+        `)
+        .order("created_at", { ascending: false });
+
+        if (error) {
+        console.error("Error fetching improvements:", error);
+        return;
+        }
+
+        setImprovements(data || []);
+    } catch (error) {
+        console.error("Unexpected error fetching improvements:", error);
+    } finally {
+        setLoadingImprovements(false);
+    }
+  };
+
   useEffect(() => {
     const init = async () => {
       const {
@@ -62,6 +106,7 @@ export default function AdminReportsPage() {
 
       setAuthorized(true);
       await loadReports();
+      await fetchImprovements();
       setLoading(false);
     };
 
@@ -217,7 +262,7 @@ export default function AdminReportsPage() {
         </button>
 
         <button
-          onClick={loadReports}
+          onClick={reloadAll}
           className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
         >
           Refresh
@@ -230,6 +275,61 @@ export default function AdminReportsPage() {
           Review reported spots and decide what to do.
         </p>
       </div>
+
+      <div className="bg-white rounded-2xl shadow p-5 border border-gray-200 mt-6">
+        <h2 className="text-xl font-bold mb-4">Spot Improvements</h2>
+
+        {loadingImprovements ? (
+            <p className="text-gray-500">Loading improvements...</p>
+        ) : improvements.length === 0 ? (
+            <p className="text-gray-500">No improvements yet.</p>
+        ) : (
+            <div className="space-y-4">
+            {improvements.map((item) => (
+                <div
+                key={item.id}
+                className="border border-gray-200 rounded-xl p-4 bg-gray-50"
+                >
+                <div className="text-sm text-gray-500 mb-2">
+                {item.spots?.name || `Spot ID: ${item.spot_id}`}
+                {item.spots?.type ?  `• ${item.spots.type}` : ""}
+                </div>
+
+                {item.comment && (
+                    <p className="text-sm text-black mb-3 whitespace-pre-line">
+                    {item.comment}
+                    </p>
+                )}
+
+                {item.photo_url && (
+                    <img
+                    src={item.photo_url}
+                    alt="Improvement"
+                    className="w-full max-w-sm rounded-xl border border-gray-200 mb-3"
+                    />
+                )}
+
+                {item.spots?.lat && item.spots?.lng && (
+                    <button
+                    onClick={() =>
+                        router.push(
+                        `/?lat=${item.spots.lat}&lng=${item.spots.lng}&spotId=${item.spot_id}`
+                        )
+                    }
+                    className="bg-white text-black border border-gray-300 px-3 py-2 rounded-xl text-sm mb-3"
+                    >
+                    View spot on map
+                    </button>
+                )}
+    
+                <div className="text-xs text-gray-500">
+                    {new Date(item.created_at).toLocaleString("fr-FR")}
+                </div>
+                </div>
+            ))}
+            </div>
+        )}
+        </div>
 
       {groupedReports.length === 0 ? (
         <div className="bg-white rounded-2xl shadow p-6 border border-gray-200 text-black">

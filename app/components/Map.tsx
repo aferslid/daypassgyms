@@ -388,6 +388,68 @@ export default function Map() {
   const deepLinkLng = searchParams.get("lng");
   const deepLinkSpotId = searchParams.get("spotId");
   const [hasAppliedDeepLink, setHasAppliedDeepLink] = useState(false);
+  const [improvingSpotId, setImprovingSpotId] = useState<number | null>(null);
+  const [improvementComment, setImprovementComment] = useState("");
+  const [improvementPhotoFile, setImprovementPhotoFile] = useState<File | null>(null);
+  const [sendingImprovementSpotId, setSendingImprovementSpotId] = useState<number | null>(null);
+
+  const handleSubmitImprovement = async (spotId: number) => {
+    if (!user) {
+      alert("You need to sign in to improve a spot.");
+      return;
+    }
+
+    if (!improvementComment.trim() && !improvementPhotoFile) {
+    alert("Please add at least a comment or a photo.");
+    return;
+    }
+
+    setSendingImprovementSpotId(spotId);
+
+    let uploadedPhotoUrl: string | null = null;
+
+    if (improvementPhotoFile) {
+      const fileExt = improvementPhotoFile.name.split(".").pop();
+      const fileName = `improvement-${spotId}-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("spot-photos")
+        .upload(`improvements/${fileName}`, improvementPhotoFile);
+
+      if (uploadError) {
+        console.error("Error uploading improvement photo:", uploadError);
+        alert("Could not upload photo.");
+        setSendingImprovementSpotId(null);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("spot-photos")
+        .getPublicUrl(`improvements/${fileName}`);
+
+      uploadedPhotoUrl = publicUrlData.publicUrl;
+    }
+
+    const { error } = await supabase.from("spot_improvements").insert({
+      spot_id: spotId,
+      user_id: user.id,
+      comment: improvementComment.trim() || null,
+      photo_url: uploadedPhotoUrl,
+    });
+
+    if (error) {
+      console.error("Error sending improvement:", error);
+      alert("Could not send improvement.");
+      setSendingImprovementSpotId(null);
+      return;
+    }
+
+    alert("Improvement sent.");
+    setImprovingSpotId(null);
+    setImprovementComment("");
+    setImprovementPhotoFile(null);
+    setSendingImprovementSpotId(null);
+  };
 
   const categoriesRequiringZoom = [
     "atm",
@@ -1209,6 +1271,90 @@ if (type === "healthy_food") {
                       ? "Confirming..."
                       : "Confirm spot"}
                   </button>
+
+                  <button
+                    onClick={() =>
+                      setImprovingSpotId((prev) => (prev === spot.id ? null : spot.id))
+                    }
+                    className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+                    >
+                    Improve this spot
+                  </button>
+
+                  {improvingSpotId === spot.id && (
+                    <div className="mt-2 p-3 border rounded-lg bg-gray-50 space-y-2">
+                      <textarea
+                        value={improvementComment}
+                        onChange={(e) => setImprovementComment(e.target.value)}
+                        placeholder="Add missing info, corrections, or useful details..."
+                        className="w-full border rounded-lg px-3 py-2 text-sm min-h-[90px]"
+                      />
+
+                      <div className="flex gap-2">
+                        <label className="flex-1 cursor-pointer border rounded-lg px-3 py-2 text-sm text-center bg-white">
+                          📷 Take photo
+                          <input
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null;
+                              setImprovementPhotoFile(file);
+                            }}
+                          />
+                        </label>
+
+                        <label className="flex-1 cursor-pointer border rounded-lg px-3 py-2 text-sm text-center bg-white">
+                          🖼️ Gallery
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null;
+                              setImprovementPhotoFile(file);
+                            }}
+                          />
+                        </label>
+                      </div>
+
+                      {improvementPhotoFile && (
+                        <p className="text-xs text-gray-600">
+                          Selected photo: {improvementPhotoFile.name}
+                        </p>
+                      )}
+
+                      
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleSubmitImprovement(spot.id)}
+                          disabled={
+                            sendingImprovementSpotId === spot.id ||
+                            (!improvementComment.trim() && !improvementPhotoFile)
+                          }
+                          className={`px-3 py-2 rounded-lg text-sm ${
+                            !improvementComment.trim() && !improvementPhotoFile
+                              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              : "bg-black text-white"
+                          }`}
+                        >
+                          {sendingImprovementSpotId === spot.id ? "Sending..." : "Send improvement"}
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setImprovingSpotId(null);
+                            setImprovementComment("");
+                            setImprovementPhotoFile(null);
+                          }}
+                          className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   <button
                     onClick={() =>
