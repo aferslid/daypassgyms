@@ -187,6 +187,9 @@ export default function Map() {
   const isPopupOpenRef = useRef(false);
   const saveLockRef = useRef(false);
   const router = useRouter();
+  const [confirmCounts, setConfirmCounts] = useState<Record<number, number>>({});
+  const [confirmedSpotIds, setConfirmedSpotIds] = useState<number[]>([]);
+  const [confirmingSpotId, setConfirmingSpotId] = useState<number | null>(null);
 
   const categoriesRequiringZoom = [
     "atm",
@@ -590,6 +593,87 @@ useEffect(() => {
     alert("Spot deleted.");
   };
 
+  const fetchConfirmationData = async (spotId: number) => {
+    const { data, error } = await supabase
+      .from("spot_confirmations")
+      .select("user_id")
+      .eq("spot_id", spotId);
+
+    if (error) {
+      console.error("Error fetching confirmations:", error);
+      return;
+    }
+
+    const count = data?.length || 0;
+
+    setConfirmCounts((prev) => ({
+      ...prev,
+      [spotId]: count,
+    }));
+
+    if (user?.id) {
+      const hasConfirmed = (data || []).some((row) => row.user_id === user.id);
+
+      setConfirmedSpotIds((prev) => {
+        const alreadyIncluded = prev.includes(spotId);
+
+        if (hasConfirmed && !alreadyIncluded) {
+          return [...prev, spotId];
+        }
+
+        if (!hasConfirmed && alreadyIncluded) {
+          return prev.filter((id) => id !== spotId);
+        }
+
+        return prev;
+      });
+    }
+  };
+
+  const handleConfirmSpot = async (spotId: number) => {
+    if (!user) {
+      alert("You need to sign in to confirm a spot.");
+      return;
+    }
+
+    if (confirmedSpotIds.includes(spotId)) {
+      return;
+    }
+
+    setConfirmingSpotId(spotId);
+
+    const { error } = await supabase.from("spot_confirmations").insert({
+      spot_id: spotId,
+      user_id: user.id,
+    });
+
+    if (error) {
+      console.error("Error confirming spot:", error);
+
+      if (error.message?.toLowerCase().includes("duplicate")) {
+        setConfirmedSpotIds((prev) =>
+          prev.includes(spotId) ? prev : [...prev, spotId]
+        );
+      } else {
+        alert("Could not confirm this spot.");
+      }
+
+      setConfirmingSpotId(null);
+      return;
+    }
+
+    setConfirmedSpotIds((prev) =>
+      prev.includes(spotId) ? prev : [...prev, spotId]
+    );
+
+    setConfirmCounts((prev) => ({
+      ...prev,
+      [spotId]: (prev[spotId] || 0) + 1,
+    }));
+
+    setConfirmingSpotId(null);
+  };
+
   const getMarkerIcon = (type: string) => {
     let icon = "📍";
     let color = "#3b82f6";
@@ -766,6 +850,7 @@ if (type === "healthy_food") {
           eventHandlers={{
             popupopen: () => {
               isPopupOpenRef.current = true;
+              fetchConfirmationData(spot.id);
             },
             popupclose: () => {
               isPopupOpenRef.current = false;
@@ -773,142 +858,155 @@ if (type === "healthy_food") {
           }}
           >
             <Popup autoPan={false}>
-              <div>
-                <strong>{spot.name}</strong>
-                <br />
-                {spot.type}
-                <br />
-                <p className="text-sm text-gray-600 whitespace-pre-line">
-                {spot.description}
-                </p>
-                <p className="text-xs text-gray-400 mt-2">
-                  Source: {spot.source === "user" ? "Community" : spot.source || "Unknown"}
-                </p>
-                {spot.details?.location_type && (
-                  <>
-                    <br />
-                    ATM: {spot.details.location_type}
-                  </>
+              <div className="w-[240px] text-sm text-gray-800">
+                <div className="mb-2">
+                  <h3 className="font-semibold text-base leading-tight">{spot.name}</h3>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mt-0.5">
+                    {spot.type}
+                  </p>
+                </div>
+
+                {spot.description && (
+                  <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed mb-3">
+                    {spot.description}
+                  </p>
                 )}
 
-                {spot.details?.fee_value !== undefined && (
-                  <>
-                    <br />
-                    Fees: {spot.details.fee_value}
-                    {spot.details.fee_type === "percent" ? "%" : ""}
-                    {spot.details.fee_type === "currency" && spot.details.currency
-                      ?  `${spot.details.currency}`
-                      : ""}
-                  </>
-                )}
+                <div className="space-y-1 text-sm text-gray-700">
+                  {spot.details?.location_type && (
+                    <p><span className="font-medium">ATM:</span> {spot.details.location_type}</p>
+                  )}
 
-                {spot.details?.free !== undefined && (
-                  <>
-                    <br />
-                    Free: {spot.details.free ? "Yes" : "No"}
-                  </>
-                )}
+                  {spot.details?.fee_value !== undefined && (
+                    <p>
+                      <span className="font-medium">Fees:</span> {spot.details.fee_value}
+                      {spot.details.fee_type === "percent" ? "%" : ""}
+                      {spot.details.fee_type === "currency" && spot.details.currency
+                        ? ` ${spot.details.currency}`
+                        : ""}
+                    </p>
+                  )}
 
-                {spot.details?.pmr !== undefined && (
-                  <>
-                    <br />
-                    PMR: {spot.details.pmr ? "Yes" : "No"}
-                  </>
-                )}
+                  {spot.details?.free !== undefined && (
+                    <p><span className="font-medium">Free:</span> {spot.details.free ? "Yes" : "No"}</p>
+                  )}
 
-                {spot.details?.drinkable !== undefined && (
-                  <>
-                    <br />
-                    Drinkable: {spot.details.drinkable ? "Yes" : "No"}
-                  </>
-                )}
+                  {spot.details?.pmr !== undefined && (
+                    <p><span className="font-medium">PMR:</span> {spot.details.pmr ? "Yes" : "No"}</p>
+                  )}
 
-                {spot.details?.consumption_required !== undefined && (
-                  <>
-                    <br />
-                    Consumption required: {spot.details.consumption_required ? "Yes" : "No"}
-                  </>
-                )}
+                  {spot.details?.drinkable !== undefined && (
+                    <p><span className="font-medium">Drinkable:</span> {spot.details.drinkable ? "Yes" : "No"}</p>
+                  )}
 
-                {spot.details?.network_name && (
-                  <>
-                    <br />
-                    WiFi: {spot.details.network_name}
-                  </>
-                )}
+                  {spot.details?.consumption_required !== undefined && (
+                    <p>
+                      <span className="font-medium">Consumption required:</span>{" "}
+                      {spot.details.consumption_required ? "Yes" : "No"}
+                    </p>
+                  )}
 
-                {spot.details?.password && (
-                  <>
-                    <br />
-                    Password: {spot.details.password}
-                  </>
-                )}
+                  {spot.details?.network_name && (
+                    <p><span className="font-medium">WiFi:</span> {spot.details.network_name}</p>
+                  )}
 
-                {spot.details?.day_pass_price !== undefined && (
-                  <>
-                    <br />
-                    Day pass: {spot.details.day_pass_price}
-                    {spot.details.currency ?  `${spot.details.currency}` : ""}
-                  </>
-                )}
+                  {spot.details?.password && (
+                    <p><span className="font-medium">Password:</span> {spot.details.password}</p>
+                  )}
 
-                {spot.details?.shower !== undefined && (
-                  <>
-                    <br />
-                    Shower: {spot.details.shower ? "Yes" : "No"}
-                  </>
-                )}
+                  {spot.details?.day_pass_price !== undefined && (
+                    <p>
+                      <span className="font-medium">Day pass:</span> {spot.details.day_pass_price}
+                      {spot.details.currency ? ` ${spot.details.currency}` : ""}
+                    </p>
+                  )}
 
-                {spot.details?.reservation_required !== undefined && (
-                  <>
-                    <br />
-                    Reservation required: {spot.details.reservation_required ? "Yes" : "No"}
-                  </>
-                )}
+                  {spot.details?.shower !== undefined && (
+                    <p><span className="font-medium">Shower:</span> {spot.details.shower ? "Yes" : "No"}</p>
+                  )}
 
-                {spot.user_id && profilesMap[spot.user_id] && (
-                  <div className="text-sm">
-                    Added by:{" "}
-                    <span
-                      className="text-blue-600 cursor-pointer hover:underline"
-                      onClick={() => router.push(`/user/${spot.user_id}`)}
-                    >
-                      {profilesMap[spot.user_id]}
-                    </span>
-                  </div>
-                )}
-
-                {spot.created_at && (
-                  <span className="text-xs text-gray-500 block">
-                    {new Date(spot.created_at).toLocaleDateString("fr-FR")}
-                  </span>
-                )}
+                  {spot.details?.reservation_required !== undefined && (
+                    <p>
+                      <span className="font-medium">Reservation required:</span>{" "}
+                      {spot.details.reservation_required ? "Yes" : "No"}
+                    </p>
+                  )}
+                </div>
 
                 {spot.photo_url && (
-                  <>
-                    <br />
-                    <img
+                  <img
                     src={spot.photo_url}
                     alt={spot.name}
-                    className="w-full rounded-xl mb-2 max-h-48 object-cover"
+                    className="w-full rounded-xl my-3 max-h-48 object-cover border"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
                   />
-                  </>
                 )}
 
-                {user && spot.user_id === user.id && (
-                  <>
-                    <br />
+                <div className="border-t pt-3 mt-3 space-y-1">
+                  {spot.user_id && profilesMap[spot.user_id] && (
+                    <div className="text-sm">
+                      <span className="text-gray-500">Added by:</span>{" "}
+                      <span
+                        className="text-blue-600 cursor-pointer hover:underline"
+                        onClick={() => router.push(`/user/${spot.user_id}`)}
+                      >
+                        {profilesMap[spot.user_id]}
+                      </span>
+                    </div>
+                  )}
+
+                  {spot.created_at && (
+                    <p className="text-xs text-gray-500">
+                      Added on {new Date(spot.created_at).toLocaleDateString("fr-FR")}
+                    </p>
+                  )}
+
+                  <p className="text-xs text-gray-400">
+                    Source: {spot.source === "user" ? "Community" : spot.source || "Unknown"}
+                  </p>
+                </div>
+
+                <div className="mt-3 flex flex-col gap-2">
+                  <p className="text-xs text-gray-500">
+                    Confirmed by {confirmCounts[spot.id] || 0} user
+                    {(confirmCounts[spot.id] || 0) > 1 ? "s" : ""}
+                  </p>
+
+                  <button
+                    onClick={() => handleConfirmSpot(spot.id)}
+                    disabled={
+                      confirmingSpotId === spot.id || confirmedSpotIds.includes(spot.id)
+                    }
+                    className={`px-3 py-2 rounded-lg text-sm ${
+                      confirmedSpotIds.includes(spot.id)
+                        ? "bg-green-100 text-green-700 cursor-not-allowed"
+                        : "bg-black text-white"
+                    }`}
+                  >
+                    {confirmedSpotIds.includes(spot.id)
+                      ? "Confirmed"
+                      : confirmingSpotId === spot.id
+                      ? "Confirming..."
+                      : "Confirm spot"}
+                  </button>
+
+                  <button
+                    className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+                  >
+                    Report a problem
+                  </button>
+
+                  {user && spot.user_id === user.id && (
                     <button
                       onClick={() => handleDeleteSpot(spot.id)}
-                      className="mt-2 bg-red-500 text-white px-3 py-1 rounded"
+                      className="px-3 py-2 rounded-lg text-sm bg-red-500 text-white"
                     >
                       Delete
                     </button>
-                  </>
-                )}
+                  )}
+                </div>
               </div>
             </Popup>
           </Marker>
