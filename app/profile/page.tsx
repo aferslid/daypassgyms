@@ -12,13 +12,17 @@ const countryOptions = countriesList
   }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
-const getFlagEmoji = (code: string) => {
-  return code
-    .toUpperCase()
-    .replace(/./g, (char) =>
-      String.fromCodePoint(127397 + char.charCodeAt(0))
-    );
-};
+function getFlagEmoji(countryCode: string) {
+  try {
+    return countryCode
+      .toUpperCase()
+      .replace(/./g, (char) =>
+        String.fromCodePoint(127397 + char.charCodeAt(0))
+      );
+  } catch {
+    return countryCode;
+  }
+}
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
@@ -46,11 +50,13 @@ export default function ProfilePage() {
   const [showSent, setShowSent] = useState(false);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const ADMIN_EMAIL = "a.fers-lidou@outlook.fr";
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setCurrentUserEmail(user?.email ?? null);
+      setIsUserLoaded(true);
 
         if (!user) {
         setLoading(false);
@@ -273,15 +279,6 @@ export default function ProfilePage() {
                 ← Back to map
             </button>
 
-            {currentUserEmail === ADMIN_EMAIL && (
-            <button
-                onClick={() => router.push("/admin/reports")}
-                className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
-            >
-                Admin reports
-            </button>
-            )}
-
             <div className="bg-white text-black rounded-2xl shadow p-4 border border-gray-200">
                 Loading profile...
             </div>
@@ -319,14 +316,29 @@ export default function ProfilePage() {
         );
         }
 
+        if (!isUserLoaded) {
+        return <div className="p-4">Loading...</div>;
+        }
+
   return (
     <div className="p-4 max-w-lg mx-auto w-full bg-gray-50 min-h-screen">
+        <div className="mb-4 flex flex-col sm:flex-row gap-4">
         <button
-        onClick={() => router.push("/")}
-        className="mb-4 bg-black text-white px-4 py-2 rounded-xl"
+            onClick={() => router.push("/")}
+            className="bg-black text-white px-4 py-2 rounded-xl"
         >
-        ← Back to map
+            ← Back to map
         </button>
+
+        {isUserLoaded && currentUserEmail === ADMIN_EMAIL && (
+            <button
+            onClick={() => router.push("/admin/reports")}
+            className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
+            >
+            Admin reports
+            </button>
+        )}
+        </div>
 
         <div className="mb-2">
         <h1 className="text-2xl font-bold text-black">My Profile</h1>
@@ -414,7 +426,9 @@ export default function ProfilePage() {
                 onClick={() =>
                 setActiveCountry((prev) => (prev === code ? null : code))
                 }
-                className="border rounded-xl px-3 py-2 bg-gray-50 text-sm cursor-pointer"
+                className={`border rounded-xl px-3 py-2 bg-gray-50 text-sm cursor-pointer hover:bg-gray-100 ${
+                activeCountry === code ? "border-black bg-gray-100" : "border-gray-300"
+                }`}
                 title={country?.name}
                 >
                 {getFlagEmoji(code)}
