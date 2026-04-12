@@ -39,6 +39,7 @@ type Spot = {
   created_at?: string | null;
   details?: Record<string, any> | null;
   source?: string | null;
+  country?: string;
 };
 
 type Profile = {
@@ -256,6 +257,33 @@ function SpotReportForm({
       </div>
     </div>
   );
+}
+
+async function getCountryCodeFromCoords(lat: number, lng: number): Promise<string | null> {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
+      {
+        headers: {
+          Accept: "application/json",
+          "User-Agent": "TravelerSurvivalMap/1.0",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Reverse geocoding failed:", response.status);
+      return null;
+    }
+
+    const data = await response.json();
+    const countryCode = data?.address?.country_code;
+
+    return countryCode ? String(countryCode).toUpperCase() : null;
+  } catch (error) {
+    console.error("Error reverse geocoding country:", error);
+    return null;
+  }
 }
 
 export default function Map() {
@@ -536,6 +564,11 @@ useEffect(() => {
         photoUrl = publicUrlData.publicUrl;
       }
 
+      const countryCode = await getCountryCodeFromCoords(
+        pendingPosition.lat,
+        pendingPosition.lng
+      );
+
       const { data, error } = await supabase
         .from("spots")
         .insert([
@@ -548,7 +581,7 @@ useEffect(() => {
             user_id: user?.id || null,
             photo_url: photoUrl,
             source: "user",
-            country: null,
+            country: countryCode,
             details: details,
           },
         ])
