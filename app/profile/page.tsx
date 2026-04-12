@@ -338,6 +338,13 @@ export default function ProfilePage() {
             Admin reports
             </button>
         )}
+
+        <button
+        onClick={() => router.push("/community")}
+        className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
+        >
+        Community
+        </button>
         </div>
 
         <div className="mb-2">

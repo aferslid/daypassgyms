@@ -730,7 +730,7 @@ useEffect(() => {
       return;
     }
 
-    alert("Account created. Please confirm your email before signing in.");
+    alert("Account created! 📩 Check your email (and spam folder just in case) to confirm your account.");
   };
 
   const handleLogin = async () => {
