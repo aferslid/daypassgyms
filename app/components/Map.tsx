@@ -361,6 +361,145 @@ function MapDeepLinkUpdater({
   return null;
 }
 
+function SpotImprovementForm({
+  spotId,
+  user,
+  onClose,
+}: {
+  spotId: number;
+  user: any;
+  onClose: () => void;
+}) {
+  const [comment, setComment] = useState("");
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [sending, setSending] = useState(false);
+
+  const handleSubmitImprovement = async () => {
+    if (!user) {
+      alert("You need to sign in to improve a spot.");
+      return;
+    }
+
+    if (!comment.trim() && !photoFile) {
+      alert("Please add at least a comment or a photo.");
+      return;
+    }
+
+    setSending(true);
+
+    let uploadedPhotoUrl: string | null = null;
+
+    if (photoFile) {
+      const fileExt = photoFile.name.split(".").pop();
+      const fileName = `improvement-${spotId}-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("spot-photos")
+        .upload(`uploads/${fileName}`, photoFile);
+
+      if (uploadError) {
+        console.error("Error uploading improvement photo:", uploadError);
+        alert("Could not upload photo.");
+        setSending(false);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("spot-photos")
+        .getPublicUrl(`uploads/${fileName}`);
+
+      uploadedPhotoUrl = publicUrlData.publicUrl;
+    }
+
+    const { error } = await supabase.from("spot_improvements").insert({
+      spot_id: spotId,
+      user_id: user.id,
+      comment: comment.trim() || null,
+      photo_url: uploadedPhotoUrl,
+    });
+
+    if (error) {
+      console.error("Error sending improvement:", error);
+      alert("Could not send improvement.");
+      setSending(false);
+      return;
+    }
+
+    alert("Improvement sent.");
+    setComment("");
+    setPhotoFile(null);
+    setSending(false);
+    onClose();
+  };
+
+  return (
+    <div className="mt-2 p-3 border rounded-lg bg-gray-50 space-y-2">
+      <textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Add missing info, corrections, or useful details..."
+        className="w-full border rounded-lg px-3 py-2 text-sm min-h-[90px]"
+      />
+
+      <div className="flex gap-2">
+        <label className="flex-1 cursor-pointer border rounded-lg px-3 py-2 text-sm text-center bg-white">
+          📷 Take photo
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null;
+              setPhotoFile(file);
+            }}
+          />
+        </label>
+
+        <label className="flex-1 cursor-pointer border rounded-lg px-3 py-2 text-sm text-center bg-white">
+          🖼️ Gallery
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null;
+              setPhotoFile(file);
+            }}
+          />
+        </label>
+      </div>
+
+      {photoFile && (
+        <p className="text-xs text-gray-600">
+          Selected photo: {photoFile.name}
+        </p>
+      )}
+
+      <div className="flex gap-2">
+        <button
+          onClick={handleSubmitImprovement}
+          disabled={sending || (!comment.trim() && !photoFile)}
+          className={`px-3 py-2 rounded-lg text-sm ${
+            !comment.trim() && !photoFile
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-black text-white"
+          }`}
+        >
+          {sending ? "Sending..." : "Send improvement"}
+        </button>
+
+        <button
+          onClick={onClose}
+          className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -389,67 +528,6 @@ export default function Map() {
   const deepLinkSpotId = searchParams.get("spotId");
   const [hasAppliedDeepLink, setHasAppliedDeepLink] = useState(false);
   const [improvingSpotId, setImprovingSpotId] = useState<number | null>(null);
-  const [improvementComment, setImprovementComment] = useState("");
-  const [improvementPhotoFile, setImprovementPhotoFile] = useState<File | null>(null);
-  const [sendingImprovementSpotId, setSendingImprovementSpotId] = useState<number | null>(null);
-
-  const handleSubmitImprovement = async (spotId: number) => {
-    if (!user) {
-      alert("You need to sign in to improve a spot.");
-      return;
-    }
-
-    if (!improvementComment.trim() && !improvementPhotoFile) {
-    alert("Please add at least a comment or a photo.");
-    return;
-    }
-
-    setSendingImprovementSpotId(spotId);
-
-    let uploadedPhotoUrl: string | null = null;
-
-    if (improvementPhotoFile) {
-      const fileExt = improvementPhotoFile.name.split(".").pop();
-      const fileName = `improvement-${spotId}-${Date.now()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("spot-photos")
-        .upload(`improvements/${fileName}`, improvementPhotoFile);
-
-      if (uploadError) {
-        console.error("Error uploading improvement photo:", uploadError);
-        alert("Could not upload photo.");
-        setSendingImprovementSpotId(null);
-        return;
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("spot-photos")
-        .getPublicUrl(`improvements/${fileName}`);
-
-      uploadedPhotoUrl = publicUrlData.publicUrl;
-    }
-
-    const { error } = await supabase.from("spot_improvements").insert({
-      spot_id: spotId,
-      user_id: user.id,
-      comment: improvementComment.trim() || null,
-      photo_url: uploadedPhotoUrl,
-    });
-
-    if (error) {
-      console.error("Error sending improvement:", error);
-      alert("Could not send improvement.");
-      setSendingImprovementSpotId(null);
-      return;
-    }
-
-    alert("Improvement sent.");
-    setImprovingSpotId(null);
-    setImprovementComment("");
-    setImprovementPhotoFile(null);
-    setSendingImprovementSpotId(null);
-  };
 
   const categoriesRequiringZoom = [
     "atm",
@@ -1282,78 +1360,11 @@ if (type === "healthy_food") {
                   </button>
 
                   {improvingSpotId === spot.id && (
-                    <div className="mt-2 p-3 border rounded-lg bg-gray-50 space-y-2">
-                      <textarea
-                        value={improvementComment}
-                        onChange={(e) => setImprovementComment(e.target.value)}
-                        placeholder="Add missing info, corrections, or useful details..."
-                        className="w-full border rounded-lg px-3 py-2 text-sm min-h-[90px]"
-                      />
-
-                      <div className="flex gap-2">
-                        <label className="flex-1 cursor-pointer border rounded-lg px-3 py-2 text-sm text-center bg-white">
-                          📷 Take photo
-                          <input
-                            type="file"
-                            accept="image/*"
-                            capture="environment"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0] || null;
-                              setImprovementPhotoFile(file);
-                            }}
-                          />
-                        </label>
-
-                        <label className="flex-1 cursor-pointer border rounded-lg px-3 py-2 text-sm text-center bg-white">
-                          🖼️ Gallery
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0] || null;
-                              setImprovementPhotoFile(file);
-                            }}
-                          />
-                        </label>
-                      </div>
-
-                      {improvementPhotoFile && (
-                        <p className="text-xs text-gray-600">
-                          Selected photo: {improvementPhotoFile.name}
-                        </p>
-                      )}
-
-                      
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleSubmitImprovement(spot.id)}
-                          disabled={
-                            sendingImprovementSpotId === spot.id ||
-                            (!improvementComment.trim() && !improvementPhotoFile)
-                          }
-                          className={`px-3 py-2 rounded-lg text-sm ${
-                            !improvementComment.trim() && !improvementPhotoFile
-                              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                              : "bg-black text-white"
-                          }`}
-                        >
-                          {sendingImprovementSpotId === spot.id ? "Sending..." : "Send improvement"}
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setImprovingSpotId(null);
-                            setImprovementComment("");
-                            setImprovementPhotoFile(null);
-                          }}
-                          className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
+                    <SpotImprovementForm
+                      spotId={spot.id}
+                      user={user}
+                      onClose={() => setImprovingSpotId(null)}
+                    />
                   )}
 
                   <button
