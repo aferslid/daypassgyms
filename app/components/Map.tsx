@@ -6,6 +6,7 @@ import {
   TileLayer,
   Marker,
   Popup,
+  useMap,
   useMapEvents,
 } from "react-leaflet";
 import { supabase } from "@/lib/supabase";
@@ -14,6 +15,8 @@ import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import AddSpotForm from "./AddSpotForm";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import countriesList from "world-countries";
 
 // Fix icônes Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -286,6 +289,78 @@ async function getCountryCodeFromCoords(lat: number, lng: number): Promise<strin
   }
 }
 
+const countryOptions = countriesList
+  .map((country) => ({
+    code: country.cca2,
+    name: country.name.common,
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+function getFlagEmoji(countryCode: string) {
+  try {
+    return countryCode
+      .toUpperCase()
+      .replace(/./g, (char) =>
+        String.fromCodePoint(127397 + char.charCodeAt(0))
+      );
+  } catch {
+    return countryCode;
+  }
+}
+
+function MapDeepLinkUpdater({
+  lat,
+  lng,
+  onApplied,
+  setBounds,
+  setZoomLevel,
+}: {
+  lat: string | null;
+  lng: string | null;
+  onApplied: () => void;
+  setBounds: React.Dispatch<
+    React.SetStateAction<{
+      north: number;
+      south: number;
+      east: number;
+      west: number;
+    } | null>
+  >;
+  setZoomLevel: (zoom: number) => void;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!lat || !lng) return;
+
+    const parsedLat = parseFloat(lat);
+    const parsedLng = parseFloat(lng);
+
+    if (isNaN(parsedLat) || isNaN(parsedLng)) return;
+
+    const timeout = setTimeout(() => {
+      map.setView([parsedLat, parsedLng], 16);
+
+      const b = map.getBounds();
+      setBounds({
+        north: b.getNorth(),
+        south: b.getSouth(),
+        east: b.getEast(),
+        west: b.getWest(),
+      });
+
+      setZoomLevel(map.getZoom());
+      onApplied();
+
+      window.history.replaceState({}, "", "/");
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [lat, lng, map, onApplied, setBounds, setZoomLevel]);
+
+  return null;
+}
+
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -308,6 +383,11 @@ export default function Map() {
   const [confirmedSpotIds, setConfirmedSpotIds] = useState<number[]>([]);
   const [confirmingSpotId, setConfirmingSpotId] = useState<number | null>(null);
   const [reportingSpotId, setReportingSpotId] = useState<number | null>(null);
+  const searchParams = useSearchParams();
+  const deepLinkLat = searchParams.get("lat");
+  const deepLinkLng = searchParams.get("lng");
+  const deepLinkSpotId = searchParams.get("spotId");
+  const [hasAppliedDeepLink, setHasAppliedDeepLink] = useState(false);
 
   const categoriesRequiringZoom = [
     "atm",
@@ -384,28 +464,30 @@ useEffect(() => {
 }, [bounds, category, zoomLevel]);
 
   useEffect(() => {
-  if (!navigator.geolocation) return;
+    if (hasAppliedDeepLink) return;
+    if (!navigator.geolocation) return;
 
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      setUserPosition({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      });
-    },
-    (error) => {
-      console.error(error);
-    },
-    { enableHighAccuracy: true }
-  );
-}, []);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error(error);
+      },
+      { enableHighAccuracy: true }
+    );
+  }, [hasAppliedDeepLink]);
 
   useEffect(() => {
+    if (hasAppliedDeepLink) return;
     if (!userPosition || !mapRef.current || hasCenteredOnUser) return;
 
     mapRef.current.setView([userPosition.lat, userPosition.lng], 16);
     setHasCenteredOnUser(true);
-  }, [userPosition, hasCenteredOnUser]);
+  }, [userPosition, hasCenteredOnUser, hasAppliedDeepLink]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -569,6 +651,11 @@ useEffect(() => {
         pendingPosition.lng
       );
 
+      const countryName =
+        countryOptions.find((c) => c.code === countryCode)?.name || countryCode;
+
+      const flag = countryCode ? getFlagEmoji(countryCode) : "🌍";
+
       const { data, error } = await supabase
         .from("spots")
         .insert([
@@ -598,7 +685,7 @@ useEffect(() => {
       }
 
       resetAddForm();
-      alert("Spot successfully added.");
+      alert(`You just added a new spot in ${countryName || "this area"} ${flag}`);
     } catch (err) {
       console.error("Unexpected error while saving spot:", err);
       alert("Unexpected error while saving spot.");
@@ -914,15 +1001,23 @@ if (type === "healthy_food") {
   return (
     <div className="h-screen w-full relative">
       <MapContainer
-        center={[46.603354, 1.888334]}
-        zoom={6}
-        scrollWheelZoom={true}
-        className="h-full w-full"
-        ref={mapRef}
-      >
+      center={[46.603354, 1.888334]}
+      zoom={6}
+      scrollWheelZoom={true}
+      className="h-full w-full"
+      ref={mapRef}>
+
         <TileLayer
           attribution="&copy; OpenStreetMap"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        <MapDeepLinkUpdater
+          lat={deepLinkLat}
+          lng={deepLinkLng}
+          onApplied={() => setHasAppliedDeepLink(true)}
+          setBounds={setBounds}
+          setZoomLevel={setZoomLevel}
         />
 
         <MapBoundsUpdater setBounds={setBounds} isPopupOpenRef={isPopupOpenRef} />

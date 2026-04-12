@@ -307,11 +307,13 @@ export default function AdminReportsPage() {
 
                 <div className="flex flex-col sm:flex-row gap-2">
                   <button
-                    onClick={() => router.push("/")}
-                    className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
-                  >
-                    View spot on map
-                  </button>
+                onClick={() =>
+                    router.push(`/?lat=${spot.lat}&lng=${spot.lng}&spotId=${spot.id}`)
+                }
+                className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
+                >
+                View spot on map
+                </button>
 
                   <button
                     onClick={() => handleIgnoreReport(report.id)}
