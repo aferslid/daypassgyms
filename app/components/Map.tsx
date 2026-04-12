@@ -169,6 +169,95 @@ function createClusterCustomIcon(cluster: any) {
   });
 }
 
+function SpotReportForm({
+  spotId,
+  user,
+  onClose,
+}: {
+  spotId: number;
+  user: any;
+  onClose: () => void;
+}) {
+  const [reportReason, setReportReason] = useState("");
+  const [reportComment, setReportComment] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const handleSubmitReport = async () => {
+    if (!user) {
+      alert("You need to sign in to report a problem.");
+      return;
+    }
+
+    if (!reportReason) {
+      alert("Please choose a reason.");
+      return;
+    }
+
+    setSending(true);
+
+    const { error } = await supabase.from("spot_reports").insert({
+      spot_id: spotId,
+      user_id: user.id,
+      reason: reportReason,
+      comment: reportComment.trim() || null,
+    });
+
+    if (error) {
+      console.error("Error sending report:", error);
+      alert("Could not send report.");
+      setSending(false);
+      return;
+    }
+
+    alert("Report sent.");
+    setSending(false);
+    onClose();
+  };
+
+  return (
+    <div className="mt-2 p-3 border rounded-lg bg-gray-50 space-y-2">
+      <select
+        value={reportReason}
+        onChange={(e) => setReportReason(e.target.value)}
+        className="w-full border rounded-lg px-3 py-2 text-sm"
+      >
+        <option value="">Select a reason</option>
+        <option value="no_longer_exists">Spot no longer exists</option>
+        <option value="incorrect_info">Information is incorrect</option>
+      </select>
+
+      <textarea
+        value={reportComment}
+        onChange={(e) => setReportComment(e.target.value)}
+        placeholder="Explain what is wrong..."
+        disabled={!reportReason}
+        className="w-full border rounded-lg px-3 py-2 text-sm min-h-[90px] disabled:bg-gray-100"
+      />
+
+      <div className="flex gap-2">
+        <button
+          onClick={handleSubmitReport}
+          disabled={!reportReason || sending}
+          className={`px-3 py-2 rounded-lg text-sm ${
+            !reportReason || sending
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-black text-white"
+          }`}
+        >
+          {sending ? "Sending..." : "Send report"}
+        </button>
+
+        <button
+          onClick={onClose}
+          className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
@@ -190,6 +279,7 @@ export default function Map() {
   const [confirmCounts, setConfirmCounts] = useState<Record<number, number>>({});
   const [confirmedSpotIds, setConfirmedSpotIds] = useState<number[]>([]);
   const [confirmingSpotId, setConfirmingSpotId] = useState<number | null>(null);
+  const [reportingSpotId, setReportingSpotId] = useState<number | null>(null);
 
   const categoriesRequiringZoom = [
     "atm",
@@ -993,10 +1083,21 @@ if (type === "healthy_food") {
                   </button>
 
                   <button
+                    onClick={() =>
+                      setReportingSpotId((prev) => (prev === spot.id ? null : spot.id))
+                    }
                     className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
                   >
                     Report a problem
                   </button>
+
+                  {reportingSpotId === spot.id && (
+                    <SpotReportForm
+                      spotId={spot.id}
+                      user={user}
+                      onClose={() => setReportingSpotId(null)}
+                    />
+                  )}
 
                   {user && spot.user_id === user.id && (
                     <button

@@ -44,10 +44,13 @@ export default function ProfilePage() {
   const [showFriends, setShowFriends] = useState(false);
   const [showReceived, setShowReceived] = useState(false);
   const [showSent, setShowSent] = useState(false);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const ADMIN_EMAIL = "a.fers-lidou@outlook.fr";
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUserEmail(user?.email ?? null);
 
         if (!user) {
         setLoading(false);
@@ -269,6 +272,15 @@ export default function ProfilePage() {
             >
                 ← Back to map
             </button>
+
+            {currentUserEmail === ADMIN_EMAIL && (
+            <button
+                onClick={() => router.push("/admin/reports")}
+                className="bg-white text-black border border-gray-300 px-4 py-2 rounded-xl"
+            >
+                Admin reports
+            </button>
+            )}
 
             <div className="bg-white text-black rounded-2xl shadow p-4 border border-gray-200">
                 Loading profile...
