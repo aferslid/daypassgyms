@@ -48,11 +48,6 @@ export default function AdminReportsPage() {
   const [improvements, setImprovements] = useState<any[]>([]);
   const [loadingImprovements, setLoadingImprovements] = useState(false);
 
-  const reloadAll = async () => {
-    await loadReports();
-    await fetchImprovements();
-  };
-
   const fetchImprovements = async () => {
     try {
         setLoadingImprovements(true);
@@ -169,6 +164,70 @@ export default function AdminReportsPage() {
       setProfilesMap({});
     }
   };
+
+  const reloadAll = async () => {
+    await loadReports();
+    await fetchImprovements();
+  };
+
+  const handleAcceptImprovement = async (item: any) => {
+    const { spot_id, comment, photo_url, id } = item;
+
+    // 1. Récupérer le spot actuel
+    const { data: spot, error: spotError } = await supabase
+        .from("spots")
+        .select("*")
+        .eq("id", spot_id)
+        .single();
+
+    if (spotError || !spot) {
+        alert("Could not find spot");
+        return;
+    }
+
+    // 2. Construire update
+    const updatedData: any = {};
+
+    if (photo_url) {
+        updatedData.photo_url = photo_url;
+    }
+
+    if (comment) {
+        updatedData.description = spot.description
+        ? spot.description + "\n\n" + comment
+        : comment;
+    }
+
+    // 👉 rendre community
+    updatedData.source = "community";
+
+    // 3. Update du spot
+    const { error: updateError } = await supabase
+        .from("spots")
+        .update(updatedData)
+        .eq("id", spot_id);
+
+    if (updateError) {
+    console.error("Error updating spot:", updateError);
+    alert(updateError.message);
+    return;
+    }
+
+    // 4. Supprimer l'amélioration
+    const { error: deleteError } = await supabase
+    .from("spot_improvements")
+    .delete()
+    .eq("id", id);
+
+    if (deleteError) {
+    console.error("Error deleting improvement:", deleteError);
+    alert(deleteError.message);
+    return;
+    }
+
+    // 5. Refresh
+    await reloadAll();
+    alert(`Improvement accepted ✅ for spot ${spot_id}`);
 
   const groupedReports = useMemo(() => {
     return reports.map((report) => ({
@@ -321,6 +380,36 @@ export default function AdminReportsPage() {
                     View spot on map
                     </button>
                 )}
+
+                <div className="flex gap-2 mb-3">
+                    <button
+                        onClick={() => handleAcceptImprovement(item)}
+                        className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm"
+                    >
+                        Accept
+                    </button>
+
+                    <button
+                        onClick={async () => {
+                        const { error } = await supabase
+                            .from("spot_improvements")
+                            .delete()
+                            .eq("id", item.id);
+
+                        if (error) {
+                            console.error("Reject improvement error:", error);
+                            alert(`Reject error: ${error.message}`);
+                            return;
+                        }
+
+                        alert(`Improvement rejected for spot ${item.spot_id}`);
+                        await reloadAll();
+                        }}
+                        className="bg-red-500 text-white px-3 py-2 rounded-lg text-sm"
+                    >
+                        Reject
+                    </button>
+                    </div>
     
                 <div className="text-xs text-gray-500">
                     {new Date(item.created_at).toLocaleString("fr-FR")}
@@ -442,4 +531,4 @@ export default function AdminReportsPage() {
       )}
     </div>
   );
-}
+}}
