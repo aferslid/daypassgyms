@@ -1299,8 +1299,8 @@ if (type === "tattoo") {
       </MapContainer>
 
             {selectedSpot && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[1000] w-[90vw] max-w-[320px] pointer-events-auto">
-          <div className="bg-white/98 backdrop-blur-md shadow-2xl rounded-2xl p-3 border border-gray-200 max-h-[54vh] overflow-y-auto">
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[1000] w-[86vw] max-w-[300px] pointer-events-auto">
+          <div className="bg-white/98 backdrop-blur-md shadow-2xl rounded-2xl p-3 border border-gray-200 max-h-[52vh] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-2">
               <div>
                 <h3 className="font-semibold text-base leading-tight text-black">
@@ -1470,7 +1470,7 @@ if (type === "tattoo") {
                   confirmingSpotId === selectedSpot.id ||
                   confirmedSpotIds.includes(selectedSpot.id)
                 }
-                className={`px-3 py-1.5 rounded-lg text-sm ${
+                className={`px-3 py-1 rounded-lg text-sm ${
                   confirmedSpotIds.includes(selectedSpot.id)
                     ? "bg-green-100 text-green-700 cursor-not-allowed"
                     : "bg-black text-white"
@@ -1489,7 +1489,7 @@ if (type === "tattoo") {
                     prev === selectedSpot.id ? null : selectedSpot.id
                   )
                 }
-                className="px-3 py-1.5 rounded-lg text-sm border border-gray-300 bg-white"
+                className="px-3 py-1 rounded-lg text-sm border border-gray-300 bg-white"
               >
                 Improve this spot
               </button>
@@ -1508,7 +1508,7 @@ if (type === "tattoo") {
                     prev === selectedSpot.id ? null : selectedSpot.id
                   )
                 }
-                className="px-3 py-1.5 rounded-lg text-sm border border-gray-300 bg-white"
+                className="px-3 py-1 rounded-lg text-sm border border-gray-300 bg-white"
               >
                 Spot no longer exists
               </button>
@@ -1524,7 +1524,7 @@ if (type === "tattoo") {
               {user && selectedSpot.user_id === user.id && (
                 <button
                   onClick={() => handleDeleteSpot(selectedSpot.id)}
-                  className="px-3 py-1.5 rounded-lg text-sm bg-red-500 text-white"
+                  className="px-3 py-1 rounded-lg text-sm bg-red-500 text-white"
                 >
                   Delete
                 </button>
@@ -1541,11 +1541,7 @@ if (type === "tattoo") {
         </div>
       )}
 
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-[1000]
-      bg-black/75 text-white rounded-full px-4 py-2 text-sm">
-        {category.toUpperCase()} | zoom {zoomLevel} | {spots.length} spots
-      </div>
-
+      
       <div className="absolute bottom-20 sm:bottom-4 left-16 z-[1000] pointer-events-auto">
         <button
           onClick={() => setShowFiltersPanel((prev) => !prev)}
@@ -1580,7 +1576,7 @@ if (type === "tattoo") {
        </div>
       )}
 
-      <div className="absolute top-6 right-4 z-[1000] pointer-events-auto flex flex-col gap-2 w-[180px]">
+      <div className="absolute top-5 right-4 z-[1000] pointer-events-auto flex flex-col gap-1.5 w-[170px]">
         <button
           onClick={() => {
             if (!user) {
@@ -1596,28 +1592,28 @@ if (type === "tattoo") {
               setPendingPosition(null);
             }
           }}
-          className="bg-black text-white px-4 py-2.5 rounded-2xl shadow-lg border border-black active:scale-95 text-sm font-medium w-full"
+          className="bg-black text-white px-4 py-2 rounded-2xl shadow-lg border border-black active:scale-95 text-sm font-medium w-full"
         >
           {isSelectingLocation || showAddForm ? "Cancel" : "Add spot"}
           </button>
 
         <button
           onClick={handleAddAtMyPosition}
-          className="bg-blue-600 text-white px-4 py-2.5 rounded-2xl shadow-lg border border-blue-700 active:scale-95 text-sm font-medium w-full"
+          className="bg-blue-600 text-white px-4 py-2 rounded-2xl shadow-lg border border-blue-700 active:scale-95 text-sm font-medium w-full"
         >
           Add at my location
         </button>
 
         <button
           onClick={recenterOnUser}
-          className="bg-white text-black px-4 py-2.5 rounded-2xl shadow-lg border border-gray-300 active:scale-95 text-sm font-medium w-full"
+          className="bg-white text-black px-4 py-2 rounded-2xl shadow-lg border border-gray-300 active:scale-95 text-sm font-medium w-full"
         >
           📍 Center on me
         </button>
 
         <button
           onClick={() => router.push("/profile")}
-          className="bg-white text-black px-4 py-2.5 rounded-2xl shadow-lg border border-gray-300 active:scale-95 text-sm font-medium w-full"
+          className="bg-white text-black px-4 py-2 rounded-2xl shadow-lg border border-gray-300 active:scale-95 text-sm font-medium w-full"
         >
           Profile
         </button>
@@ -1688,6 +1684,11 @@ if (type === "tattoo") {
             <p className="text-xs text-gray-500 m-0 leading-tight">
               Contributions : {contributionsCount}
             </p>
+
+            <p className="text-xs text-gray-500 m-0 leading-tight">
+              {category.toUpperCase()} | zoom {zoomLevel} | {spots.length} spots
+            </p>
+
             <button
               onClick={handleLogout}
               className="bg-red-500 text-white rounded-lg px-2 py-1 text-xs w-full sm:w-auto"
