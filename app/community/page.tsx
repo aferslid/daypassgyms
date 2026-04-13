@@ -14,6 +14,7 @@ type SpotRow = {
   user_id: string | null;
   country: string | null;
   source: string | null;
+  community_owned?: boolean | null;
 };
 
 type LeaderboardRow = {
@@ -24,7 +25,7 @@ type LeaderboardRow = {
 
 type CountryStats = {
   total: number;
-  user: number;
+  community: number;
   osm: number;
   official: number;
 };
@@ -60,7 +61,7 @@ async function fetchAllSpots() {
   while (true) {
     const { data, error } = await supabase
       .from("spots")
-      .select("user_id, country, source")
+      .select("user_id, country, source, community_owned")
       .range(from, from + pageSize - 1);
 
     if (error) {
@@ -131,7 +132,7 @@ export default function CommunityPage() {
           if (!stats[spot.country]) {
             stats[spot.country] = {
               total: 0,
-              user: 0,
+              community: 0,
               osm: 0,
               official: 0,
             };
@@ -139,16 +140,16 @@ export default function CommunityPage() {
 
           stats[spot.country].total += 1;
 
-          if (spot.source === "user") {
-            stats[spot.country].user += 1;
-          } else if (
+          if (spot.source === "user" || spot.community_owned) {
+            stats[spot.country].community += 1;
+            } else if (
             spot.source?.toLowerCase() === "osm" ||
             spot.source?.toLowerCase() === "open_data"
-          ) {
+            ) {
             stats[spot.country].osm += 1;
-          } else {
+            } else {
             stats[spot.country].official += 1;
-          }
+            }
         }
 
         const leaderboardRows: LeaderboardRow[] = Object.entries(userCounts)
@@ -181,7 +182,7 @@ export default function CommunityPage() {
     return (
       countryStats[selectedCountry] || {
         total: 0,
-        user: 0,
+        community: 0,
         osm: 0,
         official: 0,
       }
@@ -190,7 +191,7 @@ export default function CommunityPage() {
 
   const rawCommunityPercentage =
   selectedStats.total > 0
-    ? (selectedStats.user / selectedStats.total) * 100
+    ? (selectedStats.community / selectedStats.total) * 100
     : 0;
 
   const communityPercentage =
@@ -313,7 +314,7 @@ export default function CommunityPage() {
 
                 <div className="rounded-xl border border-gray-200 p-4 bg-gray-50">
                   <div className="text-sm text-gray-500">Community</div>
-                  <div className="text-2xl font-bold">{selectedStats.user}</div>
+                  <div className="text-2xl font-bold">{selectedStats.community}</div>
                 </div>
 
                 <div className="rounded-xl border border-gray-200 p-4 bg-gray-50">

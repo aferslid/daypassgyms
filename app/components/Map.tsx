@@ -43,6 +43,7 @@ type Spot = {
   details?: Record<string, any> | null;
   source?: string | null;
   country?: string;
+  community_owned?: boolean | null;
 };
 
 type Profile = {
@@ -182,18 +183,12 @@ function SpotReportForm({
   user: any;
   onClose: () => void;
 }) {
-  const [reportReason, setReportReason] = useState("");
-  const [reportComment, setReportComment] = useState("");
+  const [comment, setComment] = useState("");
   const [sending, setSending] = useState(false);
 
   const handleSubmitReport = async () => {
     if (!user) {
-      alert("You need to sign in to report a problem.");
-      return;
-    }
-
-    if (!reportReason) {
-      alert("Please choose a reason.");
+      alert("You need to sign in to report a spot.");
       return;
     }
 
@@ -202,8 +197,8 @@ function SpotReportForm({
     const { error } = await supabase.from("spot_reports").insert({
       spot_id: spotId,
       user_id: user.id,
-      reason: reportReason,
-      comment: reportComment.trim() || null,
+      reason: "spot_no_longer_exists",
+      comment: comment.trim() || null,
     });
 
     if (error) {
@@ -220,33 +215,22 @@ function SpotReportForm({
 
   return (
     <div className="mt-2 p-3 border rounded-lg bg-gray-50 space-y-2">
-      <select
-        value={reportReason}
-        onChange={(e) => setReportReason(e.target.value)}
-        className="w-full border rounded-lg px-3 py-2 text-sm"
-      >
-        <option value="">Select a reason</option>
-        <option value="no_longer_exists">Spot no longer exists</option>
-        <option value="incorrect_info">Information is incorrect</option>
-      </select>
+      <p className="text-sm text-gray-700">
+        Report that this spot no longer exists.
+      </p>
 
       <textarea
-        value={reportComment}
-        onChange={(e) => setReportComment(e.target.value)}
-        placeholder="Explain what is wrong..."
-        disabled={!reportReason}
-        className="w-full border rounded-lg px-3 py-2 text-sm min-h-[90px] disabled:bg-gray-100"
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Optional explanation..."
+        className="w-full border rounded-lg px-3 py-2 text-sm min-h-[70px]"
       />
 
       <div className="flex gap-2">
         <button
           onClick={handleSubmitReport}
-          disabled={!reportReason || sending}
-          className={`px-3 py-2 rounded-lg text-sm ${
-            !reportReason || sending
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-black text-white"
-          }`}
+          disabled={sending}
+          className="px-3 py-2 rounded-lg text-sm bg-red-500 text-white"
         >
           {sending ? "Sending..." : "Send report"}
         </button>
@@ -1018,6 +1002,15 @@ useEffect(() => {
       return;
     }
 
+    const { error: communityOwnedError } = await supabase
+      .from("spots")
+      .update({ community_owned: true })
+      .eq("id", spotId);
+
+    if (communityOwnedError) {
+      console.error("Error setting community_owned:", communityOwnedError);
+    }
+
     setConfirmedSpotIds((prev) =>
       prev.includes(spotId) ? prev : [...prev, spotId]
     );
@@ -1356,7 +1349,9 @@ if (type === "tattoo") {
                   )}
 
                   <p className="text-xs text-gray-400">
-                    Source: {spot.source === "user" ? "Community" : spot.source || "Unknown"}
+                    Source: {spot.source === "user" || spot.community_owned
+                    ? "Community"
+                    : spot.source || "Unknown"}
                   </p>
                 </div>
 
@@ -1407,7 +1402,7 @@ if (type === "tattoo") {
                     }
                     className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
                   >
-                    Report a problem
+                    Spot no longer exists
                   </button>
 
                   {reportingSpotId === spot.id && (

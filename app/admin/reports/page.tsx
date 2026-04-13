@@ -24,6 +24,7 @@ type Spot = {
   description?: string | null;
   source?: string | null;
   user_id?: string | null;
+  community_owned?: boolean | null;
 };
 
 type Profile = {
@@ -129,7 +130,7 @@ export default function AdminReportsPage() {
     if (uniqueSpotIds.length > 0) {
       const { data: spotsData, error: spotsError } = await supabase
         .from("spots")
-        .select("id, name, type, lat, lng, description, source, user_id")
+        .select("id, name, type, lat, lng, description, source, user_id, community_owned")
         .in("id", uniqueSpotIds);
 
       if (spotsError) {
@@ -199,7 +200,7 @@ export default function AdminReportsPage() {
     }
 
     // 👉 rendre community
-    updatedData.source = "community";
+    updatedData.community_owned = true;
 
     // 3. Update du spot
     const { error: updateError } = await supabase
@@ -472,7 +473,7 @@ export default function AdminReportsPage() {
                     </p>
                     <p>
                       <span className="font-medium">Source:</span>{" "}
-                      {spot.source === "user"
+                        {spot.source === "user" || spot.community_owned
                         ? "Community"
                         : spot.source || "Unknown"}
                     </p>
