@@ -528,6 +528,8 @@ export default function Map() {
   const deepLinkSpotId = searchParams.get("spotId");
   const [hasAppliedDeepLink, setHasAppliedDeepLink] = useState(false);
   const [improvingSpotId, setImprovingSpotId] = useState<number | null>(null);
+  const [fullscreenImageUrl, setFullscreenImageUrl] = useState<string | null>(null);
+  const [fullscreenImageAlt, setFullscreenImageAlt] = useState<string>("");
 
   const categoriesRequiringZoom = [
     "atm",
@@ -1244,7 +1246,7 @@ if (type === "tattoo") {
           }}
           >
             <Popup autoPan={false}>
-              <div className="w-[220px] sm:w-[260px] text-sm text-gray-800 max-h-[60vh] overflow-y-auto pr-1">
+              <div className="w-[210px] sm:w-[250px] text-sm text-gray-800 max-h-[52vh] overflow-y-auto pr-1">
                 <div className="mb-2">
                   <h3 className="font-semibold text-base leading-tight">{spot.name}</h3>
                   <p className="text-xs text-gray-500 uppercase tracking-wide mt-0.5">
@@ -1323,7 +1325,11 @@ if (type === "tattoo") {
                   <img
                     src={spot.photo_url}
                     alt={spot.name}
-                    className="w-full rounded-xl my-3 max-h-48 object-contain bg-gray-100 border p-1"
+                    className="w-full rounded-xl my-3 max-h-48 object-contain bg-gray-100 border cursor-zoom-in"
+                    onClick={() => {
+                      setFullscreenImageUrl(spot.photo_url ?? null);
+                      setFullscreenImageAlt(spot.name);
+                    }}
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
@@ -1626,6 +1632,35 @@ if (type === "tattoo") {
                 className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2 text:sm"
               >
                 Sign in
+              </button>
+            </div>
+          </div>
+        )}
+
+        {fullscreenImageUrl && (
+          <div
+            className="fixed inset-0 z-[1000] bg-black/80 flex items-center justify-center p-4"
+            onClick={() => {
+              setFullscreenImageUrl(null);
+              setFullscreenImageAlt("");
+            }}
+          >
+            <div className="relative max-w-full max-h-full">
+              <img
+                src={fullscreenImageUrl}
+                alt={fullscreenImageAlt}
+                className="max-w-[95vw] max-h-[85vh] rounded-xl bg-white"
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              <button
+                onClick={() => {
+                  setFullscreenImageUrl(null);
+                  setFullscreenImageAlt("");
+                }}
+                className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-lg text-sm"
+              >
+                Close
               </button>
             </div>
           </div>
