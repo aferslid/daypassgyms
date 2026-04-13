@@ -1244,7 +1244,7 @@ if (type === "tattoo") {
           }}
           >
             <Popup autoPan={false}>
-              <div className="w-[240px] text-sm text-gray-800">
+              <div className="w-[220px] sm:w-[260px] text-sm text-gray-800 max-h-[60vh] overflow-y-auto pr-1">
                 <div className="mb-2">
                   <h3 className="font-semibold text-base leading-tight">{spot.name}</h3>
                   <p className="text-xs text-gray-500 uppercase tracking-wide mt-0.5">
@@ -1323,7 +1323,7 @@ if (type === "tattoo") {
                   <img
                     src={spot.photo_url}
                     alt={spot.name}
-                    className="w-full rounded-xl my-3 max-h-48 object-cover border"
+                    className="w-full rounded-xl my-3 max-h-48 object-contain bg-gray-100 border p-1"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
