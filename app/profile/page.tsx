@@ -54,46 +54,53 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setCurrentUserEmail(user?.email ?? null);
-      setIsUserLoaded(true);
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
-        if (!user) {
+    setCurrentUserEmail(user?.email ?? null);
+    setIsUserLoaded(true);
+
+    if (!user) {
         setLoading(false);
         return;
-        }
+    }
 
-      setUser(user);
+    setUser(user);
 
-      if (!user) return;
-
-      const { data: profile } = await supabase
+    const [{ data: profile }, { data: contributionRow }] = await Promise.all([
+        supabase
         .from("profiles")
         .select("username, bio, countries")
         .eq("id", user.id)
-        .single();
+        .single(),
 
-        if (profile) {
+        supabase
+        .from("user_contributions")
+        .select("count")
+        .eq("user_id", user.id)
+        .maybeSingle(),
+    ]);
+
+    if (profile) {
         setUsername(profile.username || "");
         setBio(profile.bio || "");
         setCountries(
-            profile.countries
-            ? profile.countries.split(",").map((c: string) => c.trim()).filter(Boolean)
+        profile.countries
+            ? profile.countries
+                .split(",")
+                .map((c: string) => c.trim())
+                .filter(Boolean)
             : []
         );
-      }
+    }
 
-      const { count } = await supabase
-        .from("spots")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id);
-
-      setContributions(count || 0);
-      setLoading(false);
+    setContributions(contributionRow?.count || 0);
+    setLoading(false);
     };
 
-    fetchUser();
-  }, []);
+        fetchUser();
+    }, []);
 
   useEffect(() => {
   if (!user) return;
