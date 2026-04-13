@@ -229,6 +229,8 @@ export default function AdminReportsPage() {
     await reloadAll();
     alert(`Improvement accepted ✅ for spot ${spot_id}`);
 
+};
+
   const groupedReports = useMemo(() => {
     return reports.map((report) => ({
       report,
@@ -531,4 +533,4 @@ export default function AdminReportsPage() {
       )}
     </div>
   );
-}}
+}
