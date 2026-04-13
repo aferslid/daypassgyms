@@ -5,29 +5,25 @@ import { useRouter } from "next/navigation";
 import countriesList from "world-countries";
 import { supabase } from "../../lib/supabase";
 
-type Profile = {
-  id: string;
-  username: string | null;
+type CountryStats = {
+  total: number;
+  community: number;
+  osm: number;
+  official: number;
 };
 
-type SpotRow = {
-  user_id: string | null;
-  country: string | null;
-  source: string | null;
-  community_owned?: boolean | null;
+type CountryStatsRow = {
+  country: string;
+  total: number;
+  community: number;
+  osm: number;
+  official: number;
 };
 
 type LeaderboardRow = {
   user_id: string;
   username: string;
   count: number;
-};
-
-type CountryStats = {
-  total: number;
-  community: number;
-  osm: number;
-  official: number;
 };
 
 const countryOptions = countriesList
@@ -53,37 +49,6 @@ function getFlagEmoji(countryCode: string) {
   }
 }
 
-async function fetchAllSpots() {
-  const pageSize = 1000;
-  let from = 0;
-  let allRows: SpotRow[] = [];
-
-  while (true) {
-    const { data, error } = await supabase
-      .from("spots")
-      .select("user_id, country, source, community_owned")
-      .range(from, from + pageSize - 1);
-
-    if (error) {
-      throw error;
-    }
-
-    if (!data || data.length === 0) {
-      break;
-    }
-
-    allRows = [...allRows, ...(data as SpotRow[])];
-
-    if (data.length < pageSize) {
-      break;
-    }
-
-    from += pageSize;
-  }
-
-  return allRows;
-}
-
 export default function CommunityPage() {
   const router = useRouter();
 
@@ -95,88 +60,57 @@ export default function CommunityPage() {
   const [selectedCountry, setSelectedCountry] = useState("FR");
 
   useEffect(() => {
-    const fetchCommunityData = async () => {
-      try {
-        setLoading(true);
-        
-        const [{ data: profilesData, error: profilesError }, spotsData] =
-            await Promise.all([
-                supabase.from("profiles").select("id, username"),
-                fetchAllSpots(),
-            ]);    
+  const fetchCommunityData = async () => {
+    try {
+      setLoading(true);
 
-        if (profilesError) {
-        console.error("Error fetching profiles:", profilesError);
+      const { data: countryStatsData, error: countryStatsError } = await supabase
+        .from("community_country_stats")
+        .select("*");
+
+      if (countryStatsError) {
+        console.error("Error fetching country stats:", countryStatsError);
         return;
-        }
-
-        const spots = (spotsData || []) as SpotRow[];
-        const profiles = (profilesData || []) as Profile[];
-
-        const profilesMap: Record<string, string> = {};
-        profiles.forEach((profile) => {
-          if (!profile?.id) return;
-          profilesMap[profile.id] = profile.username || "Unknown";
-        });
-
-        const userCounts: Record<string, number> = {};
-        const stats: Record<string, CountryStats> = {};
-
-        for (const spot of spots) {
-          if (spot.user_id) {
-            userCounts[spot.user_id] = (userCounts[spot.user_id] || 0) + 1;
-          }
-
-          if (!spot.country) continue;
-
-          if (!stats[spot.country]) {
-            stats[spot.country] = {
-              total: 0,
-              community: 0,
-              osm: 0,
-              official: 0,
-            };
-          }
-
-          stats[spot.country].total += 1;
-
-          if (spot.source === "user" || spot.community_owned) {
-            stats[spot.country].community += 1;
-            } else if (
-            spot.source?.toLowerCase() === "osm" ||
-            spot.source?.toLowerCase() === "open_data"
-            ) {
-            stats[spot.country].osm += 1;
-            } else {
-            stats[spot.country].official += 1;
-            }
-        }
-
-        const leaderboardRows: LeaderboardRow[] = Object.entries(userCounts)
-          .map(([user_id, count]) => ({
-            user_id,
-            username: profilesMap[user_id] || "Unknown",
-            count,
-          }))
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 100);
-
-        setLeaderboard(leaderboardRows);
-        setCountryStats(stats);
-
-        if (!stats[selectedCountry]) {
-          const firstCountry = Object.keys(stats)[0];
-          if (firstCountry) setSelectedCountry(firstCountry);
-        }
-      } catch (error) {
-        console.error("Unexpected error fetching community data:", error);
-      } finally {
-        setLoading(false);
       }
-    };
 
-    fetchCommunityData();
-  }, []);
+      const { data: leaderboardData, error: leaderboardError } = await supabase
+        .from("community_leaderboard")
+        .select("*")
+        .order("count", { ascending: false })
+        .limit(100);
+
+      if (leaderboardError) {
+        console.error("Error fetching leaderboard:", leaderboardError);
+        return;
+      }
+
+      const nextCountryStats: Record<string, CountryStats> = {};
+
+      ((countryStatsData as CountryStatsRow[]) || []).forEach((row) => {
+        nextCountryStats[row.country] = {
+          total: row.total,
+          community: row.community,
+          osm: row.osm,
+          official: row.official,
+        };
+      });
+
+      setLeaderboard((leaderboardData as LeaderboardRow[]) || []);
+      setCountryStats(nextCountryStats);
+
+      if (!nextCountryStats[selectedCountry]) {
+        const firstCountry = Object.keys(nextCountryStats)[0];
+        if (firstCountry) setSelectedCountry(firstCountry);
+      }
+    } catch (error) {
+      console.error("Unexpected error fetching community data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCommunityData();
+}, []);
 
   const selectedStats = useMemo(() => {
     return (
