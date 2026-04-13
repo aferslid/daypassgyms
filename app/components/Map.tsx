@@ -545,6 +545,10 @@ export default function Map() {
     "street_workout",
     "coworking",
     "healthy_food",
+    "sim",
+    "cheap_food",
+    "activity",
+    "tattoo",
   ];
   
   const [userPosition, setUserPosition] = useState<{
@@ -1099,6 +1103,26 @@ if (type === "healthy_food") {
   color = "#22c55e";
 }
 
+if (type === "sim") {
+  icon = "📱";
+  color = "#6366f1"; // violet/bleu
+}
+
+if (type === "cheap_food") {
+  icon = "🍜";
+  color = "#f59e0b"; // orange
+}
+
+if (type === "activity") {
+  icon = "🎟️";
+  color = "#ec4899"; // rose
+}
+
+if (type === "tattoo") {
+  icon = "🖋️";
+  color = "#111827"; // noir
+}
+
     return L.divIcon({
       html: `
         <div style="
@@ -1135,7 +1159,11 @@ if (type === "healthy_food") {
   { value: "gym", label: "Gym", icon: "🏋️" },
   { value: "street_workout", label: "Street", icon: "💪" },
   { value: "coworking", label: "Cowork", icon: "💻" },
-  { value: "healthy_food", label: "Healthy", icon: "🥗" }
+  { value: "healthy_food", label: "Healthy", icon: "🥗" },
+  { value: "sim", label: "SIM", icon: "📱" },
+  { value: "cheap_food", label: "Cheap food", icon: "🍜" },
+  { value: "activity", label: "Activity", icon: "🎟️" },
+  { value: "tattoo", label: "Tattoo", icon: "🖋️" },
   ];
 
   return (

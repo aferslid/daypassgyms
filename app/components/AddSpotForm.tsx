@@ -122,6 +122,10 @@ export default function AddSpotForm({
         <option value="street_workout">Street workout</option>
         <option value="coworking">Coworking</option>
         <option value="healthy_food">Healthy food</option>
+        <option value="sim">SIM</option>
+        <option value="cheap_food">Cheap food</option>
+        <option value="activity">Activity</option>
+        <option value="tattoo">Tattoo</option>
       </select>
 
       <div className="grid grid-cols-2 gap-3 mb-3">
