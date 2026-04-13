@@ -929,7 +929,7 @@ useEffect(() => {
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
-    alert("Déconnecté.");
+    alert("Disconnected.");
   };
 
   const handleCreateProfile = async () => {
@@ -1210,7 +1210,7 @@ if (type === "tattoo") {
   ];
 
   return (
-    <div className="h-screen w-full relative">
+    <div className="h-[100dvh] w-full relative overflow-hidden">
       <MapContainer
       center={[46.603354, 1.888334]}
       zoom={6}
@@ -1299,8 +1299,8 @@ if (type === "tattoo") {
       </MapContainer>
 
             {selectedSpot && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[1000] w-[92vw] max-w-[340px] pointer-events-auto">
-          <div className="bg-white shadow-2xl rounded-2xl p-4 border border-gray-200 max-h-[60vh] overflow-y-auto">
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[1000] w-[90vw] max-w-[320px] pointer-events-auto">
+          <div className="bg-white/98 backdrop-blur-md shadow-2xl rounded-2xl p-3 border border-gray-200 max-h-[54vh] overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-2">
               <div>
                 <h3 className="font-semibold text-base leading-tight text-black">
@@ -1470,7 +1470,7 @@ if (type === "tattoo") {
                   confirmingSpotId === selectedSpot.id ||
                   confirmedSpotIds.includes(selectedSpot.id)
                 }
-                className={`px-3 py-2 rounded-lg text-sm ${
+                className={`px-3 py-1.5 rounded-lg text-sm ${
                   confirmedSpotIds.includes(selectedSpot.id)
                     ? "bg-green-100 text-green-700 cursor-not-allowed"
                     : "bg-black text-white"
@@ -1489,7 +1489,7 @@ if (type === "tattoo") {
                     prev === selectedSpot.id ? null : selectedSpot.id
                   )
                 }
-                className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+                className="px-3 py-1.5 rounded-lg text-sm border border-gray-300 bg-white"
               >
                 Improve this spot
               </button>
@@ -1508,7 +1508,7 @@ if (type === "tattoo") {
                     prev === selectedSpot.id ? null : selectedSpot.id
                   )
                 }
-                className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+                className="px-3 py-1.5 rounded-lg text-sm border border-gray-300 bg-white"
               >
                 Spot no longer exists
               </button>
@@ -1524,7 +1524,7 @@ if (type === "tattoo") {
               {user && selectedSpot.user_id === user.id && (
                 <button
                   onClick={() => handleDeleteSpot(selectedSpot.id)}
-                  className="px-3 py-2 rounded-lg text-sm bg-red-500 text-white"
+                  className="px-3 py-1.5 rounded-lg text-sm bg-red-500 text-white"
                 >
                   Delete
                 </button>
@@ -1549,7 +1549,7 @@ if (type === "tattoo") {
       <div className="absolute bottom-20 sm:bottom-4 left-16 z-[1000] pointer-events-auto">
         <button
           onClick={() => setShowFiltersPanel((prev) => !prev)}
-          className="bg-white shadow-lg rounded-full px-4 py-2 text-sm"
+          className="bg-white/95 backdrop-blur-md border border-gray-200 shadow-lg rounded-full px-4 py-2 text-sm text-black"
         >
           Filters
         </button>
@@ -1580,7 +1580,7 @@ if (type === "tattoo") {
        </div>
       )}
 
-      <div className="absolute top-8 right-4 z-[1000] pointer-events-auto flex flex-col gap-2">
+      <div className="absolute top-6 right-4 z-[1000] pointer-events-auto flex flex-col gap-2 w-[180px]">
         <button
           onClick={() => {
             if (!user) {
@@ -1596,28 +1596,28 @@ if (type === "tattoo") {
               setPendingPosition(null);
             }
           }}
-          className="bg-black text-white px-4 py-3 rounded-2xl shadow-lg border active:scale-95 text-sm font-medium w-full"
+          className="bg-black text-white px-4 py-2.5 rounded-2xl shadow-lg border border-black active:scale-95 text-sm font-medium w-full"
         >
           {isSelectingLocation || showAddForm ? "Cancel" : "Add spot"}
           </button>
 
         <button
           onClick={handleAddAtMyPosition}
-          className="bg-blue-600 text-white px-4 py-3 rounded-2xl shadow-lg border active:scale-95 text-sm font-medium w-full"
+          className="bg-blue-600 text-white px-4 py-2.5 rounded-2xl shadow-lg border border-blue-700 active:scale-95 text-sm font-medium w-full"
         >
           Add at my location
         </button>
 
         <button
           onClick={recenterOnUser}
-          className="bg-white text-black px-4 py-3 rounded-2xl shadow-lg border active:scale-95 text-sm font-medium w-full"
+          className="bg-white text-black px-4 py-2.5 rounded-2xl shadow-lg border border-gray-300 active:scale-95 text-sm font-medium w-full"
         >
           📍 Center on me
         </button>
 
         <button
           onClick={() => router.push("/profile")}
-          className="bg-white shadow-lg rounded-2xl px-4 py-3 text-sm font-medium border active:scale-95 w-full text-black placeholder-gray-400"
+          className="bg-white text-black px-4 py-2.5 rounded-2xl shadow-lg border border-gray-300 active:scale-95 text-sm font-medium w-full"
         >
           Profile
         </button>
@@ -1682,7 +1682,7 @@ if (type === "tattoo") {
           </div>
         ) : user ? (
           <div className="flex flex-col gap-2">
-            <p className="text-xs sm:text-sm m-0 leading-tight">
+            <p className="text-xs text-gray-500 m-0 leading-tight">
               Connected : <strong>{profile?.username || user.email}</strong>
             </p>
             <p className="text-xs text-gray-500 m-0 leading-tight">
