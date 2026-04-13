@@ -78,6 +78,29 @@ function AddSpotMapClick({
   return null;
 }
 
+function MapSpotSelectionHandler({
+  selectedSpot,
+  setSelectedSpot,
+  setImprovingSpotId,
+  setReportingSpotId,
+}: {
+  selectedSpot: Spot | null;
+  setSelectedSpot: (spot: Spot | null) => void;
+  setImprovingSpotId: (id: number | null) => void;
+  setReportingSpotId: (id: number | null) => void;
+}) {
+  useMapEvents({
+    click() {
+      if (!selectedSpot) return;
+      setSelectedSpot(null);
+      setImprovingSpotId(null);
+      setReportingSpotId(null);
+    },
+  });
+
+  return null;
+}
+
 function MapBoundsUpdater({
   setBounds,
   isPopupOpenRef,
@@ -514,6 +537,7 @@ export default function Map() {
   const [improvingSpotId, setImprovingSpotId] = useState<number | null>(null);
   const [fullscreenImageUrl, setFullscreenImageUrl] = useState<string | null>(null);
   const [fullscreenImageAlt, setFullscreenImageAlt] = useState<string>("");
+  const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
 
   const categoriesRequiringZoom = [
     "atm",
@@ -551,6 +575,25 @@ export default function Map() {
   const [username, setUsername] = useState("");
   const [profilesMap, setProfilesMap] = useState<Record<string, string>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+useEffect(() => {
+  if (!selectedSpot) return;
+
+  if (selectedSpot.type !== category) {
+    setSelectedSpot(null);
+  }
+}, [category, selectedSpot]);
+
+useEffect(() => {
+  if (!selectedSpot) return;
+
+  const stillVisible = spots.some((spot) => spot.id === selectedSpot.id);
+  if (!stillVisible) {
+    setSelectedSpot(null);
+    setImprovingSpotId(null);
+    setReportingSpotId(null);
+  }
+}, [spots, selectedSpot]);
 
 useEffect(() => {
   const fetchSpots = async () => {
@@ -1023,9 +1066,12 @@ useEffect(() => {
     setConfirmingSpotId(null);
   };
 
-  const getMarkerIcon = (type: string) => {
+  const getMarkerIcon = (type: string, isSelected = false) => {
     let icon = "📍";
     let color = "#3b82f6";
+    let size = isSelected ? 40 : 32;
+    let fontSize = isSelected ? 18 : 16;
+    let ring = isSelected ? "0 0 0 4px white, 0 0 0 8px rgba(0,0,0,0.18)" : "0 0 0 2px white";
 
     if (type === "water") {
       icon = "💧";
@@ -1122,20 +1168,22 @@ if (type === "tattoo") {
       html: `
         <div style="
           background:${color};
-          width:32px;
-          height:32px;
+          width:${size}px;
+          height:${size}px;
           border-radius:50%;
           display:flex;
           align-items:center;
           justify-content:center;
-          font-size:16px;
-          box-shadow:0 0 0 2px white;
+          font-size:${fontSize}px;
+          box-shadow:${ring};
+          transform:${isSelected ? "scale(1.05)" : "scale(1)"};
+          transition:all 0.15s ease;
         ">
           ${icon}
         </div>
       `,
       className: "",
-      iconSize: [32, 32],
+      iconSize: [size, size],
     });
   };
 
@@ -1192,6 +1240,13 @@ if (type === "tattoo") {
           setPendingPosition={setPendingPosition}
         />
 
+        <MapSpotSelectionHandler
+          selectedSpot={selectedSpot}
+          setSelectedSpot={setSelectedSpot}
+          setImprovingSpotId={setImprovingSpotId}
+          setReportingSpotId={setReportingSpotId}
+        />
+
         {userPosition && (
           <Marker
             position={[userPosition.lat, userPosition.lng]}
@@ -1225,206 +1280,16 @@ if (type === "tattoo") {
         .filter((spot) => matchesCategory(spot.type))
         .map((spot) => (
           <Marker
-          key={`spot-${spot.id}`}
-          position={[spot.lat, spot.lng]}
-          icon={getMarkerIcon(spot.type)}
-          eventHandlers={{
-            popupopen: () => {
-              isPopupOpenRef.current = true;
-              fetchConfirmationData(spot.id);
-            },
-            popupclose: () => {
-              isPopupOpenRef.current = false;
-            },
-          }}
-          >
-            <Popup autoPan={false}>
-              <div className="w-[210px] sm:w-[250px] text-sm text-gray-800 max-h-[52vh] overflow-y-auto pr-1">
-                <div className="mb-2">
-                  <h3 className="font-semibold text-base leading-tight">{spot.name}</h3>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mt-0.5">
-                    {spot.type}
-                  </p>
-                </div>
-
-                {spot.description && (
-                  <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed mb-3">
-                    {spot.description}
-                  </p>
-                )}
-
-                <div className="space-y-1 text-sm text-gray-700">
-                  {spot.details?.location_type && (
-                    <p><span className="font-medium">ATM:</span> {spot.details.location_type}</p>
-                  )}
-
-                  {spot.details?.fee_value !== undefined && (
-                    <p>
-                      <span className="font-medium">Fees:</span> {spot.details.fee_value}
-                      {spot.details.fee_type === "percent" ? "%" : ""}
-                      {spot.details.fee_type === "currency" && spot.details.currency
-                        ? ` ${spot.details.currency}`
-                        : ""}
-                    </p>
-                  )}
-
-                  {spot.details?.free !== undefined && (
-                    <p><span className="font-medium">Free:</span> {spot.details.free ? "Yes" : "No"}</p>
-                  )}
-
-                  {spot.details?.pmr !== undefined && (
-                    <p><span className="font-medium">PMR:</span> {spot.details.pmr ? "Yes" : "No"}</p>
-                  )}
-
-                  {spot.details?.drinkable !== undefined && (
-                    <p><span className="font-medium">Drinkable:</span> {spot.details.drinkable ? "Yes" : "No"}</p>
-                  )}
-
-                  {spot.details?.consumption_required !== undefined && (
-                    <p>
-                      <span className="font-medium">Consumption required:</span>{" "}
-                      {spot.details.consumption_required ? "Yes" : "No"}
-                    </p>
-                  )}
-
-                  {spot.details?.network_name && (
-                    <p><span className="font-medium">WiFi:</span> {spot.details.network_name}</p>
-                  )}
-
-                  {spot.details?.password && (
-                    <p><span className="font-medium">Password:</span> {spot.details.password}</p>
-                  )}
-
-                  {spot.details?.day_pass_price !== undefined && (
-                    <p>
-                      <span className="font-medium">Day pass:</span> {spot.details.day_pass_price}
-                      {spot.details.currency ? ` ${spot.details.currency}` : ""}
-                    </p>
-                  )}
-
-                  {spot.details?.shower !== undefined && (
-                    <p><span className="font-medium">Shower:</span> {spot.details.shower ? "Yes" : "No"}</p>
-                  )}
-
-                  {spot.details?.reservation_required !== undefined && (
-                    <p>
-                      <span className="font-medium">Reservation required:</span>{" "}
-                      {spot.details.reservation_required ? "Yes" : "No"}
-                    </p>
-                  )}
-                </div>
-
-                {spot.photo_url && (
-                  <img
-                    src={spot.photo_url}
-                    alt={spot.name}
-                    className="w-full rounded-xl my-3 max-h-48 object-contain bg-gray-100 border cursor-zoom-in"
-                    onClick={() => {
-                      setFullscreenImageUrl(spot.photo_url ?? null);
-                      setFullscreenImageAlt(spot.name);
-                    }}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                )}
-
-                <div className="border-t pt-3 mt-3 space-y-1">
-                  {spot.user_id && profilesMap[spot.user_id] && (
-                    <div className="text-sm">
-                      <span className="text-gray-500">Added by:</span>{" "}
-                      <span
-                        className="text-blue-600 cursor-pointer hover:underline"
-                        onClick={() => router.push(`/user/${spot.user_id}`)}
-                      >
-                        {profilesMap[spot.user_id]}
-                      </span>
-                    </div>
-                  )}
-
-                  {spot.created_at && (
-                    <p className="text-xs text-gray-500">
-                      Added on {new Date(spot.created_at).toLocaleDateString("fr-FR")}
-                    </p>
-                  )}
-
-                  <p className="text-xs text-gray-400">
-                    Source: {spot.source === "user" || spot.community_owned
-                    ? "Community"
-                    : spot.source || "Unknown"}
-                  </p>
-                </div>
-
-                <div className="mt-3 flex flex-col gap-2">
-                  <p className="text-xs text-gray-500">
-                    Confirmed by {confirmCounts[spot.id] || 0} user
-                    {(confirmCounts[spot.id] || 0) > 1 ? "s" : ""}
-                  </p>
-
-                  <button
-                    onClick={() => handleConfirmSpot(spot.id)}
-                    disabled={
-                      confirmingSpotId === spot.id || confirmedSpotIds.includes(spot.id)
-                    }
-                    className={`px-3 py-2 rounded-lg text-sm ${
-                      confirmedSpotIds.includes(spot.id)
-                        ? "bg-green-100 text-green-700 cursor-not-allowed"
-                        : "bg-black text-white"
-                    }`}
-                  >
-                    {confirmedSpotIds.includes(spot.id)
-                      ? "Confirmed"
-                      : confirmingSpotId === spot.id
-                      ? "Confirming..."
-                      : "Confirm spot"}
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      setImprovingSpotId((prev) => (prev === spot.id ? null : spot.id))
-                    }
-                    className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
-                    >
-                    Improve this spot
-                  </button>
-
-                  {improvingSpotId === spot.id && (
-                    <SpotImprovementForm
-                      spotId={spot.id}
-                      user={user}
-                      onClose={() => setImprovingSpotId(null)}
-                    />
-                  )}
-
-                  <button
-                    onClick={() =>
-                      setReportingSpotId((prev) => (prev === spot.id ? null : spot.id))
-                    }
-                    className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
-                  >
-                    Spot no longer exists
-                  </button>
-
-                  {reportingSpotId === spot.id && (
-                    <SpotReportForm
-                      spotId={spot.id}
-                      user={user}
-                      onClose={() => setReportingSpotId(null)}
-                    />
-                  )}
-
-                  {user && spot.user_id === user.id && (
-                    <button
-                      onClick={() => handleDeleteSpot(spot.id)}
-                      className="px-3 py-2 rounded-lg text-sm bg-red-500 text-white"
-                    >
-                      Delete
-                    </button>
-                  )}
-                </div>
-              </div>
-            </Popup>
-          </Marker>
+            key={`spot-${spot.id}`}
+            position={[spot.lat, spot.lng]}
+            icon={getMarkerIcon(spot.type, selectedSpot?.id === spot.id)}
+            eventHandlers={{
+              click: () => {
+                setSelectedSpot(spot);
+                fetchConfirmationData(spot.id);
+              },
+            }}
+          />
         ))}
       </MarkerClusterGroup>
 
@@ -1432,6 +1297,242 @@ if (type === "tattoo") {
           <Marker position={[pendingPosition.lat, pendingPosition.lng]}> </Marker>
         )}
       </MapContainer>
+
+            {selectedSpot && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[1000] w-[92vw] max-w-[340px] pointer-events-auto">
+          <div className="bg-white shadow-2xl rounded-2xl p-4 border border-gray-200 max-h-[60vh] overflow-y-auto">
+            <div className="flex items-start justify-between gap-3 mb-2">
+              <div>
+                <h3 className="font-semibold text-base leading-tight text-black">
+                  {selectedSpot.name}
+                </h3>
+                <p className="text-xs text-gray-500 uppercase tracking-wide mt-1">
+                  {selectedSpot.type}
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setSelectedSpot(null);
+                  setImprovingSpotId(null);
+                  setReportingSpotId(null);
+                }}
+                className="text-gray-400 hover:text-black text-lg leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            {selectedSpot.description && (
+              <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed mb-3">
+                {selectedSpot.description}
+              </p>
+            )}
+
+            <div className="space-y-1 text-sm text-gray-700">
+              {selectedSpot.details?.location_type && (
+                <p>
+                  <span className="font-medium">ATM:</span>{" "}
+                  {selectedSpot.details.location_type}
+                </p>
+              )}
+
+              {selectedSpot.details?.fee_value !== undefined && (
+                <p>
+                  <span className="font-medium">Fees:</span>{" "}
+                  {selectedSpot.details.fee_value}
+                  {selectedSpot.details.fee_type === "percent" ? "%" : ""}
+                  {selectedSpot.details.fee_type === "currency" &&
+                  selectedSpot.details.currency
+                    ?  `${selectedSpot.details.currency}`
+                    : ""}
+                </p>
+              )}
+
+              {selectedSpot.details?.free !== undefined && (
+                <p>
+                  <span className="font-medium">Free:</span>{" "}
+                  {selectedSpot.details.free ? "Yes" : "No"}
+                </p>
+              )}
+
+              {selectedSpot.details?.pmr !== undefined && (
+                <p>
+                  <span className="font-medium">PMR:</span>{" "}
+                  {selectedSpot.details.pmr ? "Yes" : "No"}
+                </p>
+              )}
+
+              {selectedSpot.details?.drinkable !== undefined && (
+                <p>
+                  <span className="font-medium">Drinkable:</span>{" "}
+                  {selectedSpot.details.drinkable ? "Yes" : "No"}
+                </p>
+              )}
+
+              {selectedSpot.details?.consumption_required !== undefined && (
+                <p>
+                  <span className="font-medium">Consumption required:</span>{" "}
+                  {selectedSpot.details.consumption_required ? "Yes" : "No"}
+                </p>
+              )}
+
+              {selectedSpot.details?.network_name && (
+                <p>
+                  <span className="font-medium">WiFi:</span>{" "}
+                  {selectedSpot.details.network_name}
+                </p>
+              )}
+
+              {selectedSpot.details?.password && (
+                <p>
+                  <span className="font-medium">Password:</span>{" "}
+                  {selectedSpot.details.password}
+                </p>
+              )}
+
+              {selectedSpot.details?.day_pass_price !== undefined && (
+                <p>
+                  <span className="font-medium">Day pass:</span>{" "}
+                  {selectedSpot.details.day_pass_price}
+                  {selectedSpot.details.currency
+                    ?  `${selectedSpot.details.currency}`
+                    : ""}
+                </p>
+              )}
+
+              {selectedSpot.details?.shower !== undefined && (
+                <p>
+                  <span className="font-medium">Shower:</span>{" "}
+                  {selectedSpot.details.shower ? "Yes" : "No"}
+                </p>
+              )}
+
+              {selectedSpot.details?.reservation_required !== undefined && (
+                <p>
+                  <span className="font-medium">Reservation required:</span>{" "}
+                  {selectedSpot.details.reservation_required ? "Yes" : "No"}
+                </p>
+              )}
+            </div>
+
+            {selectedSpot.photo_url && (
+              <img
+                src={selectedSpot.photo_url}
+                alt={selectedSpot.name}
+                className="w-full rounded-xl my-3 max-h-48 object-contain bg-gray-100 border cursor-zoom-in"
+                onClick={() => {
+                  setFullscreenImageUrl(selectedSpot.photo_url ?? null);
+                  setFullscreenImageAlt(selectedSpot.name);
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            )}
+
+            <div className="border-t pt-3 mt-3 space-y-1">
+              {selectedSpot.user_id && profilesMap[selectedSpot.user_id] && (
+                <div className="text-sm">
+                  <span className="text-gray-500">Added by:</span>{" "}
+                  <span
+                    className="text-blue-600 cursor-pointer hover:underline"
+                    onClick={() => router.push(`/user/${selectedSpot.user_id}`)}
+                  >
+                    {profilesMap[selectedSpot.user_id]}
+                  </span>
+                </div>
+              )}
+
+              {selectedSpot.created_at && (
+                <p className="text-xs text-gray-500">
+                  Added on {new Date(selectedSpot.created_at).toLocaleDateString("fr-FR")}
+                </p>
+              )}
+
+              <p className="text-xs text-gray-400">
+                Source:{" "}
+                {selectedSpot.source === "user" || selectedSpot.community_owned
+                  ? "Community"
+                  : selectedSpot.source || "Unknown"}
+              </p>
+            </div>
+
+            <div className="mt-3 flex flex-col gap-2">
+              <p className="text-xs text-gray-500">
+                Confirmed by {confirmCounts[selectedSpot.id] || 0} user
+                {(confirmCounts[selectedSpot.id] || 0) > 1 ? "s" : ""}
+              </p>
+
+              <button
+                onClick={() => handleConfirmSpot(selectedSpot.id)}
+                disabled={
+                  confirmingSpotId === selectedSpot.id ||
+                  confirmedSpotIds.includes(selectedSpot.id)
+                }
+                className={`px-3 py-2 rounded-lg text-sm ${
+                  confirmedSpotIds.includes(selectedSpot.id)
+                    ? "bg-green-100 text-green-700 cursor-not-allowed"
+                    : "bg-black text-white"
+                }`}
+              >
+                {confirmedSpotIds.includes(selectedSpot.id)
+                  ? "Confirmed"
+                  : confirmingSpotId === selectedSpot.id
+                  ? "Confirming..."
+                  : "Confirm spot"}
+              </button>
+
+              <button
+                onClick={() =>
+                  setImprovingSpotId((prev) =>
+                    prev === selectedSpot.id ? null : selectedSpot.id
+                  )
+                }
+                className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+              >
+                Improve this spot
+              </button>
+
+              {improvingSpotId === selectedSpot.id && (
+                <SpotImprovementForm
+                  spotId={selectedSpot.id}
+                  user={user}
+                  onClose={() => setImprovingSpotId(null)}
+                />
+              )}
+
+              <button
+                onClick={() =>
+                  setReportingSpotId((prev) =>
+                    prev === selectedSpot.id ? null : selectedSpot.id
+                  )
+                }
+                className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white"
+              >
+                Spot no longer exists
+              </button>
+
+              {reportingSpotId === selectedSpot.id && (
+                <SpotReportForm
+                  spotId={selectedSpot.id}
+                  user={user}
+                  onClose={() => setReportingSpotId(null)}
+                />
+              )}
+
+              {user && selectedSpot.user_id === user.id && (
+                <button
+                  onClick={() => handleDeleteSpot(selectedSpot.id)}
+                  className="px-3 py-2 rounded-lg text-sm bg-red-500 text-white"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {categoriesRequiringZoom.includes(category) && zoomLevel < 11 && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] 
