@@ -1562,7 +1562,7 @@ if (type === "tattoo") {
       </div>
 
       {showFiltersPanel && (
-       <div className="absolute bottom-20 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 w-52 pointer-events-auto flex flex-col gap-2 max-h-64 overflow-y-auto">
+       <div className="absolute bottom-20 left-4 z-[1000] bg-white/95 backdrop-blur-md border border-gray-200 shadow-2xl rounded-2xl p-3 w-52 pointer-events-auto flex flex-col gap-2 max-h-64 overflow-y-auto">
         {categories.map((cat) => (
          <button
          key={cat.value}
@@ -1570,8 +1570,8 @@ if (type === "tattoo") {
           setCategory(cat.value);
           setShowFiltersPanel(false);
          }}
-         className={`text-left px-3 py-2 rounded-xl ${
-          category === cat.value ? "bg-black text-white" : "bg-gray-100"
+         className={`text-left px-3 py-2 rounded-xl text-sm ${
+          category === cat.value ? "bg-black text-white" : "bg-gray-100 text-black hover:bg-gray-200"
          }`}
         >
           {cat.icon} {cat.label}
