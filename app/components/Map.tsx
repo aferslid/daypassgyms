@@ -1542,7 +1542,7 @@ if (type === "tattoo") {
       )}
 
       
-      <div className="absolute bottom-6 left-4 z-[1000] flex items-center gap-2 pointer-events-auto">
+      <div className="absolute bottom-6 sn:bottom-4 left-4 z-[1000] flex items-center gap-2 pointer-events-auto">
   
       <button
         onClick={() => setShowFiltersPanel((prev) => !prev)}
