@@ -1542,19 +1542,19 @@ if (type === "tattoo") {
       )}
 
       
-      <div className="absolute bottom-20 sm:bottom-4 left-16 z-[1000] pointer-events-auto">
-        <button
-          onClick={() => setShowFiltersPanel((prev) => !prev)}
-          className="bg-white/95 backdrop-blur-md border border-gray-200 shadow-lg rounded-full px-4 py-2 text-sm text-black"
-        >
-          Filters
-        </button>
+      <div className="absolute bottom-6 left-4 z-[1000] flex items-center gap-2 pointer-events-auto">
+  
+      <button
+        onClick={() => setShowFiltersPanel((prev) => !prev)}
+        className="bg-white/95 backdrop-blur-md border border-gray-200 shadow-lg rounded-full px-4 py-2 text-sm text-black"
+      >
+        Filters
+      </button>
+
+      <div className="bg-black text-white rounded-full px-4 py-2 text-sm shadow-lg">
+        {categories.find((c) => c.value === category)?.label}
       </div>
 
-      <div className="absolute bottom-20 sm:bottom-4 left-36 z-[1000] pointer-events-none">
-        <div className="bg-black text-white rounded-full px-4 py-2 text-sm shadow-lg">
-          {categories.find((c) => c.value === category)?.label}
-        </div>
       </div>
 
       {showFiltersPanel && (
