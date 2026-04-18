@@ -970,14 +970,12 @@ useEffect(() => {
 
     const cleanUsername = username.trim().toLowerCase();
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("profiles")
       .update({
-        username: username.trim(),
+        username: cleanUsername,
       })
-      .eq("id", user.id)
-      .select()
-      .single();
+      .eq("id", user.id);
 
     if (error) {
       console.error("Error updating profile:", error);
@@ -994,7 +992,11 @@ useEffect(() => {
       return;
     }
 
-    setProfile(data as Profile);
+    setProfile((prev) =>
+      prev
+        ? { ...prev, username: cleanUsername }
+        : ({ id: user.id, username: cleanUsername } as Profile)
+    );
     alert("Username saved!");
   };
 
