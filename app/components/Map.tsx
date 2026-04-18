@@ -540,6 +540,7 @@ export default function Map() {
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
   const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isProfileLoading, setIsProfileLoading] = useState(false);
 
   const categoriesRequiringZoom = [
     "atm",
@@ -688,10 +689,13 @@ useEffect(() => {
   useEffect(() => {
     if (!user) {
       setProfile(null);
+      setIsProfileLoading(false);
       return;
     }
 
     const loadProfile = async () => {
+      setIsProfileLoading(true);
+
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -701,12 +705,15 @@ useEffect(() => {
       if (error) {
         console.log("Aucun profil pour l'instant ou erreur:", error.message);
         setProfile(null);
+        setIsProfileLoading(false);
         return;
       }
 
       if (data) {
         setProfile(data as Profile);
       }
+
+      setIsProfileLoading(false);
     };
 
     loadProfile();
@@ -945,23 +952,57 @@ useEffect(() => {
     alert("Disconnected.");
   };
 
+  const handleResetPassword = async () => {
+    if (!email) {
+      alert("Please enter your email first.");
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://travelersurvivalmap.com/reset-password",
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Password reset email sent. Check your inbox.");
+  };
+
   const handleCreateProfile = async () => {
     if (!user || !username.trim()) {
       alert("Username required");
       return;
     }
 
+    const cleanUsername = username.trim().toLowerCase();
+
     const { data, error } = await supabase
       .from("profiles")
-      .update({
-        username: username.trim(),
-      })
-      .eq("id", user.id)
+      .upsert(
+        {
+          id: user.id,
+          username: cleanUsername,
+        },
+        {
+          onConflict: "id",
+        }
+      )
       .select()
       .single();
 
     if (error) {
-      console.error("Error updating profile:", error);
+      console.error("Error saving profile:", error);
+
+      if (
+        error.message.toLowerCase().includes("duplicate") ||
+        error.message.toLowerCase().includes("unique")
+      ) {
+        alert("This username is already taken. Please choose another one.");
+        return;
+      }
+
       alert(error.message);
       return;
     }
@@ -1662,7 +1703,12 @@ if (type === "tattoo") {
       />
 
       <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[170px] sm:w-[220px] pointer-events-auto">
-        {user && (!profile || !profile.username) ? (
+      
+        {user && isProfileLoading ? (
+          <div>
+            <p className="text-sm text-gray-500">Loading profile...</p>
+          </div>
+        ) : user && (!profile || !profile.username) ? (
 
           <div>
             <h2 className="font-bold text-lg mb-3">Pick a username</h2>
@@ -1738,6 +1784,16 @@ if (type === "tattoo") {
               >
                 {authMode === "signin" ? "Log in" : "Create account"}
               </button>
+
+              {authMode === "signin" && (
+                <button
+                  type="button"
+                  onClick={handleResetPassword}
+                  className="text-sm underline text-blue-600 hover:text-blue-800"
+                >
+                  Forgot password?
+                </button>
+              )}
 
               <div className="mt-3 text-sm text-center">
                 {authMode === "signin" ? (
