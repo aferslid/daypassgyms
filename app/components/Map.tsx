@@ -945,63 +945,29 @@ useEffect(() => {
     alert("Disconnected.");
   };
 
-  const handleResetPassword = async () => {
-    if (!email) {
-      alert("Please enter your email first.");
-      return;
-    }
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://travelersurvivalmap.com",
-    });
-
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Password reset email sent. Check your inbox.");
-    }
-  };
-
   const handleCreateProfile = async () => {
     if (!user || !username.trim()) {
       alert("Username required");
       return;
     }
 
-    const cleanUsername = username.trim().toLowerCase();
-
     const { data, error } = await supabase
-    .from("profiles")
-    .upsert(
-      {
-        id: user.id,
-        username: cleanUsername,
-      },
-      {
-        onConflict: "id",
-      }
-    )
-    .select()
-    .single();
+      .from("profiles")
+      .update({
+        username: username.trim(),
+      })
+      .eq("id", user.id)
+      .select()
+      .single();
 
     if (error) {
-      console.error("Error saving profile:", error);
-
-      if (
-        error.message.toLowerCase().includes("duplicate") ||
-        error.message.toLowerCase().includes("unique")
-      ) {
-        alert("This username is already taken. Please choose another one.");
-        return;
-      }
-
+      console.error("Error updating profile:", error);
       alert(error.message);
       return;
     }
 
     setProfile(data as Profile);
     alert("Username saved!");
-
   };
 
   const handleDeleteSpot = async (spotId: number) => {
@@ -1771,14 +1737,6 @@ if (type === "tattoo") {
                 className="w-full bg-black text-white rounded-lg px-3 py-2 text-sm"
               >
                 {authMode === "signin" ? "Log in" : "Create account"}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleResetPassword}
-                className="text-sm underline mt-2"
-              >
-                Forgot password?
               </button>
 
               <div className="mt-3 text-sm text-center">
