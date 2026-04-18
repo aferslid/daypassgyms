@@ -970,15 +970,22 @@ useEffect(() => {
 
     const cleanUsername = username.trim().toLowerCase();
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({
+    const { data, error } = await supabase
+    .from("profiles")
+    .upsert(
+      {
+        id: user.id,
         username: cleanUsername,
-      })
-      .eq("id", user.id);
+      },
+      {
+        onConflict: "id",
+      }
+    )
+    .select()
+    .single();
 
     if (error) {
-      console.error("Error updating profile:", error);
+      console.error("Error saving profile:", error);
 
       if (
         error.message.toLowerCase().includes("duplicate") ||
@@ -992,12 +999,9 @@ useEffect(() => {
       return;
     }
 
-    setProfile((prev) =>
-      prev
-        ? { ...prev, username: cleanUsername }
-        : ({ id: user.id, username: cleanUsername } as Profile)
-    );
+    setProfile(data as Profile);
     alert("Username saved!");
+
   };
 
   const handleDeleteSpot = async (spotId: number) => {
