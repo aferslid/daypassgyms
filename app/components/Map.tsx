@@ -538,6 +538,8 @@ export default function Map() {
   const [fullscreenImageUrl, setFullscreenImageUrl] = useState<string | null>(null);
   const [fullscreenImageAlt, setFullscreenImageAlt] = useState<string>("");
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
+  const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const categoriesRequiringZoom = [
     "atm",
@@ -893,17 +895,28 @@ useEffect(() => {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    // 👉 1. tentative signup
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
+    // 👉 2. gestion erreurs
     if (error) {
       alert(error.message);
       return;
     }
 
-    alert("Account created! 📩 Check your email (and spam folder just in case) to confirm your account.");
+    // 👉 3. CAS IMPORTANT
+    if (data?.user?.identities?.length === 0) {
+      // 👉 email déjà existant
+      alert("An account already exists with this email. Try logging in.");
+      setAuthMode("signin");
+      return;
+    }
+
+    // 👉 4. succès réel
+    alert("Account created! Check your email (and spam folder).");
   };
 
   const handleLogin = async () => {
@@ -1698,7 +1711,9 @@ if (type === "tattoo") {
           </div>
         ) : (
           <div>
-            <h2 className="font-bold text-base sm:text-lg mb-3 text-black placeholder-gray-400">Sign in</h2>
+            <h2 className="font-bold text-base sm:text-lg mb-3 text-black">
+              {authMode === "signin" ? "Log in" : "Create account"}
+            </h2>
 
             <input
               type="email"
@@ -1718,18 +1733,38 @@ if (type === "tattoo") {
 
             <div className="flex flex-col gap-2">
               <button
-                onClick={handleSignUp}
-                className="flex-1 bg-black text-white rounded-lg px-3 py-2 text:sm"
+                onClick={authMode === "signin" ? handleLogin : handleSignUp}
+                className="w-full bg-black text-white rounded-lg px-3 py-2 text-sm"
               >
-                Sign up
+                {authMode === "signin" ? "Log in" : "Create account"}
               </button>
 
-              <button
-                onClick={handleLogin}
-                className="flex-1 bg-blue-600 text-white rounded-lg px-3 py-2 text:sm"
-              >
-                Sign in
-              </button>
+              <div className="mt-3 text-sm text-center">
+                {authMode === "signin" ? (
+                  <>
+                    No account yet?{" "}
+                    <button
+                      type="button"
+                      onClick={() => setAuthMode("signup")}
+                      className="underline text-blue-600 hover:text-blue-800"
+                    >
+                      Create one
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => setAuthMode("signin")}
+                      className="underline text-blue-600 hover:text-blue-800"
+                    >
+                      Log in
+                    </button>
+                  </>
+                )}
+              </div>
+
             </div>
           </div>
         )}

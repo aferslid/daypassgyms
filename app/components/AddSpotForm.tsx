@@ -47,7 +47,7 @@ export default function AddSpotForm({
             [keyName]:
               e.target.value === ""
                 ? undefined
-                : e.target.value === "yes",
+                : e.target.value,
           }))
         }
         className="w-full border rounded-xl px-4 py-3"
