@@ -94,8 +94,12 @@ export default function AddSpotForm({
         placeholder="Spot name"
         value={newSpotName}
         onChange={(e) => setNewSpotName(e.target.value)}
-        className="w-full border rounded-xl px-4 py-3 mb-3"
+        className="w-full border rounded-xl px-4 py-3"
       />
+
+      {!newSpotName.trim() && (
+        <p className="text-red-500 text-sm mb-3">Name is required</p>
+      )}
 
       <select
         value={newSpotType}
@@ -367,7 +371,7 @@ export default function AddSpotForm({
             )
           )
         }
-        disabled={isSaving || !newSpotName}
+        disabled={isSaving || !newSpotName.trim()}
         className={`w-full rounded-xl px-4 py-3 text-white ${
           isSaving
             ? "bg-gray-400 cursor-not-allowed"

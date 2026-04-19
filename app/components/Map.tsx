@@ -799,6 +799,11 @@ useEffect(() => {
       return;
     }
 
+    if (!name.trim()) {
+      alert("Name is required");
+      return;
+    }
+
     saveLockRef.current = true;
     setIsSaving(true);
 
