@@ -89,17 +89,21 @@ export default function AddSpotForm({
         Fill in the details for this spot.
       </p>
 
-      <input
-        type="text"
-        placeholder="Spot name"
-        value={newSpotName}
-        onChange={(e) => setNewSpotName(e.target.value)}
-        className="w-full border rounded-xl px-4 py-3"
-      />
+      <div className="mb-3">
+        <input
+          type="text"
+          placeholder="Spot name"
+          value={newSpotName}
+          onChange={(e) => setNewSpotName(e.target.value)}
+          className={`w-full border rounded-xl px-4 py-3 ${
+            !newSpotName.trim() ? "border-red-500" : ""
+          }`}
+        />
 
-      {!newSpotName.trim() && (
-        <p className="text-red-500 text-sm mb-3">Name is required</p>
-      )}
+        <p className="text-red-500 text-sm h-5 mt-1">
+          {!newSpotName.trim() ? "Name is required" : ""}
+        </p>
+      </div>
 
       <select
         value={newSpotType}
