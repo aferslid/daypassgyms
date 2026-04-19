@@ -1448,17 +1448,24 @@ if (type === "tattoo") {
               {selectedSpot.details?.day_pass_price !== undefined && (
                 <p>
                   <span className="font-medium">Day pass:</span>{" "}
-                  {selectedSpot.details.day_pass_price}
-                  {selectedSpot.details.currency
-                    ?  `${selectedSpot.details.currency}`
-                    : ""}
+                  {selectedSpot.details.day_pass_price !== null
+                    ? `${selectedSpot.details.day_pass_price}${
+                        selectedSpot.details.currency
+                          ?  ${selectedSpot.details.currency}
+                          : ""
+                      }`
+                    : "Unknown"}
                 </p>
               )}
 
               {selectedSpot.details?.shower !== undefined && (
                 <p>
                   <span className="font-medium">Shower:</span>{" "}
-                  {selectedSpot.details.shower ? "Yes" : "No"}
+                  {selectedSpot.details.shower === true
+                    ? "Yes"
+                    : selectedSpot.details.shower === false
+                    ? "No"
+                    : "Unknown"}
                 </p>
               )}
 
