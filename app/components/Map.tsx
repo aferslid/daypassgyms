@@ -838,6 +838,14 @@ useEffect(() => {
 
       const flag = countryCode ? getFlagEmoji(countryCode) : "🌍";
 
+      const normalizedDetails = Object.fromEntries(
+        Object.entries(details).map(([key, value]) => {
+          if (value === "yes") return [key, true];
+          if (value === "no") return [key, false];
+          return [key, value];
+        })
+      );
+
       const { data, error } = await supabase
         .from("spots")
         .insert([
@@ -851,7 +859,7 @@ useEffect(() => {
             photo_url: photoUrl,
             source: "user",
             country: countryCode,
-            details: details,
+            details: normalizedDetails,
           },
         ])
         .select();
