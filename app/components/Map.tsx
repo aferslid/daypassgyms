@@ -1451,7 +1451,7 @@ if (type === "tattoo") {
                   {selectedSpot.details.day_pass_price !== null
                     ? `${selectedSpot.details.day_pass_price}${
                         selectedSpot.details.currency
-                          ?  ${selectedSpot.details.currency}
+                          ?  `${selectedSpot.details.currency}`
                           : ""
                       }`
                     : "Unknown"}
