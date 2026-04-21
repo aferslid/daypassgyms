@@ -46,6 +46,18 @@ type Spot = {
   community_owned?: boolean | null;
 };
 
+type MapMarker = {
+  kind: "spot" | "cluster";
+  id: number | null;
+  name: string | null;
+  type: string;
+  lat: number;
+  lng: number;
+  description: string | null;
+  photo_url: string | null;
+  point_count: number;
+};
+
 type Profile = {
   id: string;
   username: string;
@@ -541,6 +553,7 @@ export default function Map() {
   const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
   const [authError, setAuthError] = useState<string | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
+  const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]);
 
   const categoriesRequiringZoom = [
     "atm",
@@ -599,41 +612,43 @@ useEffect(() => {
 }, [spots, selectedSpot]);
 
 useEffect(() => {
-  const fetchSpots = async () => {
+  const fetchMapMarkers = async () => {
     if (!bounds) return;
 
-
-    console.log("CATEGORY:", category);
-    console.log("BOUNDS:", bounds);
-
-    if (categoriesRequiringZoom.includes(category) && zoomLevel < 11) {
-      setSpots([]);
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("spots")
-      .select("*")
-      .eq("type", category)
-      .gte("lat", bounds.south)
-      .lte("lat", bounds.north)
-      .gte("lng", bounds.west)
-      .lte("lng", bounds.east)
-      .order("id", { ascending: true })
-      .limit(2000);
-
-    console.log("MAIN QUERY COUNT:", data?.length);
+    const { data, error } = await supabase.rpc("get_map_markers", {
+      min_lat: bounds.south,
+      min_lng: bounds.west,
+      max_lat: bounds.north,
+      max_lng: bounds.east,
+      zoom_level: zoomLevel,
+      spot_type: category,
+    });
 
     if (error) {
-      console.error("Erreur Supabase spots:", error);
+      console.error("Erreur RPC get_map_markers:", error);
       return;
     }
 
-    setSpots((data as Spot[]) || []);
+    const markers = (data as MapMarker[]) || [];
+    setMapMarkers(markers);
+
+    const realSpots = markers
+      .filter((m) => m.kind === "spot" && m.id !== null)
+      .map((m) => ({
+        id: m.id as number,
+        name: m.name || "",
+        type: m.type,
+        lat: m.lat,
+        lng: m.lng,
+        description: m.description,
+        photo_url: m.photo_url,
+      })) as Spot[];
+
+    setSpots(realSpots);
   };
 
   const timeout = setTimeout(() => {
-    fetchSpots();
+    fetchMapMarkers();
   }, 250);
 
   return () => clearTimeout(timeout);
@@ -653,7 +668,11 @@ useEffect(() => {
       (error) => {
         console.error(error);
       },
-      { enableHighAccuracy: true }
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
     );
   }, [hasAppliedDeepLink]);
 
@@ -775,9 +794,43 @@ useEffect(() => {
     setShowAddForm(false);
  };
 
-  const recenterOnUser = () => {
-    if (!userPosition || !mapRef.current) return;
-    mapRef.current.setView([userPosition.lat, userPosition.lng], 16);
+  const getFreshUserPosition = (): Promise<{ lat: number; lng: number }> => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation is not supported by this browser."));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const coords = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setUserPosition(coords);
+          resolve(coords);
+        },
+        (error) => {
+          reject(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    });
+  };
+
+  const recenterOnUser = async () => {
+    try {
+      const coords = await getFreshUserPosition();
+      if (!mapRef.current) return;
+      mapRef.current.setView([coords.lat, coords.lng], 16);
+    } catch (error) {
+      console.error("Error getting fresh position:", error);
+      alert("Could not get your current position.");
+    }
   };
 
   const handleSaveSpot = async (
@@ -890,23 +943,25 @@ useEffect(() => {
     }
   };
 
-  const handleAddAtMyPosition = () => {
+  const handleAddAtMyPosition = async () => {
     if (!user) {
       alert("You need to sign in to add a spot.");
       return;
     }
 
-    if (!userPosition) {
-      alert("Position not yet available.");
-      return;
-    }
+    try {
+      const coords = await getFreshUserPosition();
 
-    setIsSelectingLocation(false);
-    setPendingPosition({
-      lat: userPosition.lat,
-      lng: userPosition.lng,
-    });
-    setShowAddForm(true);
+      setIsSelectingLocation(false);
+      setPendingPosition({
+        lat: coords.lat,
+        lng: coords.lng,
+      });
+      setShowAddForm(true);
+    } catch (error) {
+      console.error("Error getting fresh position:", error);
+      alert("Could not get your current position.");
+    }
   };
 
   const handleSignUp = async () => {
@@ -1333,32 +1388,68 @@ if (type === "tattoo") {
           </Marker>
         )}
 
-        <MarkerClusterGroup
-        chunkedLoading
-        maxClusterRadius={35}
-        disableClusteringAtZoom={16}
-        spiderfyOnMaxZoom={true}
-        zoomToBoundsOnClick={true}
-        showCoverageOnHover={false}
-        spiderfyDistanceMultiplier={2}
-        iconCreateFunction={createClusterCustomIcon}
-        >
-        {spots
-        .filter((spot) => matchesCategory(spot.type))
-        .map((spot) => (
-          <Marker
-            key={`spot-${spot.id}`}
-            position={[spot.lat, spot.lng]}
-            icon={getMarkerIcon(spot.type, selectedSpot?.id === spot.id)}
-            eventHandlers={{
-              click: () => {
-                setSelectedSpot(spot);
-                fetchConfirmationData(spot.id);
-              },
-            }}
-          />
-        ))}
-      </MarkerClusterGroup>
+        <>
+          {mapMarkers.map((marker, index) => {
+            if (marker.kind === "cluster") {
+              const clusterIcon = L.divIcon({
+                html: `
+                  <div style="
+                    width:42px;
+                    height:42px;
+                    border-radius:9999px;
+                    background:#2563eb;
+                    border:3px solid white;
+                    box-shadow:0 6px 16px rgba(0,0,0,0.25);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    color:white;
+                    font-weight:700;
+                    font-size:15px;
+                  ">
+                    ${marker.point_count}
+                  </div>
+                `,
+                className: "",
+                iconSize: [42, 42],
+              });
+
+              return (
+                <Marker
+                  key={`cluster-${marker.type}-${index}-${marker.lat}-${marker.lng}`}
+                  position={[marker.lat, marker.lng]}
+                  icon={clusterIcon}
+                  eventHandlers={{
+                    click: () => {
+                      if (!mapRef.current) return;
+                      mapRef.current.setView(
+                        [marker.lat, marker.lng],
+                        Math.min(zoomLevel + 2, 18)
+                      );
+                    },
+                  }}
+                />
+              );
+            }
+
+            const spot = spots.find((s) => s.id === marker.id);
+            if (!spot) return null;
+
+            return (
+              <Marker
+                key={`spot-${spot.id}`}
+                position={[spot.lat, spot.lng]}
+                icon={getMarkerIcon(spot.type, selectedSpot?.id === spot.id)}
+                eventHandlers={{
+                  click: () => {
+                    setSelectedSpot(spot);
+                    fetchConfirmationData(spot.id);
+                  },
+                }}
+              />
+            );
+          })}
+        </>
 
         {pendingPosition && (
           <Marker position={[pendingPosition.lat, pendingPosition.lng]}> </Marker>
@@ -1609,15 +1700,7 @@ if (type === "tattoo") {
           </div>
         </div>
       )}
-
-      {categoriesRequiringZoom.includes(category) && zoomLevel < 11 && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[1000] 
-        bg-white shadow-lg rounded-full px-4 py-2 text-sm pointer-events-none text-black placeholder-gray-400">
-          Zoom in to see {category.toUpperCase()}
-        </div>
-      )}
-
-      
+   
       <div className="absolute bottom-6 sn:bottom-4 left-4 z-[1000] flex items-center gap-2 pointer-events-auto">
   
       <button
