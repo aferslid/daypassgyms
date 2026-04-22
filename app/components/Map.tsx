@@ -826,7 +826,7 @@ useEffect(() => {
     try {
       const coords = await getFreshUserPosition();
       if (!mapRef.current) return;
-      mapRef.current.flyTo([coords.lat, coords.lng], 13);
+      mapRef.current.setView([coords.lat, coords.lng], 13);
     } catch (error) {
       console.error("Error getting fresh position:", error);
       alert("Could not get your current position.");
