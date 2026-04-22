@@ -680,7 +680,7 @@ useEffect(() => {
     if (hasAppliedDeepLink) return;
     if (!userPosition || !mapRef.current || hasCenteredOnUser) return;
 
-    mapRef.current.setView([userPosition.lat, userPosition.lng], 16);
+    mapRef.current.setView([userPosition.lat, userPosition.lng], 6);
     setHasCenteredOnUser(true);
   }, [userPosition, hasCenteredOnUser, hasAppliedDeepLink]);
 
@@ -826,7 +826,7 @@ useEffect(() => {
     try {
       const coords = await getFreshUserPosition();
       if (!mapRef.current) return;
-      mapRef.current.setView([coords.lat, coords.lng], 16);
+      mapRef.current.flyTo([coords.lat, coords.lng], 13);
     } catch (error) {
       console.error("Error getting fresh position:", error);
       alert("Could not get your current position.");
@@ -1391,27 +1391,50 @@ if (type === "tattoo") {
         <>
           {mapMarkers.map((marker, index) => {
             if (marker.kind === "cluster") {
+              const count = marker.point_count;
+
+              // format 1500 → 1.5k
+              const label =
+                count >= 1000
+                  ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}k`
+                  : `${count}`;
+
+              // taille dynamique
+              const size =
+                count < 10 ? 38 :
+                count < 100 ? 44 :
+                count < 1000 ? 50 : 56;
+
               const clusterIcon = L.divIcon({
                 html: `
                   <div style="
-                    width:42px;
-                    height:42px;
+                    width:${size}px;
+                    height:${size}px;
                     border-radius:9999px;
-                    background:#2563eb;
-                    border:3px solid white;
-                    box-shadow:0 6px 16px rgba(0,0,0,0.25);
+
+                    background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
+                    
+                    border:3px solid rgba(255,255,255,0.95);
+
+                    box-shadow:
+                      0 8px 20px rgba(37,99,235,0.35),
+                      inset 0 1px 2px rgba(255,255,255,0.4);
+
                     display:flex;
                     align-items:center;
                     justify-content:center;
+
                     color:white;
-                    font-weight:700;
-                    font-size:15px;
+                    font-weight:800;
+                    font-size:${count >= 1000 ? 14 : 15}px;
+                    letter-spacing:-0.3px;
                   ">
-                    ${marker.point_count}
+                    ${label}
                   </div>
                 `,
                 className: "",
-                iconSize: [42, 42],
+                iconSize: [size, size],
+                iconAnchor: [size / 2, size / 2],
               });
 
               return (
@@ -1807,7 +1830,7 @@ if (type === "tattoo") {
         resetAddForm={resetAddForm}
       />
 
-      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[170px] sm:w-[220px] pointer-events-auto">
+      <div className="absolute top-4 left-4 z-[1000] w-[250px] rounded-3xl bg-white/88 backdrop-blur-md shoadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-white/60 px-4 py-4">
       
         {user && isProfileLoading ? (
           <div>
@@ -1850,7 +1873,7 @@ if (type === "tattoo") {
             </p>
 
             <p className="text-xs text-gray-500 m-0 leading-tight">
-              {category.toUpperCase()} | zoom {zoomLevel} | {spots.length} spots
+              {category.toUpperCase()} | zoom {zoomLevel}
             </p>
 
             <button
