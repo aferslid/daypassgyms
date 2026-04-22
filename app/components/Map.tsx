@@ -824,9 +824,20 @@ useEffect(() => {
 
   const recenterOnUser = async () => {
     try {
+      // ✅ CAS RAPIDE (déjà une position connue)
+      if (userPosition && mapRef.current) {
+        mapRef.current.setView([userPosition.lat, userPosition.lng], 13);
+        return;
+      }
+
+      // ❗ Sinon seulement → géoloc
       const coords = await getFreshUserPosition();
+
       if (!mapRef.current) return;
+
+      setUserPosition(coords); // important pour les prochains clics
       mapRef.current.setView([coords.lat, coords.lng], 13);
+
     } catch (error) {
       console.error("Error getting fresh position:", error);
       alert("Could not get your current position.");
