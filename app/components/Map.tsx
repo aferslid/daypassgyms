@@ -1830,7 +1830,7 @@ if (type === "tattoo") {
         resetAddForm={resetAddForm}
       />
 
-      <div className="absolute top-4 left-4 z-[1000] w-[250px] rounded-3xl bg-white/88 backdrop-blur-md shoadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-white/60 px-4 py-4">
+      <div className="absolute top-4 left-4 z-[1000] bg-white shadow-xl rounded-2xl p-3 sm:p-4 w-[170px] sm:w-[220px] pointer-events-auto">
       
         {user && isProfileLoading ? (
           <div>
