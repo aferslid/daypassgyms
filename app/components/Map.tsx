@@ -615,6 +615,15 @@ useEffect(() => {
   const fetchMapMarkers = async () => {
     if (!bounds) return;
 
+    console.log("PARAMS get_map_markers:", {
+      min_lat: bounds.south,
+      min_lng: bounds.west,
+      max_lat: bounds.north,
+      max_lng: bounds.east,
+      zoom_level: zoomLevel,
+      spot_type: category,
+    });
+
     const { data, error } = await supabase.rpc("get_map_markers", {
       min_lat: bounds.south,
       min_lng: bounds.west,
@@ -625,7 +634,7 @@ useEffect(() => {
     });
 
     if (error) {
-      console.error("Erreur RPC get_map_markers:", error);
+      console.error("RPC ERROR FULL:", JSON.stringify(error, null, 2));
       return;
     }
 
