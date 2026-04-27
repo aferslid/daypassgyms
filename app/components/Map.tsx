@@ -522,7 +522,7 @@ function SpotImprovementForm({
 export default function Map() {
   const mapRef = useRef<L.Map | null>(null);
 
-  const [category, setCategory] = useState<string>("atm");
+  const [category, setCategory] = useState<string>("gym");
   const [spots, setSpots] = useState<Spot[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [pendingPosition, setPendingPosition] = useState<PendingPosition>(null);
@@ -554,6 +554,15 @@ export default function Map() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]);
+
+  const handleWorldView = () => {
+    if (!mapRef.current) return;
+
+    mapRef.current.fitBounds([
+      [-60, -180],
+      [85, 180],
+    ]);
+  };
 
   const categoriesRequiringZoom = [
     "atm",
@@ -1811,6 +1820,13 @@ if (type === "tattoo") {
           className="bg-white text-black px-4 py-2 rounded-2xl shadow-lg border border-gray-300 active:scale-95 text-sm font-medium w-full"
         >
           📍 Center on me
+        </button>
+
+        <button 
+          onClick={handleWorldView}
+          className="bg-white text-black px-4 py-2 rounded-2xl shadow-lg border border-gray-300 active:scale-95 text-sm font-medium w-full"
+        >
+          🌍 World View
         </button>
 
         <button
