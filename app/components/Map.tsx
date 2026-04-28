@@ -656,6 +656,8 @@ useEffect(() => {
     const markers = (data as MapMarker[]) || [];
     setMapMarkers(markers);
 
+    console.log("FIRST MARKER FROM RPC", markers[0]);
+
     const realSpots = markers
   .filter((m) => m.kind === "spot" && m.id !== null)
   .map((m) => ({
