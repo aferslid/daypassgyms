@@ -56,6 +56,12 @@ type MapMarker = {
   description: string | null;
   photo_url: string | null;
   point_count: number;
+  details?: Record<string, any> | null;
+  source?: string | null;
+  user_id?: string | null;
+  created_at?: string | null;
+  country?: string | null;
+  community_owned?: boolean | null;
 };
 
 type Profile = {
@@ -651,16 +657,22 @@ useEffect(() => {
     setMapMarkers(markers);
 
     const realSpots = markers
-      .filter((m) => m.kind === "spot" && m.id !== null)
-      .map((m) => ({
-        id: m.id as number,
-        name: m.name || "",
-        type: m.type,
-        lat: m.lat,
-        lng: m.lng,
-        description: m.description,
-        photo_url: m.photo_url,
-      })) as Spot[];
+  .filter((m) => m.kind === "spot" && m.id !== null)
+  .map((m) => ({
+    id: m.id as number,
+    name: m.name || "",
+    type: m.type,
+    lat: m.lat,
+    lng: m.lng,
+    description: m.description,
+    photo_url: m.photo_url,
+    details: m.details,
+    source: m.source,
+    user_id: m.user_id,
+    created_at: m.created_at,
+    country: m.country || undefined,
+    community_owned: m.community_owned,
+  })) as Spot[];
 
     setSpots(realSpots);
   };
