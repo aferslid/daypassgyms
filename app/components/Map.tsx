@@ -372,7 +372,7 @@ function MapDeepLinkUpdater({
     const timeout = setTimeout(() => {
       if (userMovedMapRef.current) return;
 
-      map.setView([parsedLat, parsedLng], 16);
+      // map.setView([parsedLat, parsedLng], 16);
 
       const b = map.getBounds();
       setBounds({
