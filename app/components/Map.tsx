@@ -1079,6 +1079,8 @@ useEffect(() => {
         setSpots((prev) => [...prev, data[0] as Spot]);
       }
 
+      setContributionsCount((prev) => prev + 1);
+
       resetAddForm();
       alert(`You just added a new spot in ${countryName || "this area"} ${flag}`);
     } catch (err) {
