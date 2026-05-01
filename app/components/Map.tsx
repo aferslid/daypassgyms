@@ -1880,7 +1880,10 @@ if (type === "shower") {
               </button>
 
               <button
-                onClick={() => openCommentsModal(selectedSpot)}
+                onClick={() => {
+                  console.log("COMMENT SPOT ID:", selectedSpot.id, selectedSpot.name);
+                  openCommentsModal(selectedSpot);
+                }}
                 className="px-3 py-1 rounded-lg text-sm border border-gray-300 bg-white"
               >
                 💬 Comments ({commentsCount[selectedSpot.id] || 0})
