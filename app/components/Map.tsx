@@ -1567,6 +1567,13 @@ if (type === "shower") {
       .replace(/\b\w/g, (letter) => letter.toUpperCase());
   };
 
+  const formatType = (type: string) => {
+    return type
+      .toLowerCase()
+      .replace("_", " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase());
+  };
+
   return (
     <div className="h-[100dvh] w-full relative overflow-hidden">
 
@@ -1737,8 +1744,8 @@ if (type === "shower") {
                 <h3 className="font-semibold text-base leading-tight text-black">
                   {selectedSpot.name}
                 </h3>
-                <p className="text-xs text-gray-500 uppercase tracking-wide mt-1">
-                  {formatCategoryLabel(selectedSpot.type)}
+                <p className="text-xs text-gray-500 tracking-wide mt-1">
+                  {formatType(selectedSpot.type)}
                 </p>
               </div>
 
