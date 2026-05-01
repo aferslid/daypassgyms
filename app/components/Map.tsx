@@ -632,12 +632,12 @@ useEffect(() => {
     console.log("🔥 warming up get_map_markers");
 
     const { error } = await supabase.rpc("get_map_markers", {
-      min_lat: -60,
-      min_lng: -180,
-      max_lat: 85,
-      max_lng: 180,
-      zoom_level: 2,
-      spot_type: null,
+      min_lat: 48.8,
+      min_lng: 2.2,
+      max_lat: 48.9,
+      max_lng: 2.5,
+      zoom_level: 12,
+      spot_type: "gym",
     });
 
     if (error) {
@@ -1414,7 +1414,8 @@ if (type === "tattoo") {
     <div className="h-[100dvh] w-full relative overflow-hidden">
 
       {isLoadingMarkers && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-white/90 px-4 py-2 rounded-full shadow text-sm">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-white/90 px-4 py-2 rounded-full shadow text-sm flex items-center gap-2">
+          <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
           Loading spots...
         </div>
       )}
