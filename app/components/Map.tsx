@@ -122,6 +122,7 @@ function MapSpotSelectionHandler({
 function MapBoundsUpdater({
   setBounds,
   isPopupOpenRef,
+  userMovedMapRef,
 }: {
   setBounds: React.Dispatch<
     React.SetStateAction<{
@@ -132,9 +133,12 @@ function MapBoundsUpdater({
     } | null>
   >;
   isPopupOpenRef: React.MutableRefObject<boolean>;
+  userMovedMapRef: React.MutableRefObject<boolean>;
 }) {
   const map = useMapEvents({
     moveend: () => {
+
+      userMovedMapRef.current = true;
 
       const b = map.getBounds();
 
@@ -1505,7 +1509,11 @@ if (type === "tattoo") {
           userMovedMapRef={userMovedMapRef}
         />
 
-        <MapBoundsUpdater setBounds={setBounds} isPopupOpenRef={isPopupOpenRef} />
+        <MapBoundsUpdater
+          setBounds={setBounds}
+          isPopupOpenRef={isPopupOpenRef}
+          userMovedMapRef={userMovedMapRef}
+        />
 
         <MapZoomUpdater setZoomLevel={setZoomLevel} />
 
