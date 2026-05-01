@@ -639,6 +639,8 @@ useEffect(() => {
       spot_type: category,
     });
 
+    const rpcStart = performance.now();
+
     const { data, error } = await supabase.rpc("get_map_markers", {
       min_lat: bounds.south,
       min_lng: bounds.west,
@@ -648,6 +650,9 @@ useEffect(() => {
       spot_type: category,
     });
 
+    const rpcEnd = performance.now();
+    console.log("⏱️ get_map_markers time:", Math.round(rpcEnd - rpcStart), "ms");
+
     if (error) {
       console.error("RPC ERROR FULL:", JSON.stringify(error, null, 2));
       return;
@@ -655,6 +660,12 @@ useEffect(() => {
 
     const markers = (data as MapMarker[]) || [];
     setMapMarkers(markers);
+
+    console.log("📍 markers returned:", markers.length, {
+      zoomLevel,
+      category,
+      bounds,
+    });
 
     const realSpots = markers
   .filter((m) => m.kind === "spot" && m.id !== null)
