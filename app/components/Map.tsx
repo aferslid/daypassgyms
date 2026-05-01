@@ -918,7 +918,7 @@ useEffect(() => {
     };
 
     fetchContributionsCount();
-  }, [user, spots]);
+  }, [user]);
 
   const matchesCategory = (spotType: string) => {
     return spotType === category;
