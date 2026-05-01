@@ -560,6 +560,7 @@ export default function Map() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]);
+  const [isLoadingMarkers, setIsLoadingMarkers] = useState(false);
 
   const handleWorldView = () => {
     if (!mapRef.current) return;
@@ -662,6 +663,8 @@ useEffect(() => {
 
     const rpcStart = performance.now();
 
+    setIsLoadingMarkers(true);
+
     const { data, error } = await supabase.rpc("get_map_markers", {
       min_lat: bounds.south,
       min_lng: bounds.west,
@@ -671,11 +674,14 @@ useEffect(() => {
       spot_type: category,
     });
 
+    setIsLoadingMarkers(false);
+
     const rpcEnd = performance.now();
     console.log("⏱️ get_map_markers time:", Math.round(rpcEnd - rpcStart), "ms");
 
     if (error) {
       console.error("RPC ERROR FULL:", JSON.stringify(error, null, 2));
+      setIsLoadingMarkers(false);
       return;
     }
 
@@ -1406,6 +1412,13 @@ if (type === "tattoo") {
 
   return (
     <div className="h-[100dvh] w-full relative overflow-hidden">
+
+      {isLoadingMarkers && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-white/90 px-4 py-2 rounded-full shadow text-sm">
+          Loading spots...
+        </div>
+      )}
+
       <MapContainer
       center={[46.603354, 1.888334]}
       zoom={6}
