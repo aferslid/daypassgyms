@@ -561,6 +561,8 @@ export default function Map() {
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]);
   const [isLoadingMarkers, setIsLoadingMarkers] = useState(false);
+  const fetchLockRef = useRef(false);
+  
 
   const handleWorldView = () => {
     if (!mapRef.current) return;
@@ -689,70 +691,87 @@ useEffect(() => {
 useEffect(() => {
   const fetchMapMarkers = async () => {
     console.log("🚀 FETCH TRIGGERED");
+
     if (!bounds) return;
 
-    console.log("PARAMS get_map_markers:", {
-      min_lat: bounds.south,
-      min_lng: bounds.west,
-      max_lat: bounds.north,
-      max_lng: bounds.east,
-      zoom_level: zoomLevel,
-      spot_type: category,
-    });
-
-    const rpcStart = performance.now();
-
-    setIsLoadingMarkers(true);
-
-    const { data, error } = await supabase.rpc("get_map_markers", {
-      min_lat: bounds.south,
-      min_lng: bounds.west,
-      max_lat: bounds.north,
-      max_lng: bounds.east,
-      zoom_level: zoomLevel,
-      spot_type: category,
-    });
-
-    setIsLoadingMarkers(false);
-
-    const rpcEnd = performance.now();
-    console.log("⏱️ get_map_markers time:", Math.round(rpcEnd - rpcStart), "ms");
-
-    if (error) {
-      console.error("RPC ERROR FULL:", JSON.stringify(error, null, 2));
-      setIsLoadingMarkers(false);
+    if (fetchLockRef.current) {
+      console.log("⏭️ fetch skipped: already loading");
       return;
     }
 
-    const markers = (data as MapMarker[]) || [];
-    setMapMarkers(markers);
-    localStorage.setItem("cached_map_markers", JSON.stringify(markers));
+    fetchLockRef.current = true;
 
-    console.log("📍 markers returned:", markers.length, {
-      zoomLevel,
-      category,
-      bounds,
-    });
+    try {
+      console.log("PARAMS get_map_markers:", {
+        min_lat: bounds.south,
+        min_lng: bounds.west,
+        max_lat: bounds.north,
+        max_lng: bounds.east,
+        zoom_level: zoomLevel,
+        spot_type: category,
+      });
 
-    const realSpots = markers
-  .filter((m) => m.kind === "spot" && m.id !== null)
-  .map((m) => ({
-    id: m.id as number,
-    name: m.name || "",
-    type: m.type,
-    lat: m.lat,
-    lng: m.lng,
-    description: m.description,
-    photo_url: m.photo_url,
-    details: m.details,
-    source: m.source,
-    user_id: m.user_id,
-    created_at: m.created_at,
-    country: m.country || undefined,
-    community_owned: m.community_owned,
-  })) as Spot[];
+      const rpcStart = performance.now();
 
-    setSpots(realSpots);
+      setIsLoadingMarkers(true);
+
+      const { data, error } = await supabase.rpc("get_map_markers", {
+        min_lat: bounds.south,
+        min_lng: bounds.west,
+        max_lat: bounds.north,
+        max_lng: bounds.east,
+        zoom_level: zoomLevel,
+        spot_type: category,
+      });
+
+      const rpcEnd = performance.now();
+      console.log(
+        "⏱️ get_map_markers time:",
+        Math.round(rpcEnd - rpcStart),
+        "ms"
+      );
+
+      if (error) {
+        console.error("RPC ERROR FULL:", JSON.stringify(error, null, 2));
+        return;
+      }
+
+      const markers = (data as MapMarker[]) || [];
+
+      setMapMarkers(markers);
+      localStorage.setItem("cached_map_markers", JSON.stringify(markers));
+
+      console.log("📍 markers returned:", markers.length, {
+        zoomLevel,
+        category,
+        bounds,
+      });
+
+      const realSpots = markers
+        .filter((m) => m.kind === "spot" && m.id !== null)
+        .map((m) => ({
+          id: m.id as number,
+          name: m.name || "",
+          type: m.type,
+          lat: m.lat,
+          lng: m.lng,
+          description: m.description,
+          photo_url: m.photo_url,
+          details: m.details,
+          source: m.source,
+          user_id: m.user_id,
+          created_at: m.created_at,
+          country: m.country || undefined,
+          community_owned: m.community_owned,
+        })) as Spot[];
+
+      setSpots(realSpots);
+
+    } finally {
+      // 🔥 toujours exécuté (même si erreur)
+      fetchLockRef.current = false;
+      setIsLoadingMarkers(false);
+    }
   };
 
   const timeout = setTimeout(() => {
