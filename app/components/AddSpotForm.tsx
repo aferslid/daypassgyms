@@ -32,6 +32,7 @@ export default function AddSpotForm({
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const galleryInputRef = useRef<HTMLInputElement | null>(null);
   const [details, setDetails] = useState<Record<string, any>>({});
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
 
   const renderYesNoField = (
     label: string,
@@ -62,24 +63,28 @@ export default function AddSpotForm({
   if (!showAddForm) return null;
 
   const handleImageChange = async (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
-  const file = e.target.files?.[0] || null;
-  if (!file) return;
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0] || null;
+    if (!file) return;
 
-  try {
-    const compressedFile = await imageCompression(file, {
-      maxSizeMB: 0.4,
-      maxWidthOrHeight: 1200,
-      useWebWorker: true,
-      initialQuality: 0.75,
-    });
+    setIsProcessingImage(true);
 
-    setSelectedFile(compressedFile);
-  } catch (error) {
-    console.error("Erreur compression image:", error);
-    setSelectedFile(file);
-  }
+    try {
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 0.4,
+        maxWidthOrHeight: 1200,
+        useWebWorker: true,
+        initialQuality: 0.75,
+      });
+
+      setSelectedFile(compressedFile);
+    } catch (error) {
+      console.error("Erreur compression image:", error);
+      setSelectedFile(file);
+    } finally {
+      setIsProcessingImage(false);
+    }
   };
 
   return (
@@ -378,14 +383,14 @@ export default function AddSpotForm({
             )
           )
         }
-        disabled={isSaving || !newSpotName.trim()}
+        disabled={isSaving || isProcessingImage || !newSpotName.trim()}
         className={`w-full rounded-xl px-4 py-3 text-white ${
           isSaving
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-blue-600 active:scale-95"
         }`}
       >
-        {isSaving ? "Saving..." : "Save spot"}
+        {isSaving ? "Saving..." : isProcessingImage ? "Processing image..." : "Save spot"}
       </button>
     </div>
   );
