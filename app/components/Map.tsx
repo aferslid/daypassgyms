@@ -627,6 +627,27 @@ useEffect(() => {
 }, [spots, selectedSpot]);
 
 useEffect(() => {
+  const warmUpDatabase = async () => {
+    console.log("🔥 warming up get_map_markers");
+
+    const { error } = await supabase.rpc("get_map_markers", {
+      min_lat: -60,
+      min_lng: -180,
+      max_lat: 85,
+      max_lng: 180,
+      zoom_level: 2,
+      spot_type: null,
+    });
+
+    if (error) {
+      console.error("Warm up error:", error);
+    }
+  };
+
+  warmUpDatabase();
+}, []);
+
+useEffect(() => {
   const fetchMapMarkers = async () => {
     if (!bounds) return;
 
