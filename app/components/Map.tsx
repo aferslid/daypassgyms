@@ -1561,6 +1561,12 @@ if (type === "shower") {
     }
   };
 
+  const formatCategoryLabel = (type: string) => {
+    return type
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (letter) => letter.toUpperCase());
+  };
+
   return (
     <div className="h-[100dvh] w-full relative overflow-hidden">
 
@@ -1732,7 +1738,7 @@ if (type === "shower") {
                   {selectedSpot.name}
                 </h3>
                 <p className="text-xs text-gray-500 uppercase tracking-wide mt-1">
-                  {selectedSpot.type}
+                  {formatCategoryLabel(selectedSpot.type)}
                 </p>
               </div>
 
