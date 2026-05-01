@@ -1538,6 +1538,29 @@ if (type === "shower") {
     await fetchComments(commentsModalSpot.id);
   };
 
+  const handleDeleteComment = async (commentId: number) => {
+    if (!user) return;
+
+    const confirmed = window.confirm("Delete this comment?");
+    if (!confirmed) return;
+
+    const { error } = await supabase
+      .from("spot_comments")
+      .delete()
+      .eq("id", commentId)
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error("Error deleting comment:", error);
+      alert("Could not delete comment.");
+      return;
+    }
+
+    if (commentsModalSpot) {
+      await fetchComments(commentsModalSpot.id);
+    }
+  };
+
   return (
     <div className="h-[100dvh] w-full relative overflow-hidden">
 
@@ -2277,6 +2300,15 @@ if (type === "shower") {
                           "Unknown user"
                         )}{" "}
                         · {new Date(comment.created_at).toLocaleDateString("fr-FR")}
+
+                        {user && comment.user_id === user.id && (
+                          <button
+                            onClick={() => handleDeleteComment(comment.id)}
+                            className="text-xs text-red-500 hover:underline mt-1"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </p>
                     </div>
                   ))}
