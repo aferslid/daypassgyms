@@ -464,6 +464,7 @@ function SpotImprovementForm({
     setSending(false);
     onClose();
   };
+  
 
   return (
     <div className="mt-2 p-3 border rounded-lg bg-gray-50 space-y-2">
@@ -571,6 +572,11 @@ export default function Map() {
   const [isLoadingMarkers, setIsLoadingMarkers] = useState(false);
   const fetchLockRef = useRef(false);
   const userMovedMapRef = useRef(false);
+  const [commentsModalSpot, setCommentsModalSpot] = useState<Spot | null>(null);
+  const [comments, setComments] = useState<any[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentsCount, setCommentsCount] = useState<Record<number, number>>({});
   
 
   const handleWorldView = () => {
@@ -622,43 +628,6 @@ export default function Map() {
   const [profilesMap, setProfilesMap] = useState<Record<string, string>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  useEffect(() => {
-    try {
-      const cached = localStorage.getItem("cached_map_markers");
-
-      if (!cached) return;
-
-      const markers = JSON.parse(cached) as MapMarker[];
-
-      if (!Array.isArray(markers)) return;
-
-      setMapMarkers(markers);
-
-      const realSpots = markers
-        .filter((m) => m.kind === "spot" && m.id !== null)
-        .map((m) => ({
-          id: m.id as number,
-          name: m.name || "",
-          type: m.type,
-          lat: m.lat,
-          lng: m.lng,
-          description: m.description,
-          photo_url: m.photo_url,
-          details: m.details,
-          source: m.source,
-          user_id: m.user_id,
-          created_at: m.created_at,
-          country: m.country || undefined,
-          community_owned: m.community_owned,
-        })) as Spot[];
-
-      setSpots(realSpots);
-
-      console.log("⚡ loaded cached markers:", markers.length);
-    } catch (err) {
-      console.error("Error loading cached markers:", err);
-    }
-  }, []);
 
 useEffect(() => {
   if (!selectedSpot) return;
@@ -751,7 +720,6 @@ useEffect(() => {
       const markers = (data as MapMarker[]) || [];
 
       setMapMarkers(markers);
-      localStorage.setItem("cached_map_markers", JSON.stringify(markers));
 
       console.log("📍 markers returned:", markers.length, {
         zoomLevel,
@@ -1502,6 +1470,60 @@ if (type === "shower") {
   { value: "shower", label: "Shower", icon: "🚿" },
   ];
 
+  const fetchComments = async (spotId: number) => {
+    setCommentsLoading(true);
+
+    const { data, error } = await supabase
+      .from("spot_comments")
+      .select("id, comment, created_at, user_id")
+      .eq("spot_id", spotId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error loading comments:", error);
+      setCommentsLoading(false);
+      return;
+    }
+
+    setComments(data || []);
+    setCommentsCount((prev) => ({
+      ...prev,
+      [spotId]: data?.length || 0,
+    }));
+
+    setCommentsLoading(false);
+  };
+
+  const openCommentsModal = async (spot: Spot) => {
+    setCommentsModalSpot(spot);
+    setNewComment("");
+    await fetchComments(spot.id);
+  };
+
+  const handleAddComment = async () => {
+    if (!user) {
+      alert("You need to sign in to comment.");
+      return;
+    }
+
+    if (!commentsModalSpot || !newComment.trim()) return;
+
+    const { error } = await supabase.from("spot_comments").insert({
+      spot_id: commentsModalSpot.id,
+      user_id: user.id,
+      comment: newComment.trim(),
+    });
+
+    if (error) {
+      console.error("Error adding comment:", error);
+      alert("Could not add comment.");
+      return;
+    }
+
+    setNewComment("");
+    await fetchComments(commentsModalSpot.id);
+  };
+
   return (
     <div className="h-[100dvh] w-full relative overflow-hidden">
 
@@ -1858,6 +1880,13 @@ if (type === "shower") {
               </button>
 
               <button
+                onClick={() => openCommentsModal(selectedSpot)}
+                className="px-3 py-1 rounded-lg text-sm border border-gray-300 bg-white"
+              >
+                💬 Comments ({commentsCount[selectedSpot.id] || 0})
+              </button>
+
+              <button
                 onClick={() =>
                   setImprovingSpotId((prev) =>
                     prev === selectedSpot.id ? null : selectedSpot.id
@@ -2172,6 +2201,63 @@ if (type === "shower") {
             </div>
           </div>
         )}
+
+        {commentsModalSpot && (
+          <div className="fixed inset-0 z-[2000] bg-black/50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto p-4">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h2 className="font-semibold text-lg text-black">Comments</h2>
+                  <p className="text-sm text-gray-500">{commentsModalSpot.name}</p>
+                </div>
+
+                <button
+                  onClick={() => setCommentsModalSpot(null)}
+                  className="text-gray-500 hover:text-black text-xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="mb-4">
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Add a useful traveler tip..."
+                  className="w-full border rounded-xl px-3 py-2 text-sm min-h-[90px]"
+                />
+
+                <button
+                  onClick={handleAddComment}
+                  disabled={!newComment.trim()}
+                  className="mt-2 w-full bg-black text-white rounded-xl px-3 py-2 text-sm disabled:bg-gray-300"
+                >
+                  Add comment
+                </button>
+              </div>
+
+              {commentsLoading ? (
+                <p className="text-sm text-gray-500">Loading comments...</p>
+              ) : comments.length === 0 ? (
+                <p className="text-sm text-gray-500">No comments yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {comments.map((comment) => (
+                    <div key={comment.id} className="border rounded-xl p-3 bg-gray-50">
+                      <p className="text-sm text-gray-800 whitespace-pre-line">
+                        {comment.comment}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-2">
+                        {new Date(comment.created_at).toLocaleDateString("fr-FR")}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
       </div>
       </div>
  );
