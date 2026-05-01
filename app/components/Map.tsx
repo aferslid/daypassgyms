@@ -1256,6 +1256,20 @@ useEffect(() => {
     }
   };
 
+  const fetchCommentsCount = async (spotId: number) => {
+    const { count, error } = await supabase
+      .from("spot_comments")
+      .select("*", { count: "exact", head: true })
+      .eq("spot_id", spotId);
+
+    if (!error && count !== null) {
+      setCommentsCount((prev) => ({
+        ...prev,
+        [spotId]: count,
+      }));
+    }
+  };
+
   const handleConfirmSpot = async (spotId: number) => {
     if (!user) {
       alert("You need to sign in to confirm a spot.");
@@ -1673,6 +1687,7 @@ if (type === "shower") {
                   click: () => {
                     setSelectedSpot(spot);
                     fetchConfirmationData(spot.id);
+                    fetchCommentsCount(spot.id);
                   },
                 }}
               />
@@ -2251,7 +2266,17 @@ if (type === "shower") {
                         {comment.comment}
                       </p>
                       <p className="text-xs text-gray-400 mt-2">
-                        {new Date(comment.created_at).toLocaleDateString("fr-FR")}
+                        {comment.user_id && profilesMap[comment.user_id] ? (
+                          <span
+                            className="text-blue-600 cursor-pointer hover:underline"
+                            onClick={() => router.push(`/user/${comment.user_id}`)}
+                          >
+                            {profilesMap[comment.user_id]}
+                          </span>
+                        ) : (
+                          "Unknown user"
+                        )}{" "}
+                        · {new Date(comment.created_at).toLocaleDateString("fr-FR")}
                       </p>
                     </div>
                   ))}
