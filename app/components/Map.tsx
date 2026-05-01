@@ -650,6 +650,7 @@ useEffect(() => {
 
 useEffect(() => {
   const fetchMapMarkers = async () => {
+    console.log("🚀 FETCH TRIGGERED");
     if (!bounds) return;
 
     console.log("PARAMS get_map_markers:", {
@@ -720,7 +721,7 @@ useEffect(() => {
   }, 250);
 
   return () => clearTimeout(timeout);
-}, [bounds, category, zoomLevel]);
+}, [bounds?.north, bounds?.south, bounds?.east, bounds?.west, category, zoomLevel]);
 
   useEffect(() => {
     if (hasAppliedDeepLink) return;
