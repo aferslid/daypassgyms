@@ -135,7 +135,6 @@ function MapBoundsUpdater({
 }) {
   const map = useMapEvents({
     moveend: () => {
-      
 
       const b = map.getBounds();
 
@@ -336,12 +335,15 @@ function getFlagEmoji(countryCode: string) {
 function MapDeepLinkUpdater({
   lat,
   lng,
+  userMovedMapRef,
   onApplied,
   setBounds,
   setZoomLevel,
 }: {
   lat: string | null;
   lng: string | null;
+  userMovedMapRef:
+  React.MutableRefObject<boolean>;
   onApplied: () => void;
   setBounds: React.Dispatch<
     React.SetStateAction<{
@@ -364,6 +366,8 @@ function MapDeepLinkUpdater({
     if (isNaN(parsedLat) || isNaN(parsedLng)) return;
 
     const timeout = setTimeout(() => {
+      if (userMovedMapRef.current) return;
+
       map.setView([parsedLat, parsedLng], 16);
 
       const b = map.getBounds();
@@ -562,6 +566,7 @@ export default function Map() {
   const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]);
   const [isLoadingMarkers, setIsLoadingMarkers] = useState(false);
   const fetchLockRef = useRef(false);
+  const userMovedMapRef = useRef(false);
   
 
   const handleWorldView = () => {
@@ -1497,6 +1502,7 @@ if (type === "tattoo") {
           onApplied={() => setHasAppliedDeepLink(true)}
           setBounds={setBounds}
           setZoomLevel={setZoomLevel}
+          userMovedMapRef={userMovedMapRef}
         />
 
         <MapBoundsUpdater setBounds={setBounds} isPopupOpenRef={isPopupOpenRef} />
