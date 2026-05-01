@@ -608,6 +608,44 @@ export default function Map() {
   const [profilesMap, setProfilesMap] = useState<Record<string, string>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem("cached_map_markers");
+
+      if (!cached) return;
+
+      const markers = JSON.parse(cached) as MapMarker[];
+
+      if (!Array.isArray(markers)) return;
+
+      setMapMarkers(markers);
+
+      const realSpots = markers
+        .filter((m) => m.kind === "spot" && m.id !== null)
+        .map((m) => ({
+          id: m.id as number,
+          name: m.name || "",
+          type: m.type,
+          lat: m.lat,
+          lng: m.lng,
+          description: m.description,
+          photo_url: m.photo_url,
+          details: m.details,
+          source: m.source,
+          user_id: m.user_id,
+          created_at: m.created_at,
+          country: m.country || undefined,
+          community_owned: m.community_owned,
+        })) as Spot[];
+
+      setSpots(realSpots);
+
+      console.log("⚡ loaded cached markers:", markers.length);
+    } catch (err) {
+      console.error("Error loading cached markers:", err);
+    }
+  }, []);
+
 useEffect(() => {
   if (!selectedSpot) return;
 
@@ -688,6 +726,7 @@ useEffect(() => {
 
     const markers = (data as MapMarker[]) || [];
     setMapMarkers(markers);
+    localStorage.setItem("cached_map_markers", JSON.stringify(markers));
 
     console.log("📍 markers returned:", markers.length, {
       zoomLevel,
