@@ -813,12 +813,13 @@ useEffect(() => {
   }, [hasAppliedDeepLink]);
 
   useEffect(() => {
-    if (hasAppliedDeepLink) return;
-    if (!userPosition || !mapRef.current || hasCenteredOnUser) return;
+  if (hasAppliedDeepLink) return;
+  if (userMovedMapRef.current) return;
+  if (!userPosition || !mapRef.current || hasCenteredOnUser) return;
 
-    mapRef.current.setView([userPosition.lat, userPosition.lng], 6);
-    setHasCenteredOnUser(true);
-  }, [userPosition, hasCenteredOnUser, hasAppliedDeepLink]);
+  mapRef.current.setView([userPosition.lat, userPosition.lng], 6);
+  setHasCenteredOnUser(true);
+}, [userPosition, hasCenteredOnUser, hasAppliedDeepLink]);
 
   useEffect(() => {
     const getUser = async () => {
