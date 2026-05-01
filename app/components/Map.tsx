@@ -602,6 +602,9 @@ export default function Map() {
     "cheap_food",
     "activity",
     "tattoo",
+    "barber",
+    "laundry",
+    "shower",
   ];
   
   const [userPosition, setUserPosition] = useState<{
@@ -1436,6 +1439,21 @@ if (type === "tattoo") {
   color = "#111827"; // noir
 }
 
+if (type === "barber") {
+  icon = "💈";
+  color = "#0f172a";
+}
+
+if (type === "laundry") {
+  icon = "🧺";
+  color = "#3b82f6";
+}
+
+if (type === "shower") {
+  icon = "🚿";
+  color = "#06b6d4";
+}
+
     return L.divIcon({
       html: `
         <div style="
@@ -1479,6 +1497,9 @@ if (type === "tattoo") {
   { value: "cheap_food", label: "Cheap food", icon: "🍜" },
   { value: "activity", label: "Activity", icon: "🎟️" },
   { value: "tattoo", label: "Tattoo", icon: "🖋️" },
+  { value: "barber", label: "Barber", icon: "💈" },
+  { value: "laundry", label: "Laundry", icon: "🧺" },
+  { value: "shower", label: "Shower", icon: "🚿" },
   ];
 
   return (
