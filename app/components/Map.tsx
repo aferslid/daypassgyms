@@ -676,26 +676,26 @@ useEffect(() => {
   }
 }, [spots, selectedSpot]);
 
-useEffect(() => {
-  const warmUpDatabase = async () => {
-    console.log("🔥 warming up get_map_markers");
-
-    const { error } = await supabase.rpc("get_map_markers", {
-      min_lat: 48.8,
-      min_lng: 2.2,
-      max_lat: 48.9,
-      max_lng: 2.5,
-      zoom_level: 12,
-      spot_type: "gym",
-    });
-
-    if (error) {
-      console.error("Warm up error:", error);
-    }
-  };
-
-  warmUpDatabase();
-}, []);
+// useEffect(() => {
+//  const warmUpDatabase = async () => {
+//    console.log("🔥 warming up get_map_markers");
+//
+//    const { error } = await supabase.rpc("get_map_markers", {
+//      min_lat: 48.8,
+//      min_lng: 2.2,
+//     max_lat: 48.9,
+//     max_lng: 2.5,
+//      zoom_level: 12,
+//      spot_type: "gym",
+//    });
+//
+//    if (error) {
+//     console.error("Warm up error:", error);
+//    }
+//  };
+//
+//  warmUpDatabase();
+//}, []);
 
 useEffect(() => {
   const fetchMapMarkers = async () => {
