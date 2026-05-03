@@ -428,6 +428,12 @@ export default function AddSpotForm({
         className="w-full border rounded-xl px-4 py-3 mb-3 min-h-[120px]"
       />
 
+      {newSpotType === "tent_spot" && !newSpotDescription.trim() && (
+        <p className="text-xs text-red-500 mt-1">
+          Description required for tent spots
+        </p>
+      )}
+
       <button
         onClick={() =>
           handleSaveSpot(
