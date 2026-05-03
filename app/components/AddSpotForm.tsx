@@ -418,7 +418,11 @@ export default function AddSpotForm({
       )}
 
       <textarea
-        placeholder="Description"
+        placeholder={
+          newSpotType === "tent_spot"
+            ? "Describe the spot (flat ground, safety, rules...)"
+            : "Description"
+        }
         value={newSpotDescription}
         onChange={(e) => setNewSpotDescription(e.target.value)}
         className="w-full border rounded-xl px-4 py-3 mb-3 min-h-[120px]"
@@ -436,7 +440,12 @@ export default function AddSpotForm({
             )
           )
         }
-        disabled={isSaving || isProcessingImage || !newSpotName.trim()}
+        disabled={
+          isSaving ||
+          isProcessingImage ||
+          !newSpotName.trim() ||
+          (newSpotType === "tent_spot" && !newSpotDescription.trim())
+        }
         className={`w-full rounded-xl px-4 py-3 text-white ${
           isSaving
             ? "bg-gray-400 cursor-not-allowed"
