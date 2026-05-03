@@ -611,6 +611,7 @@ export default function Map() {
     "barber",
     "laundry",
     "shower",
+    "tent_spot",
   ];
   
   const [userPosition, setUserPosition] = useState<{
@@ -1436,6 +1437,11 @@ if (type === "shower") {
   color = "#06b6d4";
 }
 
+if (type === "tent_spot") {
+  icon = "⛺";
+  color = "#16a34a";
+}
+
     return L.divIcon({
       html: `
         <div style="
@@ -1482,6 +1488,7 @@ if (type === "shower") {
   { value: "barber", label: "Barber", icon: "💈" },
   { value: "laundry", label: "Laundry", icon: "🧺" },
   { value: "shower", label: "Shower", icon: "🚿" },
+  { value: "tent_spot", label: "Tent spot", icon: "⛺" },
   ];
 
   const fetchComments = async (spotId: number) => {

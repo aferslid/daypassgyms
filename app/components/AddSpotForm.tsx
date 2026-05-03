@@ -142,6 +142,7 @@ export default function AddSpotForm({
         <option value="barber">Barber</option>
         <option value="laundry">Laundry</option>
         <option value="shower">Shower</option>
+        <option value="tent_spot">Tent spot</option>
       </select>
 
       <div className="grid grid-cols-2 gap-3 mb-3">
@@ -316,6 +317,58 @@ export default function AddSpotForm({
             />
           </div>
         </>
+      )}
+
+      {newSpotType === "tent_spot" && (
+        <div className="space-y-3 mb-3">
+          <select
+            value={details.campsite_type || ""}
+            onChange={(e) =>
+              setDetails({ ...details, campsite_type: e.target.value })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Campsite type</option>
+            <option value="official">Official</option>
+            <option value="tolerated">Tolerated</option>
+          </select>
+
+          <select
+            value={details.free || ""}
+            onChange={(e) =>
+              setDetails({ ...details, free: e.target.value === "true" })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Free?</option>
+            <option value="true">Free</option>
+            <option value="false">Not free</option>
+          </select>
+
+          <select
+            value={details.flat_ground || ""}
+            onChange={(e) =>
+              setDetails({ ...details, flat_ground: e.target.value === "true" })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Flat ground?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+
+          <select
+            value={details.safe || ""}
+            onChange={(e) =>
+              setDetails({ ...details, safe: e.target.value })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Safe?</option>
+            <option value="yes">Yes</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </div>
       )}
 
       {newSpotType === "gym" && (
