@@ -100,7 +100,7 @@ export default function AddSpotForm({
           placeholder="Spot name"
           value={newSpotName}
           onChange={(e) => setNewSpotName(e.target.value)}
-          className={`w-full border rounded-xl px-4 py-3 ${
+          className={`w-full border rounded-xl px-4 py-3 mb-1 focus:outline-none ${
             !newSpotName.trim() ? "border-red-500" : ""
           }`}
         />
@@ -425,11 +425,15 @@ export default function AddSpotForm({
         }
         value={newSpotDescription}
         onChange={(e) => setNewSpotDescription(e.target.value)}
-        className="w-full border rounded-xl px-4 py-3 mb-3 min-h-[120px]"
+        className={`w-full border rounded-xl px-4 py-3 mb-1 min-h-[120px] ${
+          newSpotType === "tent_spot" && !newSpotDescription.trim()
+            ? "border-red-500"
+            : "border-gray-300"
+        }`}
       />
 
       {newSpotType === "tent_spot" && !newSpotDescription.trim() && (
-        <p className="text-xs text-red-500 -mt-2 mb-2">
+        <p className="text-xs text-red-500 mt-1 mb-2">
           Description required for tent spots
         </p>
       )}
