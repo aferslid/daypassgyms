@@ -429,7 +429,7 @@ export default function AddSpotForm({
       />
 
       {newSpotType === "tent_spot" && !newSpotDescription.trim() && (
-        <p className="text-xs text-red-500 mt-1">
+        <p className="text-xs text-red-500 -mt-2 mb-2">
           Description required for tent spots
         </p>
       )}
