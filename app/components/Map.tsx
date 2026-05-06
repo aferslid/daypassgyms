@@ -598,7 +598,7 @@ export default function Map() {
     "rest",
     "luggage",
     "mailbox",
-    "tourist_info",
+    "hostel",
     "viewpoint",
     "gym",
     "street_workout",
@@ -1372,75 +1372,75 @@ useEffect(() => {
       color = "#ef4444";
     }
 
-    if (type === "tourist_info") {
-  icon = "ℹ️";
-  color = "#0ea5e9";
-}
+    if (type === "hostel") {
+      icon = "🛏️";
+      color = "#a855f7";
+    }
 
-if (type === "viewpoint") {
-  icon = "📍";
-  color = "#8b5cf6";
-}
+    if (type === "viewpoint") {
+      icon = "📍";
+      color = "#8b5cf6";
+    }
 
-if (type === "gym") {
-  icon = "🏋️";
-  color = "#ef4444";
-}
+    if (type === "gym") {
+      icon = "🏋️";
+      color = "#ef4444";
+    }
 
-if (type === "street_workout") {
-  icon = "💪";
-  color = "#f97316";
-}
+    if (type === "street_workout") {
+      icon = "💪";
+      color = "#f97316";
+    }
 
-if (type === "coworking") {
-  icon = "💻";
-  color = "#06b6d4";
-}
+    if (type === "coworking") {
+      icon = "💻";
+      color = "#06b6d4";
+    }
 
-if (type === "healthy_food") {
-  icon = "🥗";
-  color = "#22c55e";
-}
+    if (type === "healthy_food") {
+      icon = "🥗";
+      color = "#22c55e";
+    }
 
-if (type === "sim") {
-  icon = "📱";
-  color = "#6366f1"; // violet/bleu
-}
+    if (type === "sim") {
+      icon = "📱";
+      color = "#6366f1"; // violet/bleu
+    }
 
-if (type === "cheap_food") {
-  icon = "🍜";
-  color = "#f59e0b"; // orange
-}
+    if (type === "cheap_food") {
+      icon = "🍜";
+      color = "#f59e0b"; // orange
+    }
 
-if (type === "activity") {
-  icon = "🎟️";
-  color = "#ec4899"; // rose
-}
+    if (type === "activity") {
+      icon = "🎟️";
+      color = "#ec4899"; // rose
+    }
 
-if (type === "tattoo") {
-  icon = "🖋️";
-  color = "#111827"; // noir
-}
+    if (type === "tattoo") {
+      icon = "🖋️";
+      color = "#111827"; // noir
+    }
 
-if (type === "barber") {
-  icon = "💈";
-  color = "#0f172a";
-}
+    if (type === "barber") {
+      icon = "💈";
+      color = "#0f172a";
+    }
 
-if (type === "laundry") {
-  icon = "🧺";
-  color = "#3b82f6";
-}
+    if (type === "laundry") {
+      icon = "🧺";
+      color = "#3b82f6";
+    }
 
-if (type === "shower") {
-  icon = "🚿";
-  color = "#06b6d4";
-}
+    if (type === "shower") {
+      icon = "🚿";
+      color = "#06b6d4";
+    }
 
-if (type === "tent_spot") {
-  icon = "⛺";
-  color = "#16a34a";
-}
+    if (type === "tent_spot") {
+      icon = "⛺";
+      color = "#16a34a";
+    }
 
     return L.divIcon({
       html: `
@@ -1475,7 +1475,7 @@ if (type === "tent_spot") {
   { value: "luggage", label: "Luggage", icon: "🧳" },
   { value: "wifi", label: "WiFi", icon: "📶" },
   { value: "mailbox", label: "Mailbox", icon: "📮" },
-  { value: "tourist_info", label: "Info Center", icon: "ℹ️" },
+  { value: "hostel", label: "Hostel", icon: "🛏️" },
   { value: "viewpoint", label: "Viewpoint", icon: "📍" },
   { value: "gym", label: "Gym", icon: "🏋️" },
   { value: "street_workout", label: "Street", icon: "💪" },
@@ -1869,6 +1869,55 @@ if (type === "tent_spot") {
                 </p>
               )}
             </div>
+
+            {selectedSpot.details?.budget && (
+              <p>
+                <span className="font-medium">Budget:</span>{" "}
+                {selectedSpot.details.budget}
+              </p>
+            )}
+
+            {selectedSpot.details?.dorm_available !== undefined && (
+              <p>
+                <span className="font-medium">Dorm available:</span>{" "}
+                {selectedSpot.details.dorm_available ? "Yes" : "No"}
+              </p>
+            )}
+
+            {selectedSpot.details?.kitchen !== undefined && (
+              <p>
+                <span className="font-medium">Kitchen:</span>{" "}
+                {selectedSpot.details.kitchen ? "Yes" : "No"}
+              </p>
+            )}
+
+            {selectedSpot.details?.good_wifi !== undefined && (
+              <p>
+                <span className="font-medium">Good WiFi:</span>{" "}
+                {selectedSpot.details.good_wifi ? "Yes" : "No"}
+              </p>
+            )}
+
+            {selectedSpot.details?.social_atmosphere !== undefined && (
+              <p>
+                <span className="font-medium">Social atmosphere:</span>{" "}
+                {selectedSpot.details.social_atmosphere ? "Yes" : "No"}
+              </p>
+            )}
+
+            {selectedSpot.details?.party_hostel !== undefined && (
+              <p>
+                <span className="font-medium">Party hostel:</span>{" "}
+                {selectedSpot.details.party_hostel ? "Yes" : "No"}
+              </p>
+            )}
+
+            {selectedSpot.details?.pool !== undefined && (
+              <p>
+                <span className="font-medium">Pool:</span>{" "}
+                {selectedSpot.details.pool ? "Yes" : "No"}
+              </p>
+            )}
 
             {selectedSpot.photo_url && (
               <img

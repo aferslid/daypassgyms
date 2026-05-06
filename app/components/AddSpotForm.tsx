@@ -129,7 +129,7 @@ export default function AddSpotForm({
         <option value="luggage">Luggage</option>
         <option value="wifi">WiFi</option>
         <option value="mailbox">Mailbox</option>
-        <option value="tourist_info">Info Center</option>
+        <option value="hostel">Hostel</option>
         <option value="viewpoint">Viewpoint</option>
         <option value="gym">Gym</option>
         <option value="street_workout">Street workout</option>
@@ -436,6 +436,117 @@ export default function AddSpotForm({
         <p className="text-xs text-red-500 mt-1 mb-2">
           Description required for tent spots
         </p>
+      )}
+
+      {newSpotType === "hostel" && (
+        <div className="space-y-3 mb-3">
+          <select
+            value={details.budget || ""}
+            onChange={(e) =>
+              setDetails({ ...details, budget: e.target.value })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Budget</option>
+            <option value="cheap">Cheap</option>
+            <option value="medium">Medium</option>
+            <option value="expensive">Expensive</option>
+          </select>
+
+          <select
+            value={details.dorm_available === undefined ? "" : String(details.dorm_available)}
+            onChange={(e) =>
+              setDetails({
+                ...details,
+                dorm_available:
+                  e.target.value === "" ? undefined : e.target.value === "true",
+              })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Dorm available?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+
+          <select
+            value={details.kitchen === undefined ? "" : String(details.kitchen)}
+            onChange={(e) =>
+              setDetails({
+                ...details,
+                kitchen: e.target.value === "" ? undefined : e.target.value === "true",
+              })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Kitchen?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+
+          <select
+            value={details.good_wifi === undefined ? "" : String(details.good_wifi)}
+            onChange={(e) =>
+              setDetails({
+                ...details,
+                good_wifi:
+                  e.target.value === "" ? undefined : e.target.value === "true",
+              })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Good WiFi?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+
+          <select
+            value={details.social_atmosphere === undefined ? "" : String(details.social_atmosphere)}
+            onChange={(e) =>
+              setDetails({
+                ...details,
+                social_atmosphere:
+                  e.target.value === "" ? undefined : e.target.value === "true",
+              })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Social atmosphere?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+
+          <select
+            value={details.party_hostel === undefined ? "" : String(details.party_hostel)}
+            onChange={(e) =>
+              setDetails({
+                ...details,
+                party_hostel:
+                  e.target.value === "" ? undefined : e.target.value === "true",
+              })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Party hostel?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+
+          <select
+            value={details.pool === undefined ? "" : String(details.pool)}
+            onChange={(e) =>
+              setDetails({
+                ...details,
+                pool: e.target.value === "" ? undefined : e.target.value === "true",
+              })
+            }
+            className="w-full border rounded-xl px-4 py-3"
+          >
+            <option value="">Pool?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
       )}
 
       <button
