@@ -417,27 +417,6 @@ export default function AddSpotForm({
         </>
       )}
 
-      <textarea
-        placeholder={
-          newSpotType === "tent_spot"
-            ? "Describe the spot (flat ground, safety, rules...)"
-            : "Description"
-        }
-        value={newSpotDescription}
-        onChange={(e) => setNewSpotDescription(e.target.value)}
-        className={`w-full border rounded-xl px-4 py-3 mb-1 min-h-[120px] ${
-          newSpotType === "tent_spot" && !newSpotDescription.trim()
-            ? "border-red-500"
-            : "border-gray-300"
-        }`}
-      />
-
-      {newSpotType === "tent_spot" && !newSpotDescription.trim() && (
-        <p className="text-xs text-red-500 mt-1 mb-2">
-          Description required for tent spots
-        </p>
-      )}
-
       {newSpotType === "hostel" && (
         <div className="space-y-3 mb-3">
           <select
@@ -547,6 +526,27 @@ export default function AddSpotForm({
             <option value="false">No</option>
           </select>
         </div>
+      )}
+
+      <textarea
+        placeholder={
+          newSpotType === "tent_spot"
+            ? "Describe the spot (flat ground, safety, rules...)"
+            : "Description"
+        }
+        value={newSpotDescription}
+        onChange={(e) => setNewSpotDescription(e.target.value)}
+        className={`w-full border rounded-xl px-4 py-3 mb-1 min-h-[120px] ${
+          newSpotType === "tent_spot" && !newSpotDescription.trim()
+            ? "border-red-500"
+            : "border-gray-300"
+        }`}
+      />
+
+      {newSpotType === "tent_spot" && !newSpotDescription.trim() && (
+        <p className="text-xs text-red-500 mt-1 mb-2">
+          Description required for tent spots
+        </p>
       )}
 
       <button
