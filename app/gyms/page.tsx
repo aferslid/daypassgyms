@@ -46,6 +46,9 @@ export default async function GymsPage() {
 
   const totalGyms = countries.reduce((sum, c) => sum + c.count, 0);
 
+  console.log("data =", data);
+  console.log("count =", data?.length);
+
   return (
     <>
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">
