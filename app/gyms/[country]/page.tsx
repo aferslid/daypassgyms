@@ -24,16 +24,6 @@ type Gym = {
   } | null;
 };
 
-export async function generateMetadata({ params }: CountryPageProps) {
-  const { country } = await params;
-  const countryName = formatCountry(country);
-
-  return {
-    title: `Gyms with Day Passes in ${countryName}`,
-    description: `Find gyms with day passes in ${countryName}. Browse day pass prices, shower info and locations.`,
-  };
-}
-
 function slugify(text: string) {
   return text
     .normalize("NFD")
@@ -74,6 +64,22 @@ function formatShower(details: Gym["details"]) {
   return "Shower unknown";
 }
 
+export async function generateMetadata({
+  params,
+}: CountryPageProps) {
+  const { country } = await params;
+
+  const countryName =
+    countriesList.find(
+      (c) => c.cca2.toLowerCase() === country
+    )?.name.common ?? country.toUpperCase();
+
+  return {
+    title: `Gym day passes in ${countryName} | Gym Day Pass Map`,
+    description: `Find gyms with day passes in ${countryName}. Compare prices, showers and locations.`,
+  };
+}
+
 export default async function CountryPage({ params }: CountryPageProps) {
   const { country } = await params;
   const countryName = formatCountry(country);
@@ -100,8 +106,26 @@ export default async function CountryPage({ params }: CountryPageProps) {
     }, {} as Record<string, number>)
   ).sort((a, b) => b[1] - a[1]);
 
+  const itemListStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `Gyms with day passes in ${countryName}`,
+    itemListElement: (gyms || []).map((gym, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: gym.name,
+      url: `https://daypassgyms.com/gym/${slugify(gym.name)}-${gym.id}`,
+    })),
+  };
+
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(itemListStructuredData),
+      }}
+    />
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">
       <section className="relative overflow-hidden bg-[#0C0C0C]">
         <div className="pointer-events-none absolute -right-10 -top-20 h-80 w-80 rounded-full bg-[#C8F135]/5" />
