@@ -46,11 +46,23 @@ export default function Footer() {
             <div className="space-y-3 text-[13px] text-[#777]">
               <Link href="/" className="block hover:text-black">
                 Home
-              </Link>
+                </Link>
 
-              <Link href="/gyms" className="block hover:text-black">
+                <Link href="/gyms" className="block hover:text-black">
                 Directory
-              </Link>
+                </Link>
+
+                <Link href="/about" className="block hover:text-black">
+                About
+                </Link>
+
+                <Link href="/for-gym-owners" className="block hover:text-black">
+                For gym owners
+                </Link>
+
+                <Link href="/suggest" className="block hover:text-black">
+                Suggest a gym
+</Link>
             </div>
           </div>
 
@@ -60,8 +72,16 @@ export default function Footer() {
             </h3>
 
             <div className="space-y-3 text-[13px] text-[#777]">
-              <div>List your gym</div>
-              <div>Contact</div>
+              <Link href="/for-gym-owners" className="block hover:text-black">
+                List your gym
+                </Link>
+
+                <a
+                href="mailto:aferslid@gmail.com"
+                className="block hover:text-black"
+                >
+                Contact
+                </a>
             </div>
           </div>
         </div>
