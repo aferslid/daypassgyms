@@ -16,14 +16,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}`,
       priority: 1,
+      lastModified: new Date(),
     },
     {
       url: `${baseUrl}/map`,
       priority: 0.9,
+      lastModified: new Date(),
     },
     {
       url: `${baseUrl}/gyms`,
       priority: 0.9,
+      lastModified: new Date(),
+    },
+    {
+    url: `${baseUrl}/suggest`,
+    priority: 0.7,
+    lastModified: new Date(),
     },
   ];
 
@@ -34,26 +42,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   if (!gyms) return urls;
 
-  gyms.forEach((gym) => {
-    urls.push({
-      url: `${baseUrl}/gym/${slugify(gym.name)}-${gym.id}`,
-      priority: 0.7,
-    });
+  const countries = new Set<string>();
+const cities = new Set<string>();
 
-    if (gym.country) {
-      urls.push({
-        url: `${baseUrl}/gyms/${slugify(gym.country)}`,
-        priority: 0.8,
-      });
-    }
-
-    if (gym.country && gym.city) {
-      urls.push({
-        url: `${baseUrl}/gyms/${slugify(gym.country)}/${slugify(gym.city)}`,
-        priority: 0.8,
-      });
-    }
+gyms.forEach((gym) => {
+  urls.push({
+    url: `${baseUrl}/gym/${slugify(gym.name)}-${gym.id}`,
+    priority: 0.7,
+    lastModified: new Date(),
   });
+
+  if (gym.country) {
+    countries.add(slugify(gym.country));
+  }
+
+  if (gym.country && gym.city) {
+    cities.add(
+      `${slugify(gym.country)}/${slugify(gym.city)}`
+    );
+  }
+});
+
+countries.forEach((country) => {
+  urls.push({
+    url: `${baseUrl}/gyms/${country}`,
+    priority: 0.8,
+    lastModified: new Date(),
+  });
+});
+
+cities.forEach((city) => {
+  urls.push({
+    url: `${baseUrl}/gyms/${city}`,
+    priority: 0.8,
+    lastModified: new Date(),
+  });
+});
 
   return urls;
 }
