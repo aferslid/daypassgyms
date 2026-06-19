@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import Footer from "@/app/components/Footer";
+import Header from "./components/Header";
 
 export default async function Home() {
   const { count: totalGyms } = await supabase
@@ -26,43 +27,7 @@ export default async function Home() {
         <div className="pointer-events-none absolute right-16 top-8 h-44 w-44 rounded-full bg-[#C8F135]/[0.03]" />
 
         <div className="relative mx-auto max-w-7xl px-6 py-5">
-          <nav className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#C8F135] text-lg">
-                🏋️
-              </span>
-              <span className="text-sm font-bold text-white tracking-[-0.3px]">
-                Gym Day Pass Map
-              </span>
-            </Link>
-
-            <div className="hidden items-center gap-6 text-[13px] text-[#666] md:flex">
-              <Link href="/gyms" className="transition hover:text-white">
-                Explore
-              </Link>
-              <Link href="/map" className="transition hover:text-white">
-                Map
-              </Link>
-              <a href="#how" className="transition hover:text-white">
-                How it works
-              </a>
-              <a
-                href="TON_LIEN_GOOGLE_FORM"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition hover:text-white"
-              >
-                Suggest a gym
-              </a>
-            </div>
-
-            <Link
-              href="/gyms"
-              className="rounded-[8px] bg-[#C8F135] px-4 py-2 text-[13px] font-bold text-[#0C0C0C] transition hover:opacity-90"
-            >
-              Browse gyms
-            </Link>
-          </nav>
+          <Header />
 
           <div className="pb-20 pt-16">
             <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
