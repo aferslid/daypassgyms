@@ -83,8 +83,13 @@ export default async function AdminSuggestionsPage() {
         {(suggestions || []).map((s) => (
           <div key={s.id} className="rounded-2xl border bg-white p-6">
             <h2 className="text-xl font-black">{s.gym_name}</h2>
+
+            <p className="mt-1 text-xs font-bold uppercase text-[#999]">
+            Status: {s.status || "new"}
+            </p>
+
             <p className="mt-1 text-sm text-[#777]">
-              {s.city || "No city"} — {s.country || "No country"}
+            {s.city || "No city"} — {s.country || "No country"}
             </p>
 
             {s.website_url && <p className="mt-3">Website: {s.website_url}</p>}
@@ -98,7 +103,7 @@ export default async function AdminSuggestionsPage() {
             <form action={approveSuggestion}>
                 <input type="hidden" name="id" value={s.id} />
                 <button className="rounded-lg bg-green-600 px-4 py-2 text-sm font-bold text-white">
-                Approve
+                Mark reviewed
                 </button>
             </form>
 
