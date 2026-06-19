@@ -348,9 +348,11 @@ export default async function GymPage({ params }: GymPageProps) {
                 Find this gym
               </h2>
 
-              <div className="mt-5 rounded-[12px] bg-[#F2F2F0] p-5 text-[13px] text-[#777]">
-                Map preview coming soon.
-              </div>
+              <iframe
+                className="mt-5 h-[260px] w-full rounded-[12px]"
+                loading="lazy"
+                src={`https://maps.google.com/maps?q=${typedGym.lat},${typedGym.lng}&z=15&output=embed`}
+              />
 
               <a
                 href={
