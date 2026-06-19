@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: GymPageProps) {
     : "day pass";
 
   return {
-    title: `${gym.name} Day Pass Price`,
+    title: `${gym.name} Day Pass Price | Gym Day Pass Map`,
     description: `Check ${gym.name} day pass info, price, shower availability and location.`,
   };
 }
@@ -125,8 +125,27 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const typedGym = gym as Gym;
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Gym",
+    name: typedGym.name,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: typedGym.city,
+      addressCountry: typedGym.country,
+    },
+    url: typedGym.website_url,
+    sameAs: typedGym.google_maps_url,
+  };
+
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData),
+      }}
+    />
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">
       <section className="relative overflow-hidden bg-[#0C0C0C]">
         <div className="pointer-events-none absolute -right-10 -top-20 h-80 w-80 rounded-full bg-[#C8F135]/5" />

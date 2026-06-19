@@ -94,12 +94,30 @@ export default async function CityPage({ params }: CityPageProps) {
     (gym) => slugify(gym.city || "") === city
   );
 
+  const itemListStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `Gyms with day passes in ${cityName}, ${countryName}`,
+    itemListElement: gyms.map((gym, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: gym.name,
+      url: `https://daypassgyms.com/gym/${slugify(gym.name)}-${gym.id}`,
+    })),
+  };
+
   if (error) {
     console.error(error);
   }
 
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(itemListStructuredData),
+      }}
+    />
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">
       <section className="relative overflow-hidden bg-[#0C0C0C]">
         <div className="pointer-events-none absolute -right-10 -top-20 h-80 w-80 rounded-full bg-[#C8F135]/5" />
