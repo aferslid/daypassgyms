@@ -19,8 +19,53 @@ export default async function Home() {
     (countriesData || []).map((row) => row.country)
   ).size;
 
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Can I use a gym without a membership?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Many gyms offer day passes that let you train without a monthly membership.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How much does a gym day pass cost?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "It depends on the city and gym. Gym Day Pass Map helps you compare listed day pass prices.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do day pass gyms have showers?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Some gyms have showers and some do not. We show shower information when it is available.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can I suggest a gym?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Use the Suggest a gym page to send us a gym that offers day passes.",
+        },
+      },
+    ],
+  };
+
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(faqStructuredData),
+      }}
+    />
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">
       <section className="relative overflow-hidden bg-[#0C0C0C]">
         <div className="pointer-events-none absolute -right-10 -top-20 h-80 w-80 rounded-full bg-[#C8F135]/5" />
@@ -137,6 +182,41 @@ export default async function Home() {
         </div>
       </section>
     </main>
+    <section className="mx-auto max-w-7xl px-6 py-20">
+      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
+        FAQ
+      </p>
+
+      <h2 className="mt-3 text-[36px] font-extrabold tracking-[-1px] text-[#0C0C0C]">
+        Gym day pass questions
+      </h2>
+
+      <div className="mt-8 grid gap-4 md:grid-cols-2">
+        {[
+          {
+            q: "Can I use a gym without a membership?",
+            a: "Yes. Many gyms offer day passes that let you train without a monthly membership.",
+          },
+          {
+            q: "How much does a gym day pass cost?",
+            a: "It depends on the city and gym. Gym Day Pass Map helps you compare listed day pass prices.",
+          },
+          {
+            q: "Do day pass gyms have showers?",
+            a: "Some gyms have showers and some do not. We show shower information when it is available.",
+          },
+          {
+            q: "Can I suggest a gym?",
+            a: "Yes. Use the Suggest a gym page to send us a gym that offers day passes.",
+          },
+        ].map((item) => (
+          <div key={item.q} className="rounded-[16px] border border-[#EBEBEB] bg-white p-6">
+            <h3 className="font-extrabold text-[#0C0C0C]">{item.q}</h3>
+            <p className="mt-2 text-sm leading-6 text-[#777]">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
     <Footer />
     </>
   );
