@@ -52,23 +52,28 @@ if (!isAdmin) {
 
   if (!s) return;
 
-  await supabase.from("spots").insert({
-    name: s.gym_name,
-    city: s.city,
-    country: s.country,
-    type: "gym",
-    google_maps_url: s.google_maps_url,
-    website_url: s.website_url,
-    details: {
-      day_pass_price: s.day_pass_price,
-      shower:
-        s.shower === "yes"
-          ? true
-          : s.shower === "no"
-          ? false
-          : null,
-    },
-  });
+  const { error: insertError } = await supabase.from("spots").insert({
+  name: s.gym_name,
+  city: s.city,
+  country: s.country,
+  type: "gym",
+  google_maps_url: s.google_maps_url,
+  website_url: s.website_url,
+  details: {
+    day_pass_price: s.day_pass_price,
+    shower:
+      s.shower === "yes"
+        ? true
+        : s.shower === "no"
+        ? false
+        : null,
+  },
+});
+
+if (insertError) {
+  console.error("Approve insert error:", insertError);
+  throw new Error(insertError.message);
+}
 
   await supabase.from("gym_suggestions").delete().eq("id", id);
 
