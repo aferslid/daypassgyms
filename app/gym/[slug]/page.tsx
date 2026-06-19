@@ -20,6 +20,12 @@ type Gym = {
   lng: number | null;
   photo_url: string | null;
   created_at: string | null;
+  google_name: string | null;
+  phone: string | null;
+  address: string | null;
+  website_url: string | null;
+  google_maps_url: string | null;
+  country_full: string | null;
   details: {
     day_pass_price?: number | null;
     currency?: string | null;
@@ -98,7 +104,7 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const { data: gym, error } = await supabase
     .from("spots")
-    .select("id, name, description, country, city, lat, lng, photo_url, created_at, details")
+    .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details")
     .eq("id", gymId)
     .single();
 
@@ -294,6 +300,33 @@ export default async function GymPage({ params }: GymPageProps) {
                   {getCountryName(typedGym.country)}
                 </div>
               </div>
+              
+              {typedGym.google_name && (
+                <div className="rounded-[12px] bg-[#F2F2F0] p-4">
+                  <div className="text-[11px] text-[#999]">Google Maps name</div>
+                  <div className="mt-1 text-[18px] font-extrabold text-[#111]">
+                    {typedGym.google_name}
+                  </div>
+                </div>
+              )}
+
+              {typedGym.address && (
+                <div className="rounded-[12px] bg-[#F2F2F0] p-4">
+                  <div className="text-[11px] text-[#999]">Address</div>
+                  <div className="mt-1 text-[15px] font-extrabold leading-snug text-[#111]">
+                    {typedGym.address}
+                  </div>
+                </div>
+              )}
+
+              {typedGym.phone && (
+                <div className="rounded-[12px] bg-[#F2F2F0] p-4">
+                  <div className="text-[11px] text-[#999]">Phone</div>
+                  <div className="mt-1 text-[18px] font-extrabold text-[#111]">
+                    {typedGym.phone}
+                  </div>
+                </div>
+              )}
             </div>
 
             {typedGym.created_at && (
@@ -344,13 +377,36 @@ export default async function GymPage({ params }: GymPageProps) {
               </div>
 
               <a
-                href={`https://www.google.com/maps?q=${typedGym.lat},${typedGym.lng}`}
+                href={
+                  typedGym.google_maps_url ||
+                  `https://www.google.com/maps?q=${typedGym.lat},${typedGym.lng}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 block rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-center text-[13px] font-bold text-white transition hover:bg-[#222]"
               >
                 Open in Google Maps →
               </a>
+
+              {typedGym.website_url && (
+                <a
+                  href={typedGym.website_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
+                >
+                  Visit website →
+                </a>
+              )}
+
+              {typedGym.phone && (
+                <a
+                  href={`tel:${typedGym.phone}`}
+                  className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
+                >
+                  Call gym →
+                </a>
+              )}
             </div>
           )}
 
