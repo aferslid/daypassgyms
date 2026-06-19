@@ -26,6 +26,8 @@ type Gym = {
 
 function slugify(text: string) {
   return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
@@ -80,13 +82,16 @@ export default async function CityPage({ params }: CityPageProps) {
   const cityName = formatSlug(city);
   const countryCode = getCountryCodeFromSlug(country);
 
-  const { data: gyms, error } = await supabase
+  const { data: allGyms, error } = await supabase
     .from("spots")
     .select("id, name, description, country, city, photo_url, details")
     .eq("country", countryCode)
-    .ilike("city", cityName)
     .ilike("type", "%gym%")
     .order("name");
+
+  const gyms = (allGyms || []).filter(
+    (gym) => slugify(gym.city || "") === city
+  );
 
   if (error) {
     console.error(error);
