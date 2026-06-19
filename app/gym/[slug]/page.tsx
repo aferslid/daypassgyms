@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import countriesList from "world-countries";
 import GymMiniMapClient from "@/app/components/GymMiniMapClient";
 import Footer from "@/app/components/Footer";
+import Header from "../../components/Header";
 
 type GymPageProps = {
   params: Promise<{
@@ -132,32 +133,7 @@ export default async function GymPage({ params }: GymPageProps) {
         <div className="pointer-events-none absolute right-16 top-8 h-44 w-44 rounded-full bg-[#C8F135]/[0.03]" />
 
         <div className="relative mx-auto max-w-7xl px-6 py-5">
-          <nav className="flex items-center justify-between">
-            <Link href="/gyms" className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#C8F135] text-lg">
-                🏋️
-              </span>
-              <span className="text-sm font-bold text-white tracking-[-0.3px]">
-                Gym Day Pass Map
-              </span>
-            </Link>
-
-            <div className="hidden items-center gap-6 text-[13px] text-[#666] md:flex">
-              <Link href="/gyms" className="transition hover:text-white">
-                Explore
-              </Link>
-              <Link href="/map" className="transition hover:text-white">
-                Map
-              </Link>
-            </div>
-
-            <Link
-              href="/gyms"
-              className="rounded-[8px] bg-[#C8F135] px-4 py-2 text-[13px] font-bold text-[#0C0C0C] transition hover:opacity-90"
-            >
-              All countries
-            </Link>
-          </nav>
+          <Header />
 
           <div className="grid gap-10 pb-16 pt-14 lg:grid-cols-[1.1fr_0.9fr]">
             <div>

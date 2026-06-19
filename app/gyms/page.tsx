@@ -2,6 +2,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import countriesList from "world-countries";
 import Footer from "@/app/components/Footer";
+import Header from "../components/Header";
 
 // Add to your globals.css or layout:
 // @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap');
@@ -62,33 +63,7 @@ export default async function GymsPage() {
         <div className="relative mx-auto max-w-7xl px-6 py-5">
 
           {/* Nav */}
-          <nav className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#C8F135] text-lg">
-                🏋️
-              </span>
-              <span
-                className="text-sm font-bold text-white"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "-0.3px" }}
-              >
-                GymDay Pass Map
-              </span>
-            </Link>
-
-            <div className="hidden items-center gap-6 text-[13px] text-[#666] md:flex">
-              <Link href="/gyms" className="transition hover:text-white">Explore</Link>
-              <Link href="/map" className="transition hover:text-white">Map</Link>
-              <a href="#countries" className="transition hover:text-white">Countries</a>
-            </div>
-
-            <Link
-              href="#countries"
-              className="rounded-[8px] bg-[#C8F135] px-4 py-2 text-[13px] font-bold text-[#0C0C0C] transition hover:opacity-90"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Explore gyms
-            </Link>
-          </nav>
+          <Header />
 
           {/* Hero copy */}
           <div className="pb-16 pt-14">
