@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 export default function SuggestForm() {
   const [loading, setLoading] = useState(false);
@@ -29,15 +28,20 @@ export default function SuggestForm() {
       contact_email: String(formData.get("contact_email") || "").trim(),
     };
 
-    const { error } = await supabase.from("gym_suggestions").insert(payload);
+    const response = await fetch("/api/suggest", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    });
 
+    if (!response.ok) {
+    const data = await response.json();
     setLoading(false);
-
-    if (error) {
-      setErrorMessage("Something went wrong. Please try again.");
-      return;
+    setErrorMessage(data.error || "Something went wrong. Please try again.");
+    return;
     }
 
+    setLoading(false);
     setSuccess(true);
     form.reset();
   }
