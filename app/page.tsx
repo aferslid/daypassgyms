@@ -46,6 +46,14 @@ export default async function Home() {
               <a href="#how" className="transition hover:text-white">
                 How it works
               </a>
+              <a
+                href="TON_LIEN_GOOGLE_FORM"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-white"
+              >
+                Suggest a gym
+              </a>
             </div>
 
             <Link
