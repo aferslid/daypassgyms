@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 function getAdminClient() {
   return createClient(
@@ -12,12 +14,14 @@ function getAdminClient() {
 async function deleteSuggestion(formData: FormData) {
   "use server";
 
-  const key = String(formData.get("admin_key") || "");
-  const id = Number(formData.get("id"));
+  const cookieStore = await cookies();
+  const isAdmin = cookieStore.get("admin_auth")?.value === "true";
 
-  if (key !== process.env.ADMIN_PASSWORD) {
+    if (!isAdmin) {
     throw new Error("Unauthorized");
-  }
+    }
+
+  const id = Number(formData.get("id"));
 
   const supabase = getAdminClient();
 
@@ -29,12 +33,14 @@ async function deleteSuggestion(formData: FormData) {
 async function approveSuggestion(formData: FormData) {
   "use server";
 
-  const key = String(formData.get("admin_key") || "");
-  const id = Number(formData.get("id"));
+  const cookieStore = await cookies();
+const isAdmin = cookieStore.get("admin_auth")?.value === "true";
 
-  if (key !== process.env.ADMIN_PASSWORD) {
-    throw new Error("Unauthorized");
-  }
+if (!isAdmin) {
+  throw new Error("Unauthorized");
+}
+
+  const id = Number(formData.get("id"));
 
   const supabase = getAdminClient();
 
@@ -69,19 +75,12 @@ async function approveSuggestion(formData: FormData) {
   revalidatePath("/admin/suggestions");
 }
 
-export default async function AdminSuggestionsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ key?: string }>;
-}) {
-  const { key } = await searchParams;
+export default async function AdminSuggestionsPage() {
+  const cookieStore = await cookies();
+  const isAdmin = cookieStore.get("admin_auth")?.value === "true";
 
-  if (key !== process.env.ADMIN_PASSWORD) {
-    return (
-      <main className="min-h-screen bg-[#F7F7F5] p-10">
-        <h1 className="text-3xl font-black">Admin locked</h1>
-      </main>
-    );
+  if (!isAdmin) {
+    redirect("/admin");
   }
 
   const supabase = getAdminClient();
@@ -113,7 +112,6 @@ export default async function AdminSuggestionsPage({
             <div className="mt-5 flex gap-3">
             <form action={approveSuggestion}>
                 <input type="hidden" name="id" value={s.id} />
-                <input type="hidden" name="admin_key" value={key} />
                 <button className="rounded-lg bg-green-600 px-4 py-2 text-sm font-bold text-white">
                 Approve
                 </button>
@@ -121,7 +119,6 @@ export default async function AdminSuggestionsPage({
 
             <form action={deleteSuggestion}>
                 <input type="hidden" name="id" value={s.id} />
-                <input type="hidden" name="admin_key" value={key} />
                 <button className="rounded-lg bg-black px-4 py-2 text-sm font-bold text-white">
                 Delete
                 </button>
