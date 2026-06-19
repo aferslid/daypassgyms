@@ -1,10 +1,10 @@
 {
-  "name": "Traveler Survival Map",
-  "short_name": "Traveler",
+  "name": "Gym Day Pass Map",
+  "short_name": "DayPassGyms",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#0b1220",
+  "background_color": "#0C0C0C",
+  "theme_color": "#C8F135",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
