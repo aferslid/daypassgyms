@@ -31,12 +31,6 @@ export default function SuggestForm() {
 
     const { error } = await supabase.from("gym_suggestions").insert(payload);
 
-    if (error) {
-    console.error(error);
-    alert(error.message);
-    return;
-    }
-
     setLoading(false);
 
     if (error) {
@@ -44,6 +38,7 @@ export default function SuggestForm() {
       return;
     }
 
+    setSuccess(true);
     form.reset();
   }
 
