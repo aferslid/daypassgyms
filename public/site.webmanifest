@@ -1,6 +1,6 @@
 {
-  "name": "Gym Day Pass Map",
-  "short_name": "DayPassGyms",
+  "name": "DayPassGyms",
+  "short_name": "DayPassG",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
