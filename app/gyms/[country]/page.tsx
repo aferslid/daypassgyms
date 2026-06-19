@@ -77,6 +77,18 @@ export async function generateMetadata({
   return {
     title: `Gym day passes in ${countryName} | Gym Day Pass Map`,
     description: `Find gyms with day passes in ${countryName}. Compare prices, showers and locations.`,
+    openGraph: {
+      title: `Gym day passes in ${countryName}`,
+      description: `Find gyms with day passes in ${countryName}. Compare prices, showers and locations.`,
+      url: `https://daypassgyms.com/gyms/${country}`,
+      siteName: "Gym Day Pass Map",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Gym day passes in ${countryName}`,
+      description: `Find gyms with day passes in ${countryName}. Compare prices, showers and locations.`,
+    },
   };
 }
 

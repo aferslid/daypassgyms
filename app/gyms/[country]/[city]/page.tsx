@@ -82,6 +82,18 @@ export async function generateMetadata({ params }: CityPageProps) {
   return {
     title: `Gym day passes in ${cityName}, ${countryName} | Gym Day Pass Map`,
     description: `Find gyms with day passes in ${cityName}, ${countryName}. Compare prices, showers and facilities.`,
+    openGraph: {
+      title: `Gym day passes in ${cityName}, ${countryName}`,
+      description: `Find gyms with day passes in ${cityName}, ${countryName}. Compare prices, showers and facilities.`,
+      url: `https://daypassgyms.com/gyms/${country}/${city}`,
+      siteName: "Gym Day Pass Map",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Gym day passes in ${cityName}, ${countryName}`,
+      description: `Find gyms with day passes in ${cityName}, ${countryName}. Compare prices, showers and facilities.`,
+    },
   };
 }
 
@@ -115,6 +127,37 @@ export default async function CityPage({ params }: CityPageProps) {
     })),
   };
 
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `Can I get a day pass gym in ${cityName}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes. Many gyms in ${cityName} offer day passes without requiring a membership.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `How much does a gym day pass cost in ${cityName}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Prices vary depending on the gym. Browse the listed gyms in ${cityName} to compare day pass prices.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Do gyms in ${cityName} have showers?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Some gyms provide showers and some do not. Shower information is shown when available.`,
+        },
+      },
+    ],
+  };
+
   if (error) {
     console.error(error);
   }
@@ -125,6 +168,12 @@ export default async function CityPage({ params }: CityPageProps) {
       type="application/ld+json"
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(itemListStructuredData),
+      }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(faqStructuredData),
       }}
     />
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">

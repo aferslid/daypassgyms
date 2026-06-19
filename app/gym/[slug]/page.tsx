@@ -57,6 +57,18 @@ export async function generateMetadata({ params }: GymPageProps) {
   return {
     title: `${gym.name} Day Pass Price | Gym Day Pass Map`,
     description: `Check ${gym.name} day pass info, price, shower availability and location.`,
+    openGraph: {
+      title: `${gym.name} Day Pass Price`,
+      description: `Day pass info, price, shower availability and location for ${gym.name}.`,
+      url: `https://daypassgyms.com/gym/${slug}`,
+      siteName: "Gym Day Pass Map",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${gym.name} Day Pass Price`,
+      description: `Day pass info, price, shower availability and location for ${gym.name}.`,
+    },
   };
 }
 
