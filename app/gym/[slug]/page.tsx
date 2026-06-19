@@ -99,6 +99,14 @@ function getFlagEmoji(countryCode: string | null) {
     );
 }
 
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export default async function GymPage({ params }: GymPageProps) {
   const { slug } = await params;
   const gymId = getIdFromSlug(slug);
@@ -423,6 +431,25 @@ export default async function GymPage({ params }: GymPageProps) {
           </div>
         </aside>
       </section>
+      {typedGym.country && (
+        <section className="mt-20 rounded-[16px] border border-[#EBEBEB] bg-white p-6">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
+            Explore more
+          </p>
+
+          <div className="mt-4 flex flex-col gap-3 text-[15px] font-semibold">
+            {typedGym.city && (
+              <Link href={`/gyms/${typedGym.country.toLowerCase()}/${slugify(typedGym.city)}`}>
+                Other gyms in {typedGym.city}
+              </Link>
+            )}
+
+            <Link href={`/gyms/${typedGym.country.toLowerCase()}`}>
+              Explore {typedGym.country_full || typedGym.country}
+            </Link>
+          </div>
+        </section>
+      )}
     </main>
     <Footer />
 </>
