@@ -181,8 +181,7 @@ export default async function Home() {
           ))}
         </div>
       </section>
-    </main>
-    <section className="mx-auto max-w-7xl px-6 py-20">
+      <section className="mx-auto max-w-7xl px-6 py-20">
       <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
         FAQ
       </p>
@@ -217,6 +216,8 @@ export default async function Home() {
         ))}
       </div>
     </section>
+    </main>
+    
     <Footer />
     </>
   );
