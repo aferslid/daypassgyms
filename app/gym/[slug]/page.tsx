@@ -370,7 +370,7 @@ export default async function GymPage({ params }: GymPageProps) {
               </p>
             ) : (
               <p className="mt-5 text-[14px] text-[#999]">
-                No description available yet.
+                We're gradually adding descriptions and extra information for all gyms.
               </p>
             )}
           </div>
@@ -418,8 +418,8 @@ export default async function GymPage({ params }: GymPageProps) {
 
               {typedGym.phone && (
                 <a
-                  href={`tel:${typedGym.phone}`}
-                  className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
+                  href={`tel:${typedGym.phone.replace(/\s/g, "")}`}
+                  className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#0C0C0C]"
                 >
                   Call gym →
                 </a>
@@ -427,19 +427,25 @@ export default async function GymPage({ params }: GymPageProps) {
             </div>
           )}
 
-          <div className="rounded-[16px] border border-[#EBEBEB] bg-[#0C0C0C] p-6 text-white">
+          <div className="rounded-[16px] border border-[#0C0C0C] bg-[#0C0C0C] p-6 text-white">
             <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
               Data
             </p>
 
-            <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.5px]">
+            <h3 className="mt-3 text-[24px] font-extrabold">
               Help improve this listing
-            </h2>
+            </h3>
 
-            <p className="mt-4 text-[13px] leading-relaxed text-[#777]">
-              Opening hours, address, website and photos will be added
-              progressively.
+            <p className="mt-4 text-[13px] leading-relaxed text-[#999]">
+              Found outdated prices, missing opening hours or better information? Send an update and help travelers.
             </p>
+
+            <Link
+              href={`/suggest?type=update&gym=${encodeURIComponent(typedGym.name)}`}
+              className="mt-5 block rounded-[10px] bg-[#C8F135] px-5 py-3 text-center text-[13px] font-bold text-[#0C0C0C]"
+            >
+              Suggest an update →
+            </Link>
           </div>
         </aside>
       </section>

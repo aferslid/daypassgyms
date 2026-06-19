@@ -20,6 +20,7 @@ export async function POST(request: Request) {
     shower: body.shower,
     notes: body.notes,
     contact_email: body.contact_email,
+    submission_type: body.submission_type,
   });
 
   if (error) {

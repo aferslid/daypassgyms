@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 
-export default function SuggestForm() {
+export default function SuggestForm({
+  initialGymName = "",
+  initialType = "new",
+}: {
+  initialGymName?: string;
+  initialType?: "new" | "update";
+}) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,6 +23,7 @@ export default function SuggestForm() {
     const formData = new FormData(event.currentTarget);
 
     const payload = {
+      submission_type: String(formData.get("submission_type") || "new"),
       gym_name: String(formData.get("gym_name") || "").trim(),
       city: String(formData.get("city") || "").trim(),
       country: String(formData.get("country") || "").trim(),
@@ -48,7 +55,21 @@ export default function SuggestForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <input name="gym_name" required placeholder="Gym name *" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />
+        <select
+        name="submission_type"
+        defaultValue={initialType}
+        className="w-full rounded-[12px] border border-[#EBEBEB] p-4"
+        >
+        <option value="new">Add a new gym</option>
+        <option value="update">Update an existing gym</option>
+        </select>
+      <input
+        name="gym_name"
+        required
+        defaultValue={initialGymName}
+        placeholder="Gym name *"
+        className="w-full rounded-[12px] border border-[#EBEBEB] p-4"
+        />
       <input name="city" placeholder="City" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />
       <input name="country" placeholder="Country" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />
       <input name="website_url" placeholder="Website or Instagram" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />

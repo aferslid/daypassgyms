@@ -6,7 +6,15 @@ export const metadata = {
   description: "Suggest a gym with day passes to add to Gym Day Pass Map.",
 };
 
-export default function SuggestPage() {
+export default async function SuggestPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string; gym?: string }>;
+}) {
+  const params = await searchParams;
+
+  const initialGymName = params.gym || "";
+  const initialType = params.type === "update" ? "update" : "new";
   return (
     <main className="min-h-screen bg-[#F7F7F5]">
       <section className="relative overflow-hidden bg-[#0C0C0C]">
@@ -31,7 +39,10 @@ export default function SuggestPage() {
 
       <section className="mx-auto max-w-3xl px-6 py-14">
         <div className="rounded-[20px] border border-[#EBEBEB] bg-white p-8 md:p-10">
-          <SuggestForm />
+          <SuggestForm
+            initialGymName={initialGymName}
+            initialType={initialType}
+            />
         </div>
       </section>
     </main>
