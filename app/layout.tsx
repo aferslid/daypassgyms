@@ -19,7 +19,7 @@ export const metadata = {
   description: "Find gyms with day passes around the world.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/icon-192.png",
+    icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
 };
