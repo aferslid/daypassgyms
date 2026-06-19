@@ -65,14 +65,23 @@ function formatShower(details: Gym["details"]) {
   return "Shower unknown";
 }
 
+
 export async function generateMetadata({ params }: CityPageProps) {
   const { country, city } = await params;
-  const countryName = formatSlug(country);
-  const cityName = formatSlug(city);
+
+  const countryName =
+    countriesList.find(
+      (c) => c.cca2.toLowerCase() === country
+    )?.name.common ?? country.toUpperCase();
+
+  const cityName = city
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
   return {
-    title: `Gyms with Day Passes in ${cityName}, ${countryName}`,
-    description: `Find gyms with day passes in ${cityName}, ${countryName}. Browse day pass prices, shower info and locations.`,
+    title: `Gym day passes in ${cityName}, ${countryName} | Gym Day Pass Map`,
+    description: `Find gyms with day passes in ${cityName}, ${countryName}. Compare prices, showers and facilities.`,
   };
 }
 
