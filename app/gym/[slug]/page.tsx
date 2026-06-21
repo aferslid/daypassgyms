@@ -31,6 +31,9 @@ type Gym = {
     day_pass_price?: number | null;
     currency?: string | null;
     shower?: boolean | null;
+    pool: boolean | null;
+    wifi: boolean | null;
+    locker: boolean | null;
   } | null;
 };
 
@@ -257,19 +260,29 @@ export default async function GymPage({ params }: GymPageProps) {
 
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
-                {typedGym.city || "Unknown"}
+                {typedGym.details?.pool === true
+                  ? "Pool"
+                  : typedGym.details?.pool === false
+                  ? "No pool"
+                  : "Unknown"}
               </div>
+
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
-                city
+                pool
               </div>
             </div>
 
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
-                Free
+                {typedGym.details?.wifi === true
+                  ? "Wi-Fi"
+                  : typedGym.details?.wifi === false
+                  ? "No Wi-Fi"
+                  : "Unknown"}
               </div>
+
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
-                to browse
+                internet
               </div>
             </div>
           </div>
@@ -339,6 +352,18 @@ export default async function GymPage({ params }: GymPageProps) {
                   <div className="text-[11px] text-[#999]">Phone</div>
                   <div className="mt-1 text-[18px] font-extrabold text-[#111]">
                     {typedGym.phone}
+                  </div>
+                </div>
+              )}
+
+              {typedGym.details?.locker !== null && typedGym.details?.locker !== undefined && (
+                <div className="rounded-[12px] bg-[#F2F2F0] p-4">
+                  <div className="text-[11px] text-[#999]">
+                    Locker
+                  </div>
+
+                  <div className="mt-1 text-[18px] font-extrabold text-[#111]">
+                    {typedGym.details?.locker ? "Available" : "Not available"}
                   </div>
                 </div>
               )}
