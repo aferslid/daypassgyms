@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import countriesList from "world-countries";
 import Footer from "@/app/components/Footer";
 import Header from "../components/Header";
+import CountrySearch from "@/app/components/CountrySearch";
 
 // Add to your globals.css or layout:
 // @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap');
@@ -151,63 +152,7 @@ export default async function GymsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 rounded-[8px] border border-[#E5E5E5] bg-white px-4 py-2.5 text-[12px] text-[#bbb]">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            Search countries coming soon
-          </div>
-        </div>
-
-        {/* Country grid */}
-        <div
-          className="grid gap-2"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))" }}
-        >
-          {countries.map((country) => (
-            <Link
-              key={country.code}
-              href={`/gyms/${country.slug}`}
-              className="group relative flex items-center gap-3 overflow-hidden rounded-[10px] border border-[#EBEBEB] bg-white px-4 py-3 transition duration-150 hover:-translate-y-0.5 hover:border-[#C8F135]"
-            >
-              {/* Left accent bar — shows on hover */}
-              <span className="absolute inset-y-0 left-0 w-[3px] bg-[#C8F135] opacity-0 transition-opacity group-hover:opacity-100" />
-
-              {/* Flag */}
-              <img
-                src={country.flag}
-                alt={`${country.name} flag`}
-                className="h-[22px] w-8 flex-shrink-0 rounded-[3px] object-cover"
-              />
-
-              {/* Name + count */}
-              <div className="min-w-0 flex-1">
-                <div
-                  className="truncate text-[13px] font-bold text-[#111] tracking-[-0.2px]"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  {country.name}
-                </div>
-                <div className="text-[11px] text-[#999]">
-                  {country.count} gym{country.count > 1 ? "s" : ""}
-                </div>
-              </div>
-
-              {/* Arrow */}
-              <span className="flex-shrink-0 text-[#ccc] transition-all group-hover:translate-x-0.5 group-hover:text-[#C8F135]">
-                →
-              </span>
-
-              {/* Ghost count */}
-              <span
-                className="pointer-events-none absolute -bottom-2 right-0 text-[44px] font-extrabold leading-none tracking-[-2px] text-[#F0F0EE] select-none"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                aria-hidden="true"
-              >
-                {country.count}
-              </span>
-            </Link>
-          ))}
+          <CountrySearch countries={countries} />
         </div>
       </section>
     </main>
