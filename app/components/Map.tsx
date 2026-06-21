@@ -297,7 +297,7 @@ async function getCountryCodeFromCoords(lat: number, lng: number): Promise<strin
       {
         headers: {
           Accept: "application/json",
-          "User-Agent": "TravelerSurvivalMap/1.0",
+          "User-Agent": "DayPassGyms/1.0",
         },
       }
     );
@@ -1149,7 +1149,7 @@ useEffect(() => {
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://travelersurvivalmap.com/reset-password",
+      redirectTo: "https://daypassgyms.com/reset-password",
     });
 
     if (error) {
