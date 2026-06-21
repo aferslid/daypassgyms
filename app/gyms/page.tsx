@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import countriesList from "world-countries";
@@ -30,6 +31,10 @@ export default async function GymsPage() {
     .select("country")
     .ilike("type", "%gym%")
     .not("country", "is", null);
+
+  console.log("count =", data?.length);
+  console.log("Rows:", data?.length);
+  console.log(data?.slice(-10));
 
   const countryCounts = new Map<string, number>();
   (data || []).forEach((spot) => {
