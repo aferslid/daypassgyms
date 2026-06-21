@@ -4,6 +4,7 @@ import countriesList from "world-countries";
 import Footer from "@/app/components/Footer";
 import Header from "../components/Header";
 import CountrySearch from "@/app/components/CountrySearch";
+import CountriesGrid from "../components/CountriesGrid";
 
 // Add to your globals.css or layout:
 // @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap');
@@ -132,79 +133,7 @@ export default async function GymsPage() {
       {/* ── DIRECTORY ── */}
       <section id="countries" className="mx-auto max-w-7xl px-6 py-16">
 
-        {/* Section header */}
-        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p
-              className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              Directory
-            </p>
-            <h2
-              className="mt-1 text-[22px] font-extrabold text-[#0C0C0C] tracking-[-0.5px]"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              All countries
-            </h2>
-            <p className="mt-1 text-[13px] text-[#999]">
-              Browse every country currently listed
-            </p>
-          </div>
-
-          <CountrySearch />
-        </div>
-
-        {/* Country grid */}
-        <div
-          className="grid gap-2"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))" }}
-        >
-          {countries.map((country) => (
-            <Link
-              key={country.code}
-              href={`/gyms/${country.slug}`}
-              className="group relative flex items-center gap-3 overflow-hidden rounded-[10px] border border-[#EBEBEB] bg-white px-4 py-3 transition duration-150 hover:-translate-y-0.5 hover:border-[#C8F135]"
-            >
-              {/* Left accent bar — shows on hover */}
-              <span className="absolute inset-y-0 left-0 w-[3px] bg-[#C8F135] opacity-0 transition-opacity group-hover:opacity-100" />
-
-              {/* Flag */}
-              <img
-                src={country.flag}
-                alt={`${country.name} flag`}
-                className="h-[22px] w-8 flex-shrink-0 rounded-[3px] object-cover"
-              />
-
-              {/* Name + count */}
-              <div className="min-w-0 flex-1">
-                <div
-                  className="truncate text-[13px] font-bold text-[#111] tracking-[-0.2px]"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  {country.name}
-                </div>
-                <div className="text-[11px] text-[#999]">
-                  {country.count} gym{country.count > 1 ? "s" : ""}
-                </div>
-              </div>
-
-              {/* Arrow */}
-              <span className="flex-shrink-0 text-[#ccc] transition-all group-hover:translate-x-0.5 group-hover:text-[#C8F135]">
-                →
-              </span>
-
-              {/* Ghost count */}
-              <span
-                className="pointer-events-none absolute -bottom-2 right-0 text-[44px] font-extrabold leading-none tracking-[-2px] text-[#F0F0EE] select-none"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                aria-hidden="true"
-              >
-                {country.count}
-              </span>
-            </Link>
-          ))}
-        </div>
+      <CountriesGrid countries={countries} />
         
       </section>
     </main>
