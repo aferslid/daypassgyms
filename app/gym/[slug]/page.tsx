@@ -84,9 +84,15 @@ function getIdFromSlug(slug: string) {
 function formatPrice(details: Gym["details"]) {
   if (!details?.day_pass_price) return "Price unknown";
 
-  return `${new Intl.NumberFormat().format(details.day_pass_price)} ${
-    details.currency || ""
-  }`;
+  // Si c'est un nombre
+  if (!isNaN(Number(details.day_pass_price))) {
+    return `${new Intl.NumberFormat().format(Number(details.day_pass_price))} ${
+      details.currency || ""
+    }`;
+  }
+
+  // Si c'est du texte ("One-time free trial", "1-day free", etc.)
+  return details.day_pass_price;
 }
 
 function formatShower(details: Gym["details"]) {
