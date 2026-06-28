@@ -125,34 +125,14 @@ export default async function CountryPage({ params }: CountryPageProps) {
     }, {} as Record<string, number>)
   ).sort((a, b) => b[1] - a[1]);
 
-  const priceRanges = Object.entries(
-  (gyms || []).reduce((acc, gym) => {
-    const price = Number(gym.details?.day_pass_price);
-    if (isNaN(price) || price <= 0) return acc;
+  const prices = (gyms || [])
+    .map(g => g.details?.day_pass_price)
+    .filter((p): p is number => p != null);
 
-    const currency = gym.details?.currency || "Unknown";
-
-    if (!acc[currency]) acc[currency] = [];
-    acc[currency].push(price);
-
-    return acc;
-  }, {} as Record<string, number[]>)
-).map(([currency, prices]) => ({
-  currency,
-  min: Math.min(...prices),
-  max: Math.max(...prices),
-}));
-
-const priceRangeText =
-  priceRanges.length > 0
-    ? priceRanges
-        .map((range) =>
-          range.min === range.max
-            ? `${new Intl.NumberFormat().format(range.min)} ${range.currency}`
-            : `${new Intl.NumberFormat().format(range.min)}–${new Intl.NumberFormat().format(range.max)} ${range.currency}`
-        )
-        .join(" · ")
-    : "Coming soon";
+  const priceRangeText =
+    prices.length > 0
+      ? `${Math.min(...prices)}–${Math.max(...prices)}`
+      : "Unknown";
 
   const itemListStructuredData = {
     "@context": "https://schema.org",
@@ -227,74 +207,23 @@ const priceRangeText =
             </div>
 
             <div className="flex-1 px-6 py-4">
+              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
+                {priceRangeText}
+              </div>
+
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+                price range
+              </div>
+            </div>
+
+            <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 Day pass
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
                 price focused
               </div>
-            </div>
-
-            <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
-                Free
-              </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
-                to browse
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-14">
-        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-          Country stats
-        </p>
-
-        <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
-          {countryName} at a glance
-        </h2>
-
-        <div className="mt-6 grid gap-3 md:grid-cols-3">
-          <div className="relative overflow-hidden rounded-[12px] border border-[#EBEBEB] bg-white p-6">
-            <div className="text-[40px] font-extrabold leading-none tracking-[-1.5px] text-[#0C0C0C]">
-              {(gyms || []).length}
-            </div>
-            <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-[#999]">
-              Gyms listed
-            </div>
-            <span
-              className="pointer-events-none absolute -bottom-3 -right-2 text-[80px] font-extrabold leading-none tracking-[-3px] text-[#F7F7F5] select-none"
-              aria-hidden="true"
-            >
-              {(gyms || []).length}
-            </span>
-          </div>
-
-          <div className="relative overflow-hidden rounded-[12px] border border-[#EBEBEB] bg-white p-6">
-            <div className="text-[40px] font-extrabold leading-none tracking-[-1.5px] text-[#0C0C0C]">
-              {cities.length}
-            </div>
-            <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-[#999]">
-              Cities covered
-            </div>
-            <span
-              className="pointer-events-none absolute -bottom-3 -right-2 text-[80px] font-extrabold leading-none tracking-[-3px] text-[#F7F7F5] select-none"
-              aria-hidden="true"
-            >
-              {cities.length}
-            </span>
-          </div>
-
-          <div className="relative overflow-hidden rounded-[12px] bg-[#0C0C0C] p-6">
-            <div className="pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full bg-[#C8F135]/10" />
-            <div className="relative text-[24px] font-extrabold leading-tight tracking-[-1px] text-[#C8F135]">
-              {priceRangeText}
-            </div>
-            <div className="relative mt-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-[#777]">
-              Price range
-            </div>
+            </div>            
           </div>
         </div>
       </section>
