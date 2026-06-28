@@ -125,13 +125,36 @@ export default async function CountryPage({ params }: CountryPageProps) {
     }, {} as Record<string, number>)
   ).sort((a, b) => b[1] - a[1]);
 
-  const prices = (gyms || [])
-    .map(g => g.details?.day_pass_price)
-    .filter((p): p is number => p != null);
+  const priceRanges = Object.entries(
+    (gyms || []).reduce((acc, gym) => {
+      const price = Number(gym.details?.day_pass_price);
+      const currency = gym.details?.currency || "Unknown";
+
+      if (isNaN(price) || price <= 0) return acc;
+
+      if (!acc[currency]) acc[currency] = [];
+      acc[currency].push(price);
+
+      return acc;
+    }, {} as Record<string, number[]>)
+  ).map(([currency, prices]) => ({
+    currency,
+    min: Math.min(...prices),
+    max: Math.max(...prices),
+  }));
 
   const priceRangeText =
-    prices.length > 0
-      ? `${Math.min(...prices)}–${Math.max(...prices)}`
+    priceRanges.length > 0
+      ? priceRanges
+          .map((range) => {
+            const min = new Intl.NumberFormat().format(range.min);
+            const max = new Intl.NumberFormat().format(range.max);
+
+            return range.min === range.max
+              ? `${min} ${range.currency}`
+              : `${min}–${max} ${range.currency}`;
+          })
+          .join(" · ")
       : "Unknown";
 
   const itemListStructuredData = {
@@ -207,7 +230,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
             </div>
 
             <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
+              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 {priceRangeText}
               </div>
 
@@ -217,7 +240,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
             </div>
 
             <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
+              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 Day pass
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
