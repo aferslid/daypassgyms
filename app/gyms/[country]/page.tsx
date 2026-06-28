@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import countriesList from "world-countries";
 import Footer from "@/app/components/Footer";
 import Header from "../../components/Header";
+import Image from "next/image";
 
 type CountryPageProps = {
   params: Promise<{
@@ -185,7 +186,8 @@ export default async function CountryPage({ params }: CountryPageProps) {
         <div className="relative mx-auto max-w-7xl px-6 py-5">
           <Header />
 
-          <div className="pb-16 pt-14">
+          <div className="grid gap-12 pb-16 pt-14 lg:grid-cols-2 lg:items-center">
+            <div>
             <Link
               href="/gyms"
               className="mb-5 inline-block text-[13px] font-medium text-[#777] hover:text-white"
@@ -206,8 +208,22 @@ export default async function CountryPage({ params }: CountryPageProps) {
               Browse gyms with day passes in {countryName}. Compare prices,
               check shower info and find where to train.
             </p>
+            </div>
+            <div className="hidden lg:flex justify-end">
+              <div className="relative h-[340px] w-[520px] overflow-hidden rounded-[24px] border border-[#222]">
+                <Image
+                  src={`/images/countries/${slugify(countryName)}.jpg`}
+                  alt={countryName}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+              </div>
+            </div>
           </div>
         </div>
+        
 
         <div className="border-t border-[#1e1e1e] bg-[#111]">
           <div className="mx-auto max-w-7xl divide-x divide-[#1e1e1e] px-0 md:flex">
