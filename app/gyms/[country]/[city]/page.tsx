@@ -257,7 +257,7 @@ export default async function CityPage({ params }: CityPageProps) {
             </div>
 
             <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
+              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 Day pass
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
