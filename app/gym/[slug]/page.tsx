@@ -489,12 +489,12 @@ export default async function GymPage({ params }: GymPageProps) {
 
           <div className="mt-4 flex flex-col gap-3 text-[15px] font-semibold">
             {typedGym.city && (
-              <Link href={`/gyms/${typedGym.country.toLowerCase()}/${slugify(typedGym.city)}`}>
+              <Link href={`/gyms/${slugify(typedGym.country_full || typedGym.country)}/${slugify(typedGym.city)}`}>
                 Other gyms in {typedGym.city}
               </Link>
             )}
 
-            <Link href={`/gyms/${typedGym.country.toLowerCase()}`}>
+            <Link href={`/gyms/${slugify(typedGym.country_full || typedGym.country)}`}>
               Explore {typedGym.country_full || typedGym.country}
             </Link>
           </div>
