@@ -240,66 +240,50 @@ export default async function CountryPage({ params }: CountryPageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pt-12">
-        <div className="rounded-[18px] border border-[#EBEBEB] bg-white p-6">
-          <div className="mb-6">
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-              Country stats
-            </p>
-            <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
-              {countryName} at a glance
-            </h2>
-          </div>
+      <section className="mx-auto max-w-7xl px-6 pt-10">
+  <div className="grid gap-2 rounded-[14px] border border-[#EBEBEB] bg-white p-3 md:grid-cols-3">
+    <div className="rounded-[10px] bg-[#F7F7F5] px-4 py-3">
+      <div className="text-[20px] font-extrabold text-[#0C0C0C]">
+        {(gyms || []).length}
+      </div>
+      <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#999]">
+        Gyms listed
+      </div>
+    </div>
 
-          <div
-            className="grid gap-3"
-            style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
-          >
-            <div className="rounded-[14px] border border-[#EBEBEB] bg-[#F7F7F5] p-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#0C0C0C]">
-                {(gyms || []).length}
-              </div>
-              <div className="mt-2 text-[11px] font-bold uppercase tracking-[0.08em] text-[#999]">
-                Gyms listed
-              </div>
-            </div>
+    <div className="rounded-[10px] bg-[#F7F7F5] px-4 py-3">
+      <div className="text-[20px] font-extrabold text-[#0C0C0C]">
+        {cities.length}
+      </div>
+      <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#999]">
+        Cities covered
+      </div>
+    </div>
 
-            <div className="rounded-[14px] border border-[#EBEBEB] bg-[#F7F7F5] p-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#0C0C0C]">
-                {cities.length}
-              </div>
-              <div className="mt-2 text-[11px] font-bold uppercase tracking-[0.08em] text-[#999]">
-                Cities covered
-              </div>
-            </div>
+    <div className="rounded-[10px] bg-[#F7F7F5] px-4 py-3">
+      <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#999]">
+        Price range
+      </div>
 
-            <div className="rounded-[14px] border border-[#EBEBEB] bg-[#F7F7F5] p-4 md:col-span-2">
-              <div className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#0C0C0C]">
-                Price range
-              </div>
-
-              <div className="mt-3 flex flex-wrap gap-2">
-                {priceRanges.length > 0 ? (
-                  priceRanges.map((range) => (
-                    <span
-                      key={range.currency}
-                      className="rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-[#555]"
-                    >
-                      {range.min === range.max
-                        ? `${new Intl.NumberFormat().format(range.min)} ${range.currency}`
-                        : `${new Intl.NumberFormat().format(range.min)}–${new Intl.NumberFormat().format(range.max)} ${range.currency}`}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-[12px] text-[#999]">
-                    Price data coming soon
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div className="mt-1 flex flex-wrap gap-1.5">
+        {priceRanges.length > 0 ? (
+          priceRanges.map((range) => (
+            <span
+              key={range.currency}
+              className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-[#555]"
+            >
+              {range.min === range.max
+                ? `${new Intl.NumberFormat().format(range.min)} ${range.currency}`
+                : `${new Intl.NumberFormat().format(range.min)}–${new Intl.NumberFormat().format(range.max)} ${range.currency}`}
+            </span>
+          ))
+        ) : (
+          <span className="text-[11px] text-[#999]">Price data coming soon</span>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
 
       <section id="cities" className="mx-auto max-w-7xl px-6 py-14">
         <div className="mb-6">
