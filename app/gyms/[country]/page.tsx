@@ -210,12 +210,12 @@ export default async function CountryPage({ params }: CountryPageProps) {
             </p>
             </div>
             <div className="hidden lg:flex justify-end">
-              <div className="relative h-[340px] w-[520px] overflow-hidden rounded-[24px] border border-[#222]">
+              <div className="relative h-[360px] w-full max-w-[560px] overflow-hidden rounded-[24px] border border-[#222]">
                 <Image
                   src={`/images/countries/${slugify(countryName)}.jpg`}
                   alt={countryName}
                   fill
-                  className="object-cover"
+                  className="object-cover transition duration-700 hover:scale-105"
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
