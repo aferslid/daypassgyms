@@ -169,6 +169,18 @@ export default async function CityPage({ params }: CityPageProps) {
     console.error(error);
   }
 
+  const prices = (gyms || [])
+    .map(g => {
+      const price = g.details?.day_pass_price;
+      const currency = g.details?.currency;
+
+      return price && currency ? `${price} ${currency}` : null;
+    })
+    .filter(Boolean);
+
+  const priceRangeText =
+    prices.length > 0 ? prices.join(" • ") : "Unknown";
+
   return (
     <>
     <script
@@ -237,19 +249,19 @@ export default async function CityPage({ params }: CityPageProps) {
 
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
-                Day pass
+                {priceRangeText}
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
-                price focused
+                price range
               </div>
             </div>
 
             <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
-                Free
+              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
+                Day pass
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
-                to browse
+                price focused
               </div>
             </div>
           </div>
