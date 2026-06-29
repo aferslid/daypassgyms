@@ -287,7 +287,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
           {cities.map(([city, count]) => (
             <Link
               key={city}
-              href={`/gyms/${country}/${slugify(city)}`}
+              href={`/gyms/${slugify(countryName)}/${slugify(city)}`}
               className="group relative flex items-center justify-between overflow-hidden rounded-[10px] border border-[#EBEBEB] bg-white px-4 py-3 transition duration-150 hover:-translate-y-0.5 hover:border-[#C8F135]"
             >
               <span className="absolute inset-y-0 left-0 w-[3px] bg-[#C8F135] opacity-0 transition-opacity group-hover:opacity-100" />
