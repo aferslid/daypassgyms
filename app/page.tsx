@@ -16,8 +16,21 @@ export default async function Home() {
     .ilike("type", "%gym%")
     .not("country", "is", null);
 
+  const { data: citiesData } = await supabase
+    .from("spots")
+    .select("country_full, city")
+    .ilike("type", "%gym%")
+    .not("country_full", "is", null)
+    .not("city", "is", null);
+
   const countriesCount = new Set(
     (countriesData || []).map((row) => row.country)
+  ).size;
+
+  const citiesCount = new Set(
+    (citiesData || []).map(
+      (row) => `${row.country_full}-${row.city}`
+    )
   ).size;
 
   const faqStructuredData = {
@@ -128,21 +141,19 @@ export default async function Home() {
               </div>
             </div>
 
+            <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
+              {citiesCount}
+            </div>
+            <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              cities
+            </div>
+
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 Day pass
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
                 price focused
-              </div>
-            </div>
-
-            <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
-                Free
-              </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
-                to browse
               </div>
             </div>
           </div>
