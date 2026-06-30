@@ -28,7 +28,7 @@ function getFlagUrl(code: string) {
 export default async function GymsPage() {
   const { data } = await supabase
     .from("spots")
-    .select("country")
+    .select("country, city")
     .ilike("type", "%gym%")
     .not("country", "is", null);
 
@@ -53,6 +53,12 @@ export default async function GymsPage() {
     .sort((a, b) => b.count - a.count);
 
   const totalGyms = countries.reduce((sum, c) => sum + c.count, 0);
+
+  const citiesCount = new Set(
+    (data || [])
+      .filter((spot) => spot.country && spot.city)
+      .map((spot) => `${spot.country.toUpperCase()}-${spot.city}`)
+  ).size;
 
   console.log("data =", data);
   console.log("count =", data?.length);
@@ -118,8 +124,8 @@ export default async function GymsPage() {
             {[
               { num: `${totalGyms}+`, accent: true, label: "gyms listed" },
               { num: `${countries.length}`, accent: false, label: "countries" },
-              { num: "Day pass", accent: true, label: "price focused" },
-              { num: "Free", accent: false, label: "to browse" },
+              { num: `${citiesCount}`, accent: true, label: "cities" },
+              { num: "Day pass", accent: false, label: "price focused" },
             ].map(({ num, accent, label }) => (
               <div key={label} className="flex-1 px-6 py-4">
                 <div
