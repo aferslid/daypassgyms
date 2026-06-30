@@ -122,7 +122,7 @@ export default async function Home() {
         </div>
 
         <div className="border-t border-[#1e1e1e] bg-[#111]">
-          <div className="mx-auto max-w-7xl divide-x divide-[#1e1e1e] px-0 md:flex">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-y divide-[#1e1e1e] px-0 md:grid-cols-4 md:divide-y-0">
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 {totalGyms || 0}+
