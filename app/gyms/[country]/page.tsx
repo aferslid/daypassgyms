@@ -43,6 +43,13 @@ function formatCountry(slug: string) {
 }
 
 function getCountryCodeFromSlug(slug: string) {
+  const specialCases: Record<string, string> = {
+    "sint-maarten": "SX",
+    "saint-martin": "MF",
+  };
+
+  if (specialCases[slug]) return specialCases[slug];
+
   const formatted = formatCountry(slug);
 
   const country = countriesList.find(

@@ -104,6 +104,15 @@ function formatShower(details: Gym["details"]) {
 function getCountryName(code: string | null) {
   if (!code) return "";
 
+  const specialCases: Record<string, string> = {
+    SX: "Sint Maarten",
+    MF: "Saint Martin",
+  };
+
+  if (specialCases[code.toUpperCase()]) {
+    return specialCases[code.toUpperCase()];
+  }
+
   const country = countriesList.find(
     (c) => c.cca2.toUpperCase() === code.toUpperCase()
   );
