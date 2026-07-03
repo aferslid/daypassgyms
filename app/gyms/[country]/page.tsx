@@ -61,6 +61,26 @@ function getCountryCodeFromSlug(slug: string) {
   return country?.cca2.toUpperCase() || null;
 }
 
+function getCountryName(code: string | null) {
+  if (!code) return "";
+
+  const specialCases: Record<string, string> = {
+    SX: "Sint Maarten",
+    MF: "Saint Martin",
+    TR: "Turkey",
+  };
+
+  if (specialCases[code.toUpperCase()]) {
+    return specialCases[code.toUpperCase()];
+  }
+
+  const country = countriesList.find(
+    (c) => c.cca2.toUpperCase() === code.toUpperCase()
+  );
+
+  return country?.name.common || code;
+}
+
 function formatPrice(details: Gym["details"]) {
   if (!details?.day_pass_price) return "Price unknown";
 
@@ -86,10 +106,8 @@ export async function generateMetadata({
 }: CountryPageProps) {
   const { country } = await params;
 
-  const countryName =
-    countriesList.find(
-      (c) => c.cca2.toLowerCase() === country
-    )?.name.common ?? country.toUpperCase();
+  const countryCode = getCountryCodeFromSlug(country);
+  const countryName = getCountryName(countryCode) || formatCountry(country);
 
   return {
     title: `Gym day passes in ${countryName} | Gym Day Pass Map`,
@@ -111,8 +129,8 @@ export async function generateMetadata({
 
 export default async function CountryPage({ params }: CountryPageProps) {
   const { country } = await params;
-  const countryName = formatCountry(country);
   const countryCode = getCountryCodeFromSlug(country);
+  const countryName = getCountryName(countryCode) || formatCountry(country);
 
   const { data: gyms, error } = await supabase
     .from("spots")
