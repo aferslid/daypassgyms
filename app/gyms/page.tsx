@@ -25,6 +25,16 @@ function getFlagUrl(code: string) {
   return `https://flagcdn.com/w80/${code.toLowerCase()}.png`;
 }
 
+function normalizeCountryName(code: string, name: string) {
+  const specialCases: Record<string, string> = {
+    TR: "Turkey",
+    SX: "Sint Maarten",
+    MF: "Saint Martin",
+  };
+
+  return specialCases[code.toUpperCase()] || name;
+}
+
 export default async function GymsPage() {
   const { data } = await supabase
     .from("spots")
@@ -43,14 +53,18 @@ export default async function GymsPage() {
   });
 
   const countries = Array.from(countryCounts.entries())
-    .map(([code, count]) => ({
+  .map(([code, count]) => {
+    const name = normalizeCountryName(code, getCountryName(code));
+
+    return {
       code,
       count,
-      name: getCountryName(code),
-      slug: slugify(getCountryName(code)),
+      name,
+      slug: slugify(name),
       flag: getFlagUrl(code),
-    }))
-    .sort((a, b) => b.count - a.count);
+    };
+  })
+  .sort((a, b) => b.count - a.count);
 
   const totalGyms = countries.reduce((sum, c) => sum + c.count, 0);
 
