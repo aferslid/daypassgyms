@@ -22,6 +22,16 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function getCountrySlug(country: Country) {
+  const specialCases: Record<string, string> = {
+    TR: "turkey",
+    SX: "sint-maarten",
+    MF: "saint-martin",
+  };
+
+  return specialCases[country.code.toUpperCase()] || slugify(country.name);
+}
+
 export default function CountriesGrid({ countries }: { countries: Country[] }) {
   const [query, setQuery] = useState("");
 
@@ -64,7 +74,7 @@ export default function CountriesGrid({ countries }: { countries: Country[] }) {
         {filteredCountries.map((country) => (
           <Link
             key={country.code}
-            href={`/gyms/${slugify(country.name)}`}
+            href={`/gyms/${getCountrySlug(country)}`}
             className="group relative flex items-center gap-3 overflow-hidden rounded-[10px] border border-[#EBEBEB] bg-white px-4 py-3 transition duration-150 hover:-translate-y-0.5 hover:border-[#C8F135]"
           >
             <span className="absolute inset-y-0 left-0 w-[3px] bg-[#C8F135] opacity-0 transition-opacity group-hover:opacity-100" />
