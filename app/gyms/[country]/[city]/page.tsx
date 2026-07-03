@@ -169,17 +169,37 @@ export default async function CityPage({ params }: CityPageProps) {
     console.error(error);
   }
 
-  const prices = (gyms || [])
-    .map(g => {
-      const price = g.details?.day_pass_price;
-      const currency = g.details?.currency;
+  const priceRanges = Object.entries(
+  (gyms || []).reduce((acc, gym) => {
+    const price = Number(gym.details?.day_pass_price);
+    const currency = gym.details?.currency || "Unknown";
 
-      return price && currency ? `${price} ${currency}` : null;
-    })
-    .filter(Boolean);
+    if (isNaN(price) || price <= 0) return acc;
 
-  const priceRangeText =
-    prices.length > 0 ? prices.join(" • ") : "Unknown";
+    if (!acc[currency]) acc[currency] = [];
+    acc[currency].push(price);
+
+    return acc;
+  }, {} as Record<string, number[]>)
+).map(([currency, prices]) => ({
+  currency,
+  min: Math.min(...prices),
+  max: Math.max(...prices),
+}));
+
+const priceRangeText =
+  priceRanges.length > 0
+    ? priceRanges
+        .map((range) => {
+          const min = new Intl.NumberFormat().format(range.min);
+          const max = new Intl.NumberFormat().format(range.max);
+
+          return range.min === range.max
+            ? `${min} ${range.currency}`
+            : `${min}-${max} ${range.currency}`;
+        })
+        .join(" • ")
+    : "Unknown";
 
   return (
     <>
