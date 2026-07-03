@@ -107,6 +107,7 @@ function getCountryName(code: string | null) {
   const specialCases: Record<string, string> = {
     SX: "Sint Maarten",
     MF: "Saint Martin",
+    TR: "Turkey",
   };
 
   if (specialCases[code.toUpperCase()]) {

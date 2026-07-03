@@ -46,6 +46,8 @@ function getCountryCodeFromSlug(slug: string) {
   const specialCases: Record<string, string> = {
     "sint-maarten": "SX",
     "saint-martin": "MF",
+    "turkey": "TR",
+    "turkiye": "TR",
   };
 
   if (specialCases[slug]) return specialCases[slug];
