@@ -160,7 +160,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
 
             return range.min === range.max
               ? `${min} ${range.currency}`
-              : `${min}–${max} ${range.currency}`;
+              : `${min}-${max} ${range.currency}`;
           })
           .join(" · ")
       : "Unknown";
