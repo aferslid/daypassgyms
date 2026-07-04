@@ -14,14 +14,13 @@ function slugify(text: string) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://daypassgyms.com";
+  const baseUrl = "https://www.daypassgyms.com";
   const now = new Date();
 
   const urls: MetadataRoute.Sitemap = [
     { url: baseUrl, priority: 1, lastModified: now },
     { url: `${baseUrl}/map`, priority: 0.9, lastModified: now },
     { url: `${baseUrl}/gyms`, priority: 0.9, lastModified: now },
-    { url: `${baseUrl}/suggest`, priority: 0.7, lastModified: now },
     { url: `${baseUrl}/about`, priority: 0.6, lastModified: now },
     { url: `${baseUrl}/for-gym-owners`, priority: 0.6, lastModified: now },
   ];
