@@ -4,6 +4,10 @@ import SuggestForm from "./SuggestForm";
 export const metadata = {
   title: "Suggest a Gym | Gym Day Pass Map",
   description: "Suggest a gym with day passes to add to Gym Day Pass Map.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function SuggestPage({
