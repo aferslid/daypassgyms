@@ -37,6 +37,10 @@ type MapMarker = {
 
 function slugify(text: string) {
   return text
+    .replace(/ß/g, "ss")
+    .replace(/ẞ/g, "ss")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")

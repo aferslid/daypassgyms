@@ -11,7 +11,15 @@ import CountriesGrid from "../components/CountriesGrid";
 // @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap');
 
 function slugify(text: string) {
-  return text.toLowerCase().replace(/\s+/g, "-");
+  return text
+    .replace(/ß/g, "ss")
+    .replace(/ẞ/g, "ss")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function getCountryName(code: string) {

@@ -28,6 +28,8 @@ type Gym = {
 
 function slugify(text: string) {
   return text
+    .replace(/ß/g, "ss")
+    .replace(/ẞ/g, "ss")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
