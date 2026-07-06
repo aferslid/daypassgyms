@@ -182,11 +182,7 @@ export default async function CityPage({ params }: CityPageProps) {
 
   const priceRanges = Object.entries(
   (gyms || []).reduce((acc, gym) => {
-    const price = Number(
-      String(gym.details?.day_pass_price || "")
-        .replace(/,/g, "")
-        .trim()
-    );
+    const price = Number(gym.details?.day_pass_price);
     const currency = gym.details?.currency || "Unknown";
 
     if (isNaN(price) || price <= 0) return acc;
