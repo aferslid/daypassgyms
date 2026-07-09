@@ -43,12 +43,33 @@ function normalizeCountryName(code: string, name: string) {
   return specialCases[code.toUpperCase()] || name;
 }
 
+async function fetchAllSpots(): Promise<any[]> {
+  const pageSize = 1000;
+  let from = 0;
+  let rows: any[] = [];
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("spots")
+      .select("country, city")
+      .ilike("type", "%gym%")
+      .not("country", "is", null)
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    rows.push(...(data || []));
+
+    if (!data || data.length < pageSize) break;
+
+    from += pageSize;
+  }
+
+  return rows;
+}
+
 export default async function GymsPage() {
-  const { data } = await supabase
-    .from("spots")
-    .select("country, city")
-    .ilike("type", "%gym%")
-    .not("country", "is", null);
+  const data = await fetchAllSpots();
 
   console.log("count =", data?.length);
   console.log("Rows:", data?.length);
