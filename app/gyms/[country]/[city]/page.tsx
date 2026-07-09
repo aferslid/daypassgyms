@@ -115,6 +115,34 @@ export async function generateMetadata({ params }: CityPageProps) {
   };
 }
 
+async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
+  if (!countryCode) return [];
+
+  const pageSize = 1000;
+  let from = 0;
+  let rows: Gym[] = [];
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("spots")
+      .select("id, name, description, country, city, photo_url, details")
+      .eq("country", countryCode)
+      .ilike("type", "%gym%")
+      .order("name")
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    rows.push(...((data || []) as Gym[]));
+
+    if (!data || data.length < pageSize) break;
+
+    from += pageSize;
+  }
+
+  return rows;
+}
+
 export default async function CityPage({ params }: CityPageProps) {
   const { country, city } = await params;
 
@@ -122,14 +150,9 @@ export default async function CityPage({ params }: CityPageProps) {
   const cityName = formatSlug(city);
   const countryCode = getCountryCodeFromSlug(country);
 
-  const { data: allGyms, error } = await supabase
-    .from("spots")
-    .select("id, name, description, country, city, photo_url, details")
-    .eq("country", countryCode)
-    .ilike("type", "%gym%")
-    .order("name");
+  const allGyms = await fetchAllCountryGyms(countryCode);
 
-  const gyms = (allGyms || []).filter(
+  const gyms = allGyms.filter(
     (gym) => slugify(gym.city || "") === city
   );
 
@@ -175,10 +198,6 @@ export default async function CityPage({ params }: CityPageProps) {
       },
     ],
   };
-
-  if (error) {
-    console.error(error);
-  }
 
   const priceRanges = Object.entries(
   (gyms || []).reduce((acc, gym) => {

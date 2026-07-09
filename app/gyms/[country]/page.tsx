@@ -129,21 +129,40 @@ export async function generateMetadata({
   };
 }
 
+async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
+  if (!countryCode) return [];
+
+  const pageSize = 1000;
+  let from = 0;
+  let rows: Gym[] = [];
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("spots")
+      .select("id, name, description, country, city, photo_url, details")
+      .eq("country", countryCode)
+      .ilike("type", "gym")
+      .order("name")
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    rows.push(...((data || []) as Gym[]));
+
+    if (!data || data.length < pageSize) break;
+
+    from += pageSize;
+  }
+
+  return rows;
+}
+
 export default async function CountryPage({ params }: CountryPageProps) {
   const { country } = await params;
   const countryCode = getCountryCodeFromSlug(country);
   const countryName = getCountryName(countryCode) || formatCountry(country);
 
-  const { data: gyms, error } = await supabase
-    .from("spots")
-    .select("id, name, description, country, city, photo_url, details")
-    .eq("country", countryCode)
-    .ilike("type", "gym")
-    .order("name");
-
-  if (error) {
-    console.error(error);
-  }
+  const gyms = await fetchAllCountryGyms(countryCode);
 
   const cities = Object.entries(
     (gyms || []).reduce((acc, gym) => {
