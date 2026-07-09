@@ -4,24 +4,41 @@ import { supabase } from "@/lib/supabase";
 import Footer from "@/app/components/Footer";
 import Header from "./components/Header";
 
+async function fetchAll(select: string): Promise<any[]> {
+  const pageSize = 1000;
+  let from = 0;
+  let rows: any[] = [];
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("spots")
+      .select(select)
+      .ilike("type", "%gym%")
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    rows.push(...(data || []));
+
+    if (!data || data.length < pageSize) break;
+
+    from += pageSize;
+  }
+
+  return rows;
+}
+
 export default async function Home() {
   const { count: totalGyms } = await supabase
     .from("spots")
     .select("*", { count: "exact", head: true })
     .ilike("type", "%gym%");
 
-  const { data: countriesData } = await supabase
-    .from("spots")
-    .select("country")
-    .ilike("type", "%gym%")
-    .not("country", "is", null);
+  const countriesData = (await fetchAll("country"))
+  .filter((row) => row.country);
 
-  const { data: citiesData } = await supabase
-    .from("spots")
-    .select("country_full, city")
-    .ilike("type", "%gym%")
-    .not("country_full", "is", null)
-    .not("city", "is", null);
+  const citiesData = (await fetchAll("country_full, city"))
+  .filter((row) => row.country_full && row.city);
 
   const countriesCount = new Set(
     (countriesData || []).map((row) => row.country)
