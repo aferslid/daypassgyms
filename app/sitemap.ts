@@ -13,6 +13,30 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+async function getAllGyms() {
+  const pageSize = 1000;
+  let from = 0;
+  const rows = [];
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("spots")
+      .select("id,name,country,country_full,city")
+      .ilike("type", "%gym%")
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    rows.push(...(data || []));
+
+    if (!data || data.length < pageSize) break;
+
+    from += pageSize;
+  }
+
+  return rows;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://www.daypassgyms.com";
   const now = new Date();
@@ -25,12 +49,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/for-gym-owners`, priority: 0.6, lastModified: now },
   ];
 
-  const { data: gyms } = await supabase
-    .from("spots")
-    .select("id,name,country,country_full,city")
-    .ilike("type", "%gym%");
+  const gyms = await getAllGyms();
 
-  if (!gyms) return urls;
+  if (gyms.length === 0) return urls;
 
   const countries = new Set<string>();
   const cities = new Set<string>();
