@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import countriesList from "world-countries";
 import Footer from "@/app/components/Footer";
 import Header from "../../../components/Header";
+import { notFound, permanentRedirect } from "next/navigation";
 
 type CityPageProps = {
   params: Promise<{
@@ -36,6 +37,43 @@ function slugify(text: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function resolveCountryFromSlug(slug: string) {
+  const normalizedSlug = slug.toLowerCase();
+
+  const specialCases: Record<string, string> = {
+    "sint-maarten": "SX",
+    "saint-martin": "MF",
+    turkey: "TR",
+    turkiye: "TR",
+  };
+
+  const specialCode = specialCases[normalizedSlug];
+
+  const country = countriesList.find((item) => {
+    if (
+      specialCode &&
+      item.cca2.toUpperCase() === specialCode
+    ) {
+      return true;
+    }
+
+    return (
+      slugify(item.name.common) === normalizedSlug ||
+      item.cca2.toLowerCase() === normalizedSlug
+    );
+  });
+
+  if (!country) {
+    return null;
+  }
+
+  return {
+    code: country.cca2.toUpperCase(),
+    name: country.name.common,
+    canonicalSlug: slugify(country.name.common),
+  };
 }
 
 function formatSlug(slug: string) {
@@ -166,15 +204,35 @@ async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
 export default async function CityPage({ params }: CityPageProps) {
   const { country, city } = await params;
 
-  const countryName = formatSlug(country);
+  const resolvedCountry = resolveCountryFromSlug(country);
+
+  if (!resolvedCountry) {
+    notFound();
+  }
+
+  if (
+    country.toLowerCase() !==
+    resolvedCountry.canonicalSlug
+  ) {
+    permanentRedirect(
+      `/gyms/${resolvedCountry.canonicalSlug}/${city}`
+    );
+  }
+
+  const countryCode = resolvedCountry.code;
+  const countryName = resolvedCountry.name;
+
   const cityName = formatSlug(city);
-  const countryCode = getCountryCodeFromSlug(country);
 
   const allGyms = await fetchAllCountryGyms(countryCode);
 
   const gyms = allGyms.filter(
     (gym) => slugify(gym.city || "") === city
   );
+
+  if (!gyms || gyms.length === 0) {
+      notFound();
+    }
 
   const itemListStructuredData = {
     "@context": "https://schema.org",
