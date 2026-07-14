@@ -122,16 +122,18 @@ function formatShower(details: Gym["details"]) {
 }
 
 
-export async function generateMetadata({
-  params,
-}: CityPageProps) {
+export async function generateMetadata({ params }: CityPageProps) {
   const { country, city } = await params;
 
-  const countryName =
-    countriesList.find(
-      (item) =>
-        item.cca2.toLowerCase() === country.toLowerCase()
-    )?.name.common ?? country.toUpperCase();
+  const resolvedCountry = resolveCountryFromSlug(country);
+
+  if (!resolvedCountry) {
+    return {
+      title: "City not found",
+    };
+  }
+
+  const countryName = resolvedCountry.name;
 
   const cityName = city
     .split("-")
@@ -142,33 +144,44 @@ export async function generateMetadata({
     .join(" ");
 
   const title =
-    `Day Pass Gyms in ${cityName}, ${countryName} | DayPassGyms`;
+    `Day Pass Gyms in ${cityName}, ${countryName}`;
 
   const description =
     `Find gyms offering day passes in ${cityName}, ${countryName}. ` +
     `Compare prices, showers, lockers, Wi-Fi and facilities.`;
 
+  const canonicalUrl =
+    `https://daypassgyms.com/gyms/${resolvedCountry.canonicalSlug}/${city}`;
+
   return {
     title,
     description,
 
+    alternates: {
+      canonical: canonicalUrl,
+    },
+
     openGraph: {
       title,
       description,
-      url: `https://daypassgyms.com/gyms/${country}/${city}`,
+      url: canonicalUrl,
       siteName: "DayPassGyms",
       type: "website",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "DayPassGyms",
+        },
+      ],
     },
 
     twitter: {
       card: "summary_large_image",
       title,
       description,
-    },
-
-    alternates: {
-      canonical:
-        `https://daypassgyms.com/gyms/${country}/${city}`,
+      images: ["/og-image.png"],
     },
   };
 }
