@@ -1,5 +1,5 @@
 {
-  "name": "Gym Day Pass Map",
+  "name": "DayPassGyms",
   "short_name": "DayPassGyms",
   "start_url": "/",
   "display": "standalone",

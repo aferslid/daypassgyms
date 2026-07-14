@@ -2,8 +2,8 @@ import Header from "../components/Header";
 import SuggestForm from "./SuggestForm";
 
 export const metadata = {
-  title: "Suggest a Gym | Gym Day Pass Map",
-  description: "Suggest a gym with day passes to add to Gym Day Pass Map.",
+  title: "Suggest a Gym | DayPassGyms",
+  description: "Suggest a gym with day passes to add to DayPassGyms.",
   robots: {
     index: false,
     follow: false,

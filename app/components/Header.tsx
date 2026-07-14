@@ -8,7 +8,7 @@ export default function Header() {
           🏋️
         </span>
         <span className="text-sm font-bold text-white tracking-[-0.3px]">
-          Gym Day Pass Map
+          DayPassGyms
         </span>
       </Link>
 

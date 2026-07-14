@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Gym Day Pass Map",
+  title: "DayPassGyms",
   description: "Find gyms with day passes around the world.",
   manifest: "/manifest.json",
   icons: {

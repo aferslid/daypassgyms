@@ -2,9 +2,9 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export const metadata = {
-  title: "About | Gym Day Pass Map",
+  title: "About | DayPassGyms",
   description:
-    "Why we built Gym Day Pass Map and how we help travelers and digital nomads find gyms with day passes.",
+    "Why we built DayPassGyms and how we help travelers and digital nomads find gyms with day passes.",
 };
 
 export default function AboutPage() {
@@ -20,7 +20,7 @@ export default function AboutPage() {
           </p>
 
           <h1 className="mt-3 text-[48px] font-extrabold tracking-[-2px] text-[#0C0C0C]">
-            Why we built Gym Day Pass Map
+            Why we built DayPassGyms
           </h1>
 
           <div className="mt-10 space-y-10 text-[18px] leading-8 text-[#555]">

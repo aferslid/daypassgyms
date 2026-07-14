@@ -215,7 +215,7 @@ export default function GymMap() {
           <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#C8F135] text-lg">
             🏋️
           </span>
-          <span className="text-sm font-bold">Gym Day Pass Map</span>
+          <span className="text-sm font-bold">DayPassGyms</span>
         </Link>
 
         <div className="hidden items-center gap-5 text-[13px] text-[#777] md:flex">

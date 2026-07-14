@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import Link from "next/link";
 
 export const metadata = {
-  title: "For Gym Owners | Gym Day Pass Map",
+  title: "For Gym Owners | DayPassGyms",
   description:
     "List your gym and help travelers and digital nomads discover your day passes.",
 };

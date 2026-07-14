@@ -12,7 +12,7 @@ export default function Footer() {
               </span>
 
               <span className="text-[15px] font-bold tracking-[-0.3px] text-[#111]">
-                Gym Day Pass Map
+                DayPassGyms
               </span>
             </div>
 
@@ -89,7 +89,7 @@ export default function Footer() {
         <div className="mt-14 border-t border-[#EAEAEA] pt-8">
           <div className="flex flex-col gap-3 text-[12px] text-[#999] md:flex-row md:items-center md:justify-between">
             <div>
-              © 2026 Gym Day Pass Map. Train anywhere.
+              © 2026 DayPassGyms. Train anywhere.
             </div>
 
             <div className="flex gap-6">

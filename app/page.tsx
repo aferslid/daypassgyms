@@ -67,7 +67,7 @@ export default async function Home() {
         name: "How much does a gym day pass cost?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "It depends on the city and gym. Gym Day Pass Map helps you compare listed day pass prices.",
+          text: "It depends on the city and gym. DayPassGyms helps you compare listed day pass prices.",
         },
       },
       {
@@ -229,7 +229,7 @@ export default async function Home() {
           },
           {
             q: "How much does a gym day pass cost?",
-            a: "It depends on the city and gym. Gym Day Pass Map helps you compare listed day pass prices.",
+            a: "It depends on the city and gym. DayPassGyms helps you compare listed day pass prices.",
           },
           {
             q: "Do day pass gyms have showers?",
