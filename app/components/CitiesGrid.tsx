@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import CitySearch from "./CitySearch";
 
@@ -8,6 +8,7 @@ type CityEntry = [string, number];
 
 type Props = {
   cities: CityEntry[];
+  countryName: string;
   countrySlug: string;
 };
 
@@ -25,31 +26,41 @@ function slugify(text: string) {
 
 export default function CitiesGrid({
   cities,
+  countryName,
   countrySlug,
 }: Props) {
-  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
 
-  const filteredCities = useMemo(() => {
-    const normalizedSearch = search
-      .trim()
-      .toLowerCase();
-
-    if (!normalizedSearch) {
-      return cities;
-    }
-
-    return cities.filter(([city]) =>
-      city.toLowerCase().includes(normalizedSearch)
-    );
-  }, [cities, search]);
+  const filteredCities = cities.filter(([city]) =>
+    city.toLowerCase().includes(query.toLowerCase())
+  );
 
   return (
     <>
-      <div className="mb-6 max-w-md">
-        <CitySearch
-          value={search}
-          onChange={setSearch}
-        />
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p
+            className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Cities
+          </p>
+
+          <h2
+            className="mt-1 text-[22px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Cities in {countryName}
+          </h2>
+
+          <p className="mt-1 text-[13px] text-[#999]">
+            Browse every city currently listed
+          </p>
+        </div>
+
+        <div className="w-full md:w-[240px]">
+          <CitySearch value={query} onChange={setQuery} />
+        </div>
       </div>
 
       <div
@@ -67,8 +78,8 @@ export default function CitiesGrid({
           >
             <span className="absolute inset-y-0 left-0 w-[3px] bg-[#C8F135] opacity-0 transition-opacity group-hover:opacity-100" />
 
-            <div>
-              <div className="text-[13px] font-bold tracking-[-0.2px] text-[#111]">
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[13px] font-bold tracking-[-0.2px] text-[#111]">
                 {city}
               </div>
 
@@ -77,7 +88,7 @@ export default function CitiesGrid({
               </div>
             </div>
 
-            <span className="text-[#ccc] transition-all group-hover:translate-x-0.5 group-hover:text-[#C8F135]">
+            <span className="flex-shrink-0 text-[#ccc] transition-all group-hover:translate-x-0.5 group-hover:text-[#C8F135]">
               →
             </span>
 
@@ -93,7 +104,7 @@ export default function CitiesGrid({
 
       {filteredCities.length === 0 && (
         <div className="rounded-[14px] border border-[#EBEBEB] bg-white p-6 text-[13px] text-[#777]">
-          No cities found for “{search}”.
+          No cities found for “{query}”.
         </div>
       )}
     </>

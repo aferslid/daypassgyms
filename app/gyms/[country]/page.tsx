@@ -384,20 +384,10 @@ export default async function CountryPage({ params }: CountryPageProps) {
       </section>
 
       <section id="cities" className="mx-auto max-w-7xl px-6 py-14">
-        <div className="mb-6">
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-            Cities
-          </p>
-          <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
-            Cities in {countryName}
-          </h2>
-          <p className="mt-1 text-[13px] text-[#999]">
-            Choose a city to browse gyms with day passes.
-          </p>
-        </div>
         
         <CitiesGrid
           cities={cities}
+          countryName={countryName}
           countrySlug={resolvedCountry.canonicalSlug}
         />
         
