@@ -5,10 +5,7 @@ type Props = {
   onChange: (value: string) => void;
 };
 
-export default function CitySearch({
-  value,
-  onChange,
-}: Props) {
+export default function CitySearch({ value, onChange }: Props) {
   return (
     <div className="flex items-center gap-2 rounded-[8px] border border-[#E5E5E5] bg-white px-4 py-2.5 text-[12px] text-[#bbb]">
       <svg
@@ -27,9 +24,7 @@ export default function CitySearch({
 
       <input
         value={value}
-        onChange={(event) =>
-          onChange(event.target.value)
-        }
+        onChange={(e) => onChange(e.target.value)}
         placeholder="Search cities"
         className="flex-1 bg-transparent text-[#111] outline-none placeholder:text-[#bbb]"
       />
