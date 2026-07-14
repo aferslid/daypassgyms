@@ -84,33 +84,53 @@ function formatShower(details: Gym["details"]) {
 }
 
 
-export async function generateMetadata({ params }: CityPageProps) {
+export async function generateMetadata({
+  params,
+}: CityPageProps) {
   const { country, city } = await params;
 
   const countryName =
     countriesList.find(
-      (c) => c.cca2.toLowerCase() === country
+      (item) =>
+        item.cca2.toLowerCase() === country.toLowerCase()
     )?.name.common ?? country.toUpperCase();
 
   const cityName = city
     .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map(
+      (word) =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+    )
     .join(" ");
 
+  const title =
+    `Day Pass Gyms in ${cityName}, ${countryName} | DayPassGyms`;
+
+  const description =
+    `Find gyms offering day passes in ${cityName}, ${countryName}. ` +
+    `Compare prices, showers, lockers, Wi-Fi and facilities.`;
+
   return {
-    title: `Gym day passes in ${cityName}, ${countryName} | Gym Day Pass Map`,
-    description: `Find gyms with day passes in ${cityName}, ${countryName}. Compare prices, showers and facilities.`,
+    title,
+    description,
+
     openGraph: {
-      title: `Gym day passes in ${cityName}, ${countryName}`,
-      description: `Find gyms with day passes in ${cityName}, ${countryName}. Compare prices, showers and facilities.`,
+      title,
+      description,
       url: `https://daypassgyms.com/gyms/${country}/${city}`,
-      siteName: "Gym Day Pass Map",
+      siteName: "DayPassGyms",
       type: "website",
     },
+
     twitter: {
       card: "summary_large_image",
-      title: `Gym day passes in ${cityName}, ${countryName}`,
-      description: `Find gyms with day passes in ${cityName}, ${countryName}. Compare prices, showers and facilities.`,
+      title,
+      description,
+    },
+
+    alternates: {
+      canonical:
+        `https://daypassgyms.com/gyms/${country}/${city}`,
     },
   };
 }

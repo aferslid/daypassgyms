@@ -50,28 +50,40 @@ export async function generateMetadata({ params }: GymPageProps) {
 
   if (!gym) {
     return {
-      title: "Gym not found",
+      title: "Gym not found | DayPassGyms",
+      description: "This gym listing could not be found.",
     };
   }
 
-  const price = gym.details?.day_pass_price
-    ? `${gym.details.day_pass_price} ${gym.details.currency || ""}`
-    : "day pass";
+  const price =
+    gym.details?.day_pass_price && gym.details?.currency
+      ? `${gym.details.day_pass_price} ${gym.details.currency}`
+      : null;
+
+  const description = price
+    ? `Check the ${price} day pass at ${gym.name}, including shower availability, facilities and location.`
+    : `Check ${gym.name} day pass information, shower availability, facilities and location.`;
 
   return {
-    title: `${gym.name} Day Pass Price | Gym Day Pass Map`,
-    description: `Check ${gym.name} day pass info, price, shower availability and location.`,
+    title: `${gym.name} Day Pass Price | DayPassGyms`,
+    description,
+
     openGraph: {
-      title: `${gym.name} Day Pass Price`,
-      description: `Day pass info, price, shower availability and location for ${gym.name}.`,
+      title: `${gym.name} Day Pass Price | DayPassGyms`,
+      description,
       url: `https://daypassgyms.com/gym/${slug}`,
-      siteName: "Gym Day Pass Map",
+      siteName: "DayPassGyms",
       type: "website",
     },
+
     twitter: {
       card: "summary_large_image",
-      title: `${gym.name} Day Pass Price`,
-      description: `Day pass info, price, shower availability and location for ${gym.name}.`,
+      title: `${gym.name} Day Pass Price | DayPassGyms`,
+      description,
+    },
+
+    alternates: {
+      canonical: `https://daypassgyms.com/gym/${slug}`,
     },
   };
 }

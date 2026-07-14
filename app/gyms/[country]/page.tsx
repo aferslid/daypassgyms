@@ -108,23 +108,40 @@ export async function generateMetadata({
 }: CountryPageProps) {
   const { country } = await params;
 
-  const countryCode = getCountryCodeFromSlug(country);
-  const countryName = getCountryName(countryCode) || formatCountry(country);
+  const normalizedCountryCode = country.toLowerCase();
+
+  const countryName =
+    countriesList.find(
+      (item) =>
+        item.cca2.toLowerCase() === normalizedCountryCode
+    )?.name.common ?? formatCountry(country);
+
+  const title = `Day Pass Gyms in ${countryName} | DayPassGyms`;
+
+  const description =
+    `Find gyms offering day passes in ${countryName}. ` +
+    `Compare prices, showers, lockers, Wi-Fi and locations.`;
 
   return {
-    title: `Gym day passes in ${countryName} | Gym Day Pass Map`,
-    description: `Find gyms with day passes in ${countryName}. Compare prices, showers and locations.`,
+    title,
+    description,
+
     openGraph: {
-      title: `Gym day passes in ${countryName}`,
-      description: `Find gyms with day passes in ${countryName}. Compare prices, showers and locations.`,
+      title,
+      description,
       url: `https://daypassgyms.com/gyms/${country}`,
-      siteName: "Gym Day Pass Map",
+      siteName: "DayPassGyms",
       type: "website",
     },
+
     twitter: {
       card: "summary_large_image",
-      title: `Gym day passes in ${countryName}`,
-      description: `Find gyms with day passes in ${countryName}. Compare prices, showers and locations.`,
+      title,
+      description,
+    },
+
+    alternates: {
+      canonical: `https://daypassgyms.com/gyms/${country}`,
     },
   };
 }
