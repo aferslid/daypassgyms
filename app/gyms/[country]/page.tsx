@@ -5,6 +5,7 @@ import countriesList from "world-countries";
 import Footer from "@/app/components/Footer";
 import Header from "../../components/Header";
 import Image from "next/image";
+import { permanentRedirect, notFound } from "next/navigation";
 
 type CountryPageProps = {
   params: Promise<{
@@ -36,6 +37,43 @@ function slugify(text: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function resolveCountryFromSlug(slug: string) {
+  const normalizedSlug = slug.toLowerCase();
+
+  const specialCases: Record<string, string> = {
+    "sint-maarten": "SX",
+    "saint-martin": "MF",
+    turkey: "TR",
+    turkiye: "TR",
+  };
+
+  const specialCode = specialCases[normalizedSlug];
+
+  const country = countriesList.find((item) => {
+    if (
+      specialCode &&
+      item.cca2.toUpperCase() === specialCode
+    ) {
+      return true;
+    }
+
+    return (
+      slugify(item.name.common) === normalizedSlug ||
+      item.cca2.toLowerCase() === normalizedSlug
+    );
+  });
+
+  if (!country) {
+    return null;
+  }
+
+  return {
+    code: country.cca2.toUpperCase(),
+    name: country.name.common,
+    canonicalSlug: slugify(country.name.common),
+  };
 }
 
 function formatCountry(slug: string) {
@@ -176,8 +214,20 @@ async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
 
 export default async function CountryPage({ params }: CountryPageProps) {
   const { country } = await params;
-  const countryCode = getCountryCodeFromSlug(country);
-  const countryName = getCountryName(countryCode) || formatCountry(country);
+  const resolvedCountry = resolveCountryFromSlug(country);
+
+  if (!resolvedCountry) {
+    notFound();
+  }
+
+  if (country.toLowerCase() !== resolvedCountry.canonicalSlug) {
+    permanentRedirect(
+      `/gyms/${resolvedCountry.canonicalSlug}`
+    );
+  }
+
+  const countryCode = resolvedCountry.code;
+  const countryName = resolvedCountry.name;
 
   const gyms = await fetchAllCountryGyms(countryCode);
 
