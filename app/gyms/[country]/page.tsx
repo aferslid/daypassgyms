@@ -6,6 +6,7 @@ import Footer from "@/app/components/Footer";
 import Header from "../../components/Header";
 import Image from "next/image";
 import { permanentRedirect, notFound } from "next/navigation";
+import CitiesGrid from "@/app/components/CitiesGrid";
 
 type CountryPageProps = {
   params: Promise<{
@@ -394,41 +395,12 @@ export default async function CountryPage({ params }: CountryPageProps) {
             Choose a city to browse gyms with day passes.
           </p>
         </div>
-
-        <div
-          className="grid gap-2"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))" }}
-        >
-          {cities.map(([city, count]) => (
-            <Link
-              key={city}
-              href={`/gyms/${slugify(countryName)}/${slugify(city)}`}
-              className="group relative flex items-center justify-between overflow-hidden rounded-[10px] border border-[#EBEBEB] bg-white px-4 py-3 transition duration-150 hover:-translate-y-0.5 hover:border-[#C8F135]"
-            >
-              <span className="absolute inset-y-0 left-0 w-[3px] bg-[#C8F135] opacity-0 transition-opacity group-hover:opacity-100" />
-
-              <div>
-                <div className="text-[13px] font-bold tracking-[-0.2px] text-[#111]">
-                  {city}
-                </div>
-                <div className="text-[11px] text-[#999]">
-                  {count} gym{count > 1 ? "s" : ""}
-                </div>
-              </div>
-
-              <span className="text-[#ccc] transition-all group-hover:translate-x-0.5 group-hover:text-[#C8F135]">
-                →
-              </span>
-
-              <span
-                className="pointer-events-none absolute -bottom-2 right-0 text-[44px] font-extrabold leading-none tracking-[-2px] text-[#F0F0EE] select-none"
-                aria-hidden="true"
-              >
-                {count}
-              </span>
-            </Link>
-          ))}
-        </div>
+        
+        <CitiesGrid
+          cities={cities}
+          countrySlug={resolvedCountry.canonicalSlug}
+        />
+        
       </section>
 
       <section className="mx-auto max-w-7xl px-6 pb-16">
