@@ -14,13 +14,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "DayPassGyms",
-  description: "Find gyms with day passes around the world.",
+export const metadata: Metadata = {
+  metadataBase: new URL("https://daypassgyms.com"),
+
+  applicationName: "DayPassGyms",
+
+  title: {
+    default: "DayPassGyms",
+    template: "%s | DayPassGyms",
+  },
+
+  description:
+    "Find gyms offering day passes around the world. Compare prices, showers, lockers, Wi-Fi and locations.",
+
   manifest: "/manifest.json",
+
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
+  },
+
+  openGraph: {
+    siteName: "DayPassGyms",
+    type: "website",
+    locale: "en_US",
   },
 };
 

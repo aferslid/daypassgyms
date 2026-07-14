@@ -1,8 +1,49 @@
-export const dynamic = "force-dynamic";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import Footer from "@/app/components/Footer";
 import Header from "./components/Header";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "DayPassGyms | Find Gym Day Passes Worldwide",
+  },
+
+  description:
+    "Find gyms offering day passes around the world. Compare prices, showers, lockers, Wi-Fi and locations before you train.",
+
+  alternates: {
+    canonical: "https://daypassgyms.com",
+  },
+
+  openGraph: {
+    title: "DayPassGyms | Find Gym Day Passes Worldwide",
+    description:
+      "Find gyms offering day passes around the world. Compare prices, showers, lockers, Wi-Fi and locations before you train.",
+    url: "https://daypassgyms.com",
+    siteName: "DayPassGyms",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "DayPassGyms — Find gym day passes worldwide",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "DayPassGyms | Find Gym Day Passes Worldwide",
+    description:
+      "Find gyms offering day passes around the world. Compare prices, showers, lockers, Wi-Fi and locations before you train.",
+    images: ["/og-image.png"],
+  },
+};
 
 async function fetchAll(select: string): Promise<any[]> {
   const pageSize = 1000;
