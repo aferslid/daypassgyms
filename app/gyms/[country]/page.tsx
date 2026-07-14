@@ -154,7 +154,7 @@ export async function generateMetadata({
         item.cca2.toLowerCase() === normalizedCountryCode
     )?.name.common ?? formatCountry(country);
 
-  const title = `Day Pass Gyms in ${countryName} | DayPassGyms`;
+  const title = `Day Pass Gyms in ${countryName}`;
 
   const description =
     `Find gyms offering day passes in ${countryName}. ` +

@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: GymPageProps) {
 
   if (!gym) {
     return {
-      title: "Gym not found | DayPassGyms",
+      title: "Gym not found",
       description: "This gym listing could not be found.",
     };
   }
@@ -66,11 +66,11 @@ export async function generateMetadata({ params }: GymPageProps) {
     : `Check ${gym.name} day pass information, shower availability, facilities and location.`;
 
   return {
-    title: `${gym.name} Day Pass Price | DayPassGyms`,
+    title: `${gym.name} Day Pass Price`,
     description,
 
     openGraph: {
-      title: `${gym.name} Day Pass Price | DayPassGyms`,
+      title: `${gym.name} Day Pass Price`,
       description,
       url: `https://daypassgyms.com/gym/${slug}`,
       siteName: "DayPassGyms",
@@ -79,7 +79,7 @@ export async function generateMetadata({ params }: GymPageProps) {
 
     twitter: {
       card: "summary_large_image",
-      title: `${gym.name} Day Pass Price | DayPassGyms`,
+      title: `${gym.name} Day Pass Price`,
       description,
     },
 
