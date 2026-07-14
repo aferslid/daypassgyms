@@ -5,6 +5,7 @@ import countriesList from "world-countries";
 import GymMiniMapClient from "@/app/components/GymMiniMapClient";
 import Footer from "@/app/components/Footer";
 import Header from "../../components/Header";
+import { notFound } from "next/navigation";
 
 type GymPageProps = {
   params: Promise<{
@@ -159,6 +160,10 @@ export default async function GymPage({ params }: GymPageProps) {
   const { slug } = await params;
   const gymId = getIdFromSlug(slug);
 
+  if (!gymId) {
+    notFound();
+  }
+
   const { data: gym, error } = await supabase
     .from("spots")
     .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details")
@@ -166,17 +171,7 @@ export default async function GymPage({ params }: GymPageProps) {
     .single();
 
   if (error || !gym) {
-    return (
-      <main className="min-h-screen bg-neutral-950 text-white">
-        <div className="mx-auto max-w-4xl px-6 py-20">
-          <Link href="/gyms" className="text-sm text-neutral-400 hover:text-white">
-            ← Back to gyms
-          </Link>
-
-          <h1 className="mt-8 text-4xl font-bold">Gym not found</h1>
-        </div>
-      </main>
-    );
+    notFound();
   }
 
   const typedGym = gym as Gym;
