@@ -251,17 +251,19 @@ export default async function GymPage({ params }: GymPageProps) {
             </div>
 
             <div className="rounded-[24px] border border-[#1e1e1e] bg-[#111] p-4">
-              {typedGym.photo_url ? (
-                <img
-                  src={typedGym.photo_url}
-                  alt={typedGym.name}
-                  className="h-[320px] w-full rounded-[18px] object-cover"
-                />
-              ) : (
-                <div className="flex h-[320px] items-center justify-center rounded-[18px] bg-[#171717] text-[#555]">
-                  Photo coming soon
-                </div>
-              )}
+              <img
+                src={`/images/gyms/${slug}.jpg`}
+                alt={typedGym.name}
+                className="h-[320px] w-full rounded-[18px] object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                }}
+              />
+
+              <div className="hidden flex h-[320px] items-center justify-center rounded-[18px] bg-[#171717]">
+                Photo coming soon
+              </div>
             </div>
           </div>
         </div>
