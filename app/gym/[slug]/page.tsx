@@ -6,6 +6,8 @@ import GymMiniMapClient from "@/app/components/GymMiniMapClient";
 import Footer from "@/app/components/Footer";
 import Header from "../../components/Header";
 import { notFound } from "next/navigation";
+import fs from "fs";
+import path from "path";
 
 type GymPageProps = {
   params: Promise<{
@@ -176,6 +178,18 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const typedGym = gym as Gym;
 
+  const gymImageUrl = `/images/gyms/${slug}.jpg`;
+
+  const gymImagePath = path.join(
+    process.cwd(),
+    "public",
+    "images",
+    "gyms",
+    `${slug}.jpg`
+  );
+
+  const hasGymImage = fs.existsSync(gymImagePath);
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Gym",
@@ -251,18 +265,18 @@ export default async function GymPage({ params }: GymPageProps) {
             </div>
 
             <div className="rounded-[24px] border border-[#1e1e1e] bg-[#111] p-4">
-              <img
-                src={`/images/gyms/${slug}.jpg`}
-                alt={typedGym.name}
-                className="h-[320px] w-full rounded-[18px] object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
-                }}
-              />
-
-              <div className="hidden flex h-[320px] items-center justify-center rounded-[18px] bg-[#171717]">
-                Photo coming soon
+              <div className="rounded-[24px] border border-[#1e1e1e] bg-[#111] p-4">
+                {hasGymImage ? (
+                  <img
+                    src={gymImageUrl}
+                    alt={typedGym.name}
+                    className="h-[320px] w-full rounded-[18px] object-cover"
+                  />
+                ) : (
+                  <div className="flex h-[320px] items-center justify-center rounded-[18px] bg-[#171717] text-[#555]">
+                    Photo coming soon
+                  </div>
+                )}
               </div>
             </div>
           </div>
