@@ -55,6 +55,7 @@ async function fetchAll(select: string): Promise<any[]> {
       .from("spots")
       .select(select)
       .ilike("type", "%gym%")
+      .order("id", { ascending: true })
       .range(from, from + pageSize - 1);
 
     if (error) throw error;
