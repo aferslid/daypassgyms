@@ -54,6 +54,7 @@ async function fetchAllSpots(): Promise<any[]> {
       .select("country, city")
       .ilike("type", "%gym%")
       .not("country", "is", null)
+      .order("id", { ascending: true })
       .range(from, from + pageSize - 1);
 
     if (error) throw error;
