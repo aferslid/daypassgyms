@@ -23,6 +23,7 @@ async function getAllGyms() {
       .from("spots")
       .select("id,name,country,country_full,city")
       .ilike("type", "%gym%")
+      .order("id")
       .range(from, from + pageSize - 1);
 
     if (error) throw error;

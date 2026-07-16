@@ -101,7 +101,12 @@ export default async function GymsPage() {
   const citiesCount = new Set(
     (data || [])
       .filter((spot) => spot.country && spot.city)
-      .map((spot) => `${spot.country.toUpperCase()}-${spot.city}`)
+      .map(
+        (spot) =>
+          `${String(spot.country).trim().toUpperCase()}-${String(spot.city)
+            .trim()
+            .toLowerCase()}`
+      )
   ).size;
 
   console.log("data =", data);
