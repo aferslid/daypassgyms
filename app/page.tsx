@@ -79,8 +79,8 @@ export default async function Home() {
   const countriesData = (await fetchAll("country"))
   .filter((row) => row.country);
 
-  const citiesData = (await fetchAll("country_full, city"))
-  .filter((row) => row.country_full && row.city);
+  const citiesData = (await fetchAll("country, city"))
+  .filter((row) => `${row.country.toUpperCase()}-${row.city}`);
 
   const countriesCount = new Set(
     (countriesData || []).map((row) => row.country)
