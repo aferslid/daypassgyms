@@ -7,6 +7,39 @@ import Header from "../components/Header";
 import CountrySearch from "@/app/components/CountrySearch";
 import CountriesGrid from "../components/CountriesGrid";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Gyms with Day Passes by Country | DayPassGyms",
+  },
+
+  description:
+    "Browse gyms offering day passes around the world. Explore countries, compare locations, prices and available facilities with DayPassGyms.",
+
+  alternates: {
+    canonical: "https://www.daypassgyms.com/gyms",
+  },
+
+  openGraph: {
+    title: "Gyms with Day Passes by Country | DayPassGyms",
+    description:
+      "Browse gyms offering day passes around the world. Explore countries, compare locations, prices and available facilities with DayPassGyms.",
+    url: "https://www.daypassgyms.com/gyms",
+    siteName: "DayPassGyms",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Browse gyms with day passes by country on DayPassGyms",
+      },
+    ],
+  },
+};
+
 // Add to your globals.css or layout:
 // @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap');
 
