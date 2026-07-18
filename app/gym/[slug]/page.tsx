@@ -510,10 +510,16 @@ export default async function GymPage({ params }: GymPageProps) {
             </p>
 
             <Link
-              href={`/suggest?type=update&gym=${encodeURIComponent(typedGym.name)}`}
-              className="mt-5 block rounded-[10px] bg-[#C8F135] px-5 py-3 text-center text-[13px] font-bold text-[#0C0C0C]"
+              href={`/suggest?type=update&gym=${encodeURIComponent(
+                gym.name
+              )}&city=${encodeURIComponent(
+                gym.city || ""
+              )}&country=${encodeURIComponent(
+                gym.country_full || gym.country || ""
+              )}`}
+              rel="nofollow"
             >
-              Suggest an update →
+              Suggest an update
             </Link>
           </div>
         </aside>

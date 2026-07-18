@@ -5,9 +5,13 @@ import { useState } from "react";
 export default function SuggestForm({
   initialGymName = "",
   initialType = "new",
+  initialCity = "",
+  initialCountry = "",
 }: {
   initialGymName?: string;
   initialType?: "new" | "update";
+  initialCity?: string;
+  initialCountry?: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -70,8 +74,18 @@ export default function SuggestForm({
         placeholder="Gym name *"
         className="w-full rounded-[12px] border border-[#EBEBEB] p-4"
         />
-      <input name="city" placeholder="City" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />
-      <input name="country" placeholder="Country" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />
+      <input
+        name="city"
+        defaultValue={initialCity}
+        placeholder="City"
+        className="w-full rounded-[12px] border border-[#EBEBEB] p-4"
+      />
+      <input
+        name="country"
+        defaultValue={initialCountry}
+        placeholder="Country"
+        className="w-full rounded-[12px] border border-[#EBEBEB] p-4"
+      />
       <input name="website_url" placeholder="Website or Instagram" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />
       <input name="google_maps_url" placeholder="Google Maps URL" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />
       <input name="day_pass_price" placeholder="Day pass price, if known" className="w-full rounded-[12px] border border-[#EBEBEB] p-4" />

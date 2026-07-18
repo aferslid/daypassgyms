@@ -13,12 +13,19 @@ export const metadata = {
 export default async function SuggestPage({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string; gym?: string }>;
+  searchParams: Promise<{
+    type?: string;
+    gym?: string;
+    city?: string;
+    country?: string;
+  }>;
 }) {
   const params = await searchParams;
 
   const initialGymName = params.gym || "";
   const initialType = params.type === "update" ? "update" : "new";
+  const initialCity = params.city || "";
+  const initialCountry = params.country || "";
   return (
     <main className="min-h-screen bg-[#F7F7F5]">
       <section className="relative overflow-hidden bg-[#0C0C0C]">
@@ -46,7 +53,9 @@ export default async function SuggestPage({
           <SuggestForm
             initialGymName={initialGymName}
             initialType={initialType}
-            />
+            initialCity={initialCity}
+            initialCountry={initialCountry}
+          />
         </div>
       </section>
     </main>
