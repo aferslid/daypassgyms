@@ -3,6 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY;
 const INDEXNOW_SECRET = process.env.INDEXNOW_SECRET;
 
+function slugify(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export async function POST(request: NextRequest) {
   try {
     const authorization = request.headers.get("authorization");
@@ -34,27 +44,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const countrySlug = record.country_slug || record.country;
-    const citySlug = record.city_slug || record.city;
-    const gymSlug = record.slug;
+    if (!record.id || !record.name) {
+        return NextResponse.json(
+            {
+            error: "Missing gym id or name",
+            received: {
+                id: record.id,
+                name: record.name,
+            },
+            },
+            { status: 400 }
+        );
+        }
 
-    if (!countrySlug || !citySlug || !gymSlug) {
-      return NextResponse.json(
-        {
-          error: "Missing country, city or gym slug",
-          received: {
-            countrySlug,
-            citySlug,
-            gymSlug,
-          },
-        },
-        { status: 400 }
-      );
-    }
+        const gymSlug = `${slugify(record.name)}-${record.id}`;
 
-    const gymUrl =
-      `https://www.daypassgyms.com/gyms/` +
-      `${countrySlug}/${citySlug}/${gymSlug}`;
+    const gymUrl = `https://www.daypassgyms.com/gym/${gymSlug}`;
 
     const indexNowResponse = await fetch(
       "https://api.indexnow.org/indexnow",
