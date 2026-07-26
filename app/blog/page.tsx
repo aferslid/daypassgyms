@@ -38,7 +38,7 @@ export default function BlogPage() {
       <section className="mx-auto max-w-7xl px-6 py-16 md:py-24">
         <div className="mb-10 flex items-end justify-between gap-6">
           <div>
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#8AA51E]">
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#C8F135]">
               Latest articles
             </div>
 
@@ -59,7 +59,7 @@ export default function BlogPage() {
               key={post.slug}
               className="group flex min-h-[360px] flex-col rounded-[20px] border border-[#DADAD5] bg-white p-7 transition hover:-translate-y-1 hover:border-[#BFC0B8]"
             >
-              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#8AA51E]">
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
                 {post.category}
               </div>
 
