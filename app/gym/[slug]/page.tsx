@@ -220,6 +220,80 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const typedGym = gym as Gym;
 
+  const baseUrl = "https://www.daypassgyms.com";
+  const gymUrl = `${baseUrl}/gym/${slug}`;
+
+  const gymStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "HealthClub",
+    name: typedGym.name,
+    url: gymUrl,
+
+    ...(typedGym.description && {
+      description: typedGym.description,
+    }),
+
+    ...(typedGym.website_url && {
+      sameAs: [typedGym.website_url],
+    }),
+
+    ...(typedGym.phone && {
+      telephone: typedGym.phone,
+    }),
+
+    ...(typedGym.address || typedGym.city || typedGym.country_full
+      ? {
+          address: {
+            "@type": "PostalAddress",
+            ...(typedGym.address && {
+              streetAddress: typedGym.address,
+            }),
+            ...(typedGym.city && {
+              addressLocality: typedGym.city,
+            }),
+            ...(typedGym.country_full || typedGym.country
+              ? {
+                  addressCountry:
+                    typedGym.country_full || typedGym.country,
+                }
+              : {}),
+          },
+        }
+      : {}),
+
+    ...(typedGym.lat !== null && typedGym.lng !== null
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: typedGym.lat,
+            longitude: typedGym.lng,
+          },
+        }
+      : {}),
+
+    ...(typedGym.photo_url && {
+      image: typedGym.photo_url,
+    }),
+
+    ...(typedGym.google_maps_url && {
+      hasMap: typedGym.google_maps_url,
+    }),
+
+    ...(typedGym.details?.day_pass_price &&
+    typedGym.details?.currency
+      ? {
+          makesOffer: {
+            "@type": "Offer",
+            name: "Gym day pass",
+            price: typedGym.details.day_pass_price,
+            priceCurrency: typedGym.details.currency,
+            url: gymUrl,
+            availability: "https://schema.org/InStock",
+          },
+        }
+      : {}),
+  };
+
   const cityGyms: RelatedGym[] = [];
 
   if (typedGym.country && typedGym.city) {
@@ -252,15 +326,18 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Gym",
+    "@type": "HealthClub",
     name: typedGym.name,
     address: {
       "@type": "PostalAddress",
       addressLocality: typedGym.city,
       addressCountry: typedGym.country,
     },
-    url: typedGym.website_url,
-    sameAs: typedGym.google_maps_url,
+    url: "https://www.daypassgyms.com/gym/...",
+    sameAs: [
+      typedGym.website_url,
+      typedGym.google_maps_url,
+    ].filter(Boolean),
   };
 
   return (
