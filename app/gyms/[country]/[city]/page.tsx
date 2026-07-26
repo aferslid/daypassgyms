@@ -151,7 +151,7 @@ export async function generateMetadata({ params }: CityPageProps) {
     `Compare prices, showers, lockers, Wi-Fi and facilities.`;
 
   const canonicalUrl =
-    `https://daypassgyms.com/gyms/${resolvedCountry.canonicalSlug}/${city}`;
+    `https://www.daypassgyms.com/gyms/${resolvedCountry.canonicalSlug}/${city}`;
 
   return {
     title,
@@ -255,7 +255,7 @@ export default async function CityPage({ params }: CityPageProps) {
       "@type": "ListItem",
       position: index + 1,
       name: gym.name,
-      url: `https://daypassgyms.com/gym/${slugify(gym.name)}-${gym.id}`,
+      url: `https://www.daypassgyms.com/gym/${slugify(gym.name)}-${gym.id}`,
     })),
   };
 

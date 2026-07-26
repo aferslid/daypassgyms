@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://daypassgyms.com"),
+  metadataBase: new URL("https://www.daypassgyms.com"),
 
   applicationName: "DayPassGyms",
 

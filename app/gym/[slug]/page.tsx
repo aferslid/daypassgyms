@@ -85,7 +85,7 @@ export async function generateMetadata({ params }: GymPageProps) {
     openGraph: {
       title: `${gym.name} Day Pass Price`,
       description,
-      url: `https://daypassgyms.com/gym/${slug}`,
+      url: `https://www.daypassgyms.com/gym/${slug}`,
       siteName: "DayPassGyms",
       type: "website",
     },
@@ -97,7 +97,7 @@ export async function generateMetadata({ params }: GymPageProps) {
     },
 
     alternates: {
-      canonical: `https://daypassgyms.com/gym/${slug}`,
+      canonical: `https://www.daypassgyms.com/gym/${slug}`,
     },
   };
 }

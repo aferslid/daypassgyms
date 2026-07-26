@@ -1149,7 +1149,7 @@ useEffect(() => {
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://daypassgyms.com/reset-password",
+      redirectTo: "https://www.daypassgyms.com/reset-password",
     });
 
     if (error) {

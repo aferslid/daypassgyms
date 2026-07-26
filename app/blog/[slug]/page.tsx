@@ -51,9 +51,50 @@ export default async function BlogArticlePage({
   .filter((p) => p.slug !== post.slug)
   .slice(0, 3);
 
+  const baseUrl = "https://www.daypassgyms.com";
+  const articleUrl = `${baseUrl}/blog/${post.slug}`;
+
+  const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.title,
+  description: post.excerpt,
+  datePublished: post.publishedAt,
+  dateModified: post.updatedAt || post.publishedAt,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": articleUrl,
+  },
+  url: articleUrl,
+  author: {
+    "@type": "Organization",
+    name: "DayPassGyms",
+    url: baseUrl,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "DayPassGyms",
+    url: baseUrl,
+    logo: {
+      "@type": "ImageObject",
+      url: `${baseUrl}/og-image.png`,
+    },
+  },
+  image: `${baseUrl}/og-image.png`,
+  articleSection: post.category,
+  inLanguage: "en",
+};
+
   return (
     <main className="min-h-screen bg-[#F2F2F0] font-[family-name:var(--font-space)] text-[#111]">
-      <article>
+        <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+            __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
+        }}
+        />
+
+        <article>
         <section className="relative overflow-hidden bg-[#0C0C0C] text-white">
             <div className="relative mx-auto max-w-7xl px-6 py-5">
                 <Header />
@@ -79,7 +120,13 @@ export default async function BlogArticlePage({
               </p>
 
               <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#777]">
-                <span>{post.publishedAt}</span>
+                <span>
+                {new Date(`${post.publishedAt}T00:00:00`).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                })}
+                </span>
                 <span>•</span>
                 <span>{post.readingTime}</span>
               </div>

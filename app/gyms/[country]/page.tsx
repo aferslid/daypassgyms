@@ -168,7 +168,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://daypassgyms.com/gyms/${country}`,
+      url: `https://www.daypassgyms.com/gyms/${country}`,
       siteName: "DayPassGyms",
       type: "website",
     },
@@ -180,7 +180,7 @@ export async function generateMetadata({
     },
 
     alternates: {
-      canonical: `https://daypassgyms.com/gyms/${country}`,
+      canonical: `https://www.daypassgyms.com/gyms/${country}`,
     },
   };
 }
@@ -282,7 +282,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
       "@type": "ListItem",
       position: index + 1,
       name: gym.name,
-      url: `https://daypassgyms.com/gym/${slugify(gym.name)}-${gym.id}`,
+      url: `https://www.daypassgyms.com/gym/${slugify(gym.name)}-${gym.id}`,
     })),
   };
 

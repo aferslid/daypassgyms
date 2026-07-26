@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://daypassgyms.com/sitemap.xml",
+    sitemap: "https://www.daypassgyms.com/sitemap.xml",
   };
 }

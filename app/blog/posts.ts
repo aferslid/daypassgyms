@@ -22,7 +22,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Everything you should check before visiting a gym abroad, from staffed hours and identification requirements to towels and indoor shoes.",
     category: "Travel fitness",
-    publishedAt: "July 26, 2026",
+    publishedAt: "2026-07-26",
     readingTime: "6 min read",
     sections: [
       {

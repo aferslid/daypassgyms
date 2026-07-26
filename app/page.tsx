@@ -15,14 +15,14 @@ export const metadata: Metadata = {
     "Find gyms offering day passes around the world. Compare prices, showers, lockers, Wi-Fi and locations before you train.",
 
   alternates: {
-    canonical: "https://daypassgyms.com",
+    canonical: "https://www.daypassgyms.com",
   },
 
   openGraph: {
     title: "DayPassGyms | Find Gym Day Passes Worldwide",
     description:
       "Find gyms offering day passes around the world. Compare prices, showers, lockers, Wi-Fi and locations before you train.",
-    url: "https://daypassgyms.com",
+    url: "https://www.daypassgyms.com",
     siteName: "DayPassGyms",
     type: "website",
     locale: "en_US",
