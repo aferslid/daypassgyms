@@ -314,6 +314,16 @@ export default async function Home() {
               title: "Rules vary",
               text: "Visitor policies can differ by country, chain and even individual branch.",
             },
+            {
+              icon: "💳",
+              title: "Taxes may apply",
+              text: "Some gyms display prices before taxes, while others include them. Check before paying.",
+            },
+            {
+              icon: "🔒",
+              title: "Locker access",
+              text: "Some gyms provide locks, while others require your own padlock or only offer open cubbies.",
+            },
           ].map((item) => (
             <div
               key={item.title}
