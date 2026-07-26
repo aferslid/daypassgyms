@@ -158,8 +158,8 @@ export async function generateMetadata({
   const title = `Day Pass Gyms in ${countryName}`;
 
   const description =
-    `Find gyms offering day passes in ${countryName}. ` +
-    `Compare prices, showers, lockers, Wi-Fi and locations.`;
+  `Find the best gyms offering day passes in ${countryName}. ` +
+  `Compare prices, showers, lockers, Wi-Fi, and visitor information before your workout.`;
 
   return {
     title,

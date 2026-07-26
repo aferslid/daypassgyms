@@ -147,8 +147,8 @@ export async function generateMetadata({ params }: CityPageProps) {
     `Day Pass Gyms in ${cityName}, ${countryName}`;
 
   const description =
-    `Find gyms offering day passes in ${cityName}, ${countryName}. ` +
-    `Compare prices, showers, lockers, Wi-Fi and facilities.`;
+  `Find gyms offering day passes in ${cityName}, ${countryName}. ` +
+  `Compare prices, showers, lockers, Wi-Fi, facilities, and visitor access information.`;
 
   const canonicalUrl =
     `https://www.daypassgyms.com/gyms/${resolvedCountry.canonicalSlug}/${city}`;

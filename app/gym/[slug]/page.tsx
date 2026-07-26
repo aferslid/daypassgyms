@@ -75,29 +75,33 @@ export async function generateMetadata({ params }: GymPageProps) {
       : null;
 
   const description = price
-    ? `Check the ${price} day pass at ${gym.name}, including shower availability, facilities and location.`
-    : `Check ${gym.name} day pass information, shower availability, facilities and location.`;
+    ? `View the ${price} day pass price for ${gym.name}. Check showers, lockers, Wi-Fi, facilities, location and visitor access information.`
+    : `View day pass information for ${gym.name}. Check showers, lockers, Wi-Fi, facilities, location and visitor access details.`;
+
+  const title = `${gym.name} Day Pass Price`;
+  const canonicalUrl =
+    `https://www.daypassgyms.com/gym/${slug}`;
 
   return {
-    title: `${gym.name} Day Pass Price`,
+    title,
     description,
 
     openGraph: {
-      title: `${gym.name} Day Pass Price`,
+      title,
       description,
-      url: `https://www.daypassgyms.com/gym/${slug}`,
+      url: canonicalUrl,
       siteName: "DayPassGyms",
       type: "website",
     },
 
     twitter: {
       card: "summary_large_image",
-      title: `${gym.name} Day Pass Price`,
+      title,
       description,
     },
 
     alternates: {
-      canonical: `https://www.daypassgyms.com/gym/${slug}`,
+      canonical: canonicalUrl,
     },
   };
 }
