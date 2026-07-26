@@ -40,7 +40,7 @@ export default function CitiesGrid({
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p
-            className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]"
+            className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             Cities

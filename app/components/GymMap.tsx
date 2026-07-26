@@ -218,7 +218,7 @@ export default function GymMap() {
           <span className="text-sm font-bold">DayPassGyms</span>
         </Link>
 
-        <div className="hidden items-center gap-5 text-[13px] text-[#777] md:flex">
+        <div className="hidden items-center gap-5 text-[13px] text-[#888] md:flex">
           <Link href="/gyms" className="hover:text-white">Explore</Link>
           <Link href="/gyms" className="hover:text-white">Countries</Link>
         </div>

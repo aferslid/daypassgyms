@@ -395,7 +395,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
 
       <section className="mx-auto max-w-7xl px-6 pb-16">
         <div className="mb-6">
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+          <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
             Gyms
           </p>
           <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
