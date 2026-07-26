@@ -301,9 +301,11 @@ export default async function GymPage({ params }: GymPageProps) {
                   typedGym.free_trial ? "text-[#C8F135]" : "text-white"
                 }`}
               >
-                {typedGym.free_trial
+                {typedGym.free_trial === true
                   ? typedGym.free_trial_duration || "Available"
-                  : "No"}
+                  : typedGym.free_trial === false
+                    ? "No"
+                    : "Unknown"}
               </div>
 
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
