@@ -43,6 +43,15 @@ type Gym = {
   } | null;
 };
 
+type RelatedGym = {
+  id: number;
+  name: string;
+  country: string | null;
+  country_full: string | null;
+  city: string | null;
+  details: Gym["details"];
+};
+
 export async function generateMetadata({ params }: GymPageProps) {
   const { slug } = await params;
   const gymId = getIdFromSlug(slug);
@@ -160,6 +169,37 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function RelatedGymCard({ gym }: { gym: RelatedGym }) {
+  return (
+    <Link
+      href={`/gym/${slugify(gym.name)}-${gym.id}`}
+      className="group rounded-[14px] border border-[#E2E2DD] bg-[#F7F7F5] p-5 transition hover:-translate-y-1 hover:border-[#C8F135]"
+    >
+      <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#7E9700]">
+        {gym.city || "Gym"}
+      </p>
+
+      <h3 className="mt-3 text-[17px] font-extrabold leading-tight tracking-[-0.4px] text-[#111] group-hover:underline">
+        {gym.name}
+      </h3>
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#555]">
+          {formatPrice(gym.details)}
+        </span>
+
+        <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#555]">
+          Shower: {formatShower(gym.details)}
+        </span>
+      </div>
+
+      <p className="mt-5 text-[12px] font-bold text-[#111]">
+        View gym →
+      </p>
+    </Link>
+  );
+}
+
 export default async function GymPage({ params }: GymPageProps) {
   const { slug } = await params;
   const gymId = getIdFromSlug(slug);
@@ -179,6 +219,56 @@ export default async function GymPage({ params }: GymPageProps) {
   }
 
   const typedGym = gym as Gym;
+
+  const cityGyms: RelatedGym[] = [];
+const countryGyms: RelatedGym[] = [];
+
+if (typedGym.country) {
+  // Salles situées dans la même ville
+  if (typedGym.city) {
+    const { data: cityResults, error: cityError } = await supabase
+      .from("spots")
+      .select("id, name, country, country_full, city, details")
+      .ilike("type", "%gym%")
+      .eq("country", typedGym.country)
+      .eq("city", typedGym.city)
+      .neq("id", typedGym.id)
+      .order("id")
+      .limit(4);
+
+    if (!cityError && cityResults) {
+      cityGyms.push(...(cityResults as RelatedGym[]));
+    }
+  }
+
+  // Autres salles du pays, mais situées en dehors de la ville actuelle
+  const { data: countryResults, error: countryError } = await supabase
+    .from("spots")
+    .select("id, name, country, country_full, city, details")
+    .ilike("type", "%gym%")
+    .eq("country", typedGym.country)
+    .neq("id", typedGym.id)
+    .order("id")
+    .limit(20);
+
+  if (!countryError && countryResults) {
+    const cityGymIds = new Set(cityGyms.map((item) => item.id));
+
+    const filteredCountryGyms = (
+      countryResults as RelatedGym[]
+    )
+      .filter((item) => !cityGymIds.has(item.id))
+      .filter((item) => {
+        if (!typedGym.city) return true;
+
+        return item.city?.trim().toLowerCase() !==
+          typedGym.city.trim().toLowerCase();
+      })
+      .slice(0, 4);
+
+    countryGyms.push(...filteredCountryGyms);
+  }
+}
 
   const gymImageUrl = `/images/gyms/${slug}.jpg`;
 
@@ -542,25 +632,89 @@ export default async function GymPage({ params }: GymPageProps) {
           </div>
         </aside>
       </section>
-      {typedGym.country && (
-        <section className="mt-20 rounded-[16px] border border-[#EBEBEB] bg-white p-6">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
-            Explore more
-          </p>
+      {(cityGyms.length > 0 || countryGyms.length > 0) && (
+          <section className="mx-auto max-w-7xl px-6 pb-16">
+            <div className="space-y-12 rounded-[16px] border border-[#EBEBEB] bg-white p-6 md:p-8">
+              {cityGyms.length > 0 && typedGym.city && (
+                <div>
+                  <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                    <div>
+                      <p className="inline-flex w-fit rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+                        Nearby options
+                      </p>
 
-          <div className="mt-4 flex flex-col gap-3 text-[15px] font-semibold">
-            {typedGym.city && (
-              <Link href={`/gyms/${slugify(typedGym.country_full || typedGym.country)}/${slugify(typedGym.city)}`}>
-                Other gyms in {typedGym.city}
-              </Link>
-            )}
+                      <h2 className="mt-4 text-[28px] font-extrabold tracking-[-1px] text-[#0C0C0C]">
+                        Other gyms in {typedGym.city}
+                      </h2>
 
-            <Link href={`/gyms/${slugify(typedGym.country_full || typedGym.country)}`}>
-              Explore {typedGym.country_full || typedGym.country}
-            </Link>
-          </div>
-        </section>
-      )}
+                      <p className="mt-2 text-[14px] leading-relaxed text-[#777]">
+                        Compare other day-pass gyms available in the same city.
+                      </p>
+                    </div>
+
+                    <Link
+                      href={`/gyms/${slugify(
+                        typedGym.country_full || getCountryName(typedGym.country)
+                      )}/${slugify(typedGym.city)}`}
+                      className="text-[13px] font-bold text-[#111] hover:underline"
+                    >
+                      View all gyms in {typedGym.city} →
+                    </Link>
+                  </div>
+
+                  <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    {cityGyms.map((cityGym) => (
+                      <RelatedGymCard key={cityGym.id} gym={cityGym} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {countryGyms.length > 0 && (
+                <div
+                  className={
+                    cityGyms.length > 0
+                      ? "border-t border-[#EBEBEB] pt-10"
+                      : ""
+                  }
+                >
+                  <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                    <div>
+                      <p className="inline-flex w-fit rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+                        Explore the country
+                      </p>
+
+                      <h2 className="mt-4 text-[28px] font-extrabold tracking-[-1px] text-[#0C0C0C]">
+                        More gyms in{" "}
+                        {typedGym.country_full || getCountryName(typedGym.country)}
+                      </h2>
+
+                      <p className="mt-2 text-[14px] leading-relaxed text-[#777]">
+                        Discover day-pass gyms in other cities across the country.
+                      </p>
+                    </div>
+
+                    <Link
+                      href={`/gyms/${slugify(
+                        typedGym.country_full || getCountryName(typedGym.country)
+                      )}`}
+                      className="text-[13px] font-bold text-[#111] hover:underline"
+                    >
+                      Explore{" "}
+                      {typedGym.country_full || getCountryName(typedGym.country)} →
+                    </Link>
+                  </div>
+
+                  <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    {countryGyms.map((countryGym) => (
+                      <RelatedGymCard key={countryGym.id} gym={countryGym} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
     </main>
     <Footer />
 </>
