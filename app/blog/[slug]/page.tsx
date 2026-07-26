@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../components/Header";
-import { blogPosts, getBlogPost } from "../posts";
+import { blogPosts, getBlogPost, BlogPost } from "../posts";
 
 type BlogArticlePageProps = {
   params: Promise<{
@@ -46,6 +46,10 @@ export default async function BlogArticlePage({
   if (!post) {
     notFound();
   }
+
+  const relatedPosts: BlogPost[] = blogPosts
+  .filter((p) => p.slug !== post.slug)
+  .slice(0, 3);
 
   return (
     <main className="min-h-screen bg-[#F2F2F0] font-[family-name:var(--font-space)] text-[#111]">
@@ -132,21 +136,68 @@ export default async function BlogArticlePage({
               ))}
             </div>
 
-            <div className="mt-16 flex flex-wrap gap-3 border-t border-[#E8E8E8] pt-10">
-            <Link
-                href="/blog"
-                className="inline-flex items-center rounded-[10px] border border-[#DADAD5] bg-white px-5 py-3 text-sm font-bold text-[#111] transition hover:border-[#999]"
-            >
-                ← More travel guides
-            </Link>
+            <div className="mt-16 border-t border-[#E8E8E8] pt-12">
 
-            <Link
-                href="/gyms"
-                className="inline-flex items-center rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#202020]"
-            >
-                Browse gyms →
-            </Link>
-            </div>
+                {relatedPosts.length > 0 && (
+                    <>
+                    <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#7E9700]">
+                        Related guides
+                    </div>
+
+                    <h2 className="mt-3 text-3xl font-extrabold tracking-[-1px]">
+                        Keep exploring
+                    </h2>
+
+                    <p className="mt-3 max-w-2xl text-[#666]">
+                        More travel fitness guides to help you work out while travelling.
+                    </p>
+
+                    <div className="mt-8 grid gap-5 md:grid-cols-3">
+                        {relatedPosts.map((related) => (
+                        <Link
+                            key={related.slug}
+                            href={`/blog/${related.slug}`}
+                            className="rounded-[16px] border border-[#DADAD5] bg-white p-6 transition hover:-translate-y-1 hover:border-[#C8F135]"
+                        >
+                            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#7E9700]">
+                            {related.category}
+                            </div>
+
+                            <h3 className="mt-3 text-xl font-extrabold leading-tight">
+                            {related.title}
+                            </h3>
+
+                            <p className="mt-4 text-[15px] leading-7 text-[#666]">
+                            {related.excerpt}
+                            </p>
+
+                            <div className="mt-6 text-sm font-bold">
+                            Read article →
+                            </div>
+                        </Link>
+                        ))}
+                    </div>
+                    </>
+                )}
+
+                <div className="mt-12 flex flex-wrap gap-3">
+
+                    <Link
+                    href="/blog"
+                    className="inline-flex items-center rounded-[10px] border border-[#DADAD5] bg-white px-5 py-3 text-sm font-bold text-[#111] transition hover:border-[#999]"
+                    >
+                    ← More travel guides
+                    </Link>
+
+                    <Link
+                    href="/gyms"
+                    className="inline-flex items-center rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#202020]"
+                    >
+                    Browse gyms →
+                    </Link>
+
+                </div>
+                </div>
 
             <div className="mt-16 rounded-[20px] bg-[#111] p-8 text-white md:p-10">
               <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#C8F135]">
