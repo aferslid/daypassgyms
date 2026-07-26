@@ -170,7 +170,7 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const { data: gym, error } = await supabase
     .from("spots")
-    .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details")
+    .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details, free_trial, free_trial_duration")
     .eq("id", gymId)
     .single();
 
