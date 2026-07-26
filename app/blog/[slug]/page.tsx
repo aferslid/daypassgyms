@@ -132,6 +132,22 @@ export default async function BlogArticlePage({
               ))}
             </div>
 
+            <div className="mt-16 flex flex-wrap gap-3 border-t border-[#E8E8E8] pt-10">
+            <Link
+                href="/blog"
+                className="inline-flex items-center rounded-[10px] border border-[#DADAD5] bg-white px-5 py-3 text-sm font-bold text-[#111] transition hover:border-[#999]"
+            >
+                ← More travel guides
+            </Link>
+
+            <Link
+                href="/gyms"
+                className="inline-flex items-center rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#202020]"
+            >
+                Browse gyms →
+            </Link>
+            </div>
+
             <div className="mt-16 rounded-[20px] bg-[#111] p-8 text-white md:p-10">
               <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#C8F135]">
                 Find your next gym
