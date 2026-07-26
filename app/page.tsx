@@ -262,7 +262,7 @@ export default async function Home() {
 
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="mb-8">
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+          <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
             Before you go
           </p>
 
@@ -355,7 +355,7 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-20">
-      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
+      <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
         FAQ
       </p>
 
