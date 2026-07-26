@@ -12,7 +12,7 @@ export default function Header() {
         </span>
       </Link>
 
-      <div className="hidden items-center gap-6 text-[13px] text-[#666] md:flex">
+      <div className="hidden items-center gap-6 text-[13px] text-[#999] md:flex">
         <Link href="/gyms" className="transition hover:text-white">
           Explore
         </Link>
