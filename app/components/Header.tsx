@@ -22,6 +22,9 @@ export default function Header() {
         <Link href="/#how" className="transition hover:text-white">
           How it works
         </Link>
+        <Link href="/blog" className="transition hover:text-white">
+          Blog
+        </Link>
         <Link href="/suggest" className="transition hover:text-white">
           Suggest a gym
         </Link>
