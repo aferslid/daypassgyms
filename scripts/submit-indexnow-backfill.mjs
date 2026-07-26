@@ -23,7 +23,7 @@ const SUPABASE_KEY =
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY;
 
 const SITE_URL = "https://www.daypassgyms.com";
-const INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow";
+const INDEXNOW_ENDPOINT = "https://www.bing.com/indexnow";
 
 const SUPABASE_PAGE_SIZE = 1000;
 const INDEXNOW_BATCH_SIZE = 200;
