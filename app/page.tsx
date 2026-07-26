@@ -259,6 +259,91 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mb-8">
+          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+            Before you go
+          </p>
+
+          <h2 className="mt-1 text-[28px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
+            What to check before visiting a gym.
+          </h2>
+
+          <p className="mt-3 max-w-2xl text-[14px] leading-6 text-[#777]">
+            Day-pass rules can vary between gyms. A few quick checks can save
+            you from a wasted trip.
+          </p>
+        </div>
+
+        <div
+          className="grid gap-3"
+          style={{
+            gridTemplateColumns:
+              "repeat(auto-fill, minmax(260px, 1fr))",
+          }}
+        >
+          {[
+            {
+              icon: "🪪",
+              title: "Bring an ID",
+              text: "Some gyms require a passport or official ID before issuing visitor access.",
+            },
+            {
+              icon: "🕒",
+              title: "Check staffed hours",
+              text: "A 24-hour gym may only sell day passes while reception is open.",
+            },
+            {
+              icon: "🧺",
+              title: "Bring a towel",
+              text: "Some gyms require a towel during training or on benches and machines.",
+            },
+            {
+              icon: "👟",
+              title: "Pack indoor shoes",
+              text: "Certain gyms require clean training shoes that have not been worn outdoors.",
+            },
+            {
+              icon: "📱",
+              title: "Check online access",
+              text: "Some gyms let you buy a pass online and enter with a temporary code.",
+            },
+            {
+              icon: "🌍",
+              title: "Rules vary",
+              text: "Visitor policies can differ by country, chain and even individual branch.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="rounded-[14px] border border-[#EBEBEB] bg-white p-5"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#F1F5DF] text-[20px]">
+                {item.icon}
+              </div>
+
+              <h3 className="mt-4 text-[16px] font-extrabold tracking-[-0.4px] text-[#111]">
+                {item.title}
+              </h3>
+
+              <p className="mt-2 text-[13px] leading-relaxed text-[#777]">
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6">
+          <Link
+            href="/blog/how-to-use-a-gym-day-pass-while-traveling"
+            className="inline-flex items-center rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-[13px] font-bold text-white transition hover:bg-[#202020]"
+          >
+            Read the full travel gym guide →
+          </Link>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-6 py-20">
       <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
         FAQ
