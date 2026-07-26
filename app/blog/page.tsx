@@ -65,9 +65,9 @@ export default function BlogPage() {
               key={post.slug}
               className="group flex min-h-[360px] flex-col rounded-[20px] border border-[#DADAD5] bg-white p-7 transition hover:-translate-y-1 hover:border-[#BFC0B8]"
             >
-              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+              <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
                 {post.category}
-              </div>
+              </p>
 
               <h2 className="mt-5 text-3xl font-extrabold leading-[1.02] tracking-[-1.3px]">
                 <Link href={`/blog/${post.slug}`}>
