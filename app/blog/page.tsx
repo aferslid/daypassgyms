@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   return (
     <main className="min-h-screen bg-[#F2F2F0] text-[#111]">
-      <section className="bg-[#111] text-white">
-        <div className="mx-auto max-w-7xl px-6">
-          <Header />
+      <section className="relative overflow-hidden bg-[#0C0C0C] text-white">
+        <div className="relative mx-auto max-w-7xl px-6 py-5">
+            <Header />
 
-          <div className="pb-20 pt-20 md:pb-28 md:pt-28">
+            <div className="pb-20 pt-16 md:pb-28 md:pt-24">
             <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#C8F135]">
               Travel fitness guides
             </div>
