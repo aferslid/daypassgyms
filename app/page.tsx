@@ -228,7 +228,7 @@ export default async function Home() {
 
       <section id="how" className="mx-auto max-w-7xl px-6 py-16">
         <div className="mb-8">
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+          <p className="inline-flex rounded-full bg-[#F4F9DE] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
             How it works
           </p>
           <h2 className="mt-1 text-[28px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
