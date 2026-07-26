@@ -404,6 +404,18 @@ export default async function GymPage({ params }: GymPageProps) {
                 </div>
               )}
 
+              {typedGym.details?.pool != null && typedGym.details?.pool !== undefined && (
+                <div className="rounded-[12px] bg-[#F2F2F0] p-4">
+                  <div className="text-[11px] text-[#999]">
+                    Pool
+                  </div>
+
+                  <div className="mt-1 text-[18px] font-extrabold text-[#111]">
+                    {typedGym.details?.pool ? "Available" : "Not available"}
+                  </div>
+                </div>
+              )}
+
               {typedGym.details?.locker !== null && typedGym.details?.locker !== undefined && (
                 <div className="rounded-[12px] bg-[#F2F2F0] p-4">
                   <div className="text-[11px] text-[#999]">
