@@ -290,7 +290,7 @@ export default async function GymPage({ params }: GymPageProps) {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 {formatPrice(typedGym.details)}
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 day pass
               </div>
             </div>
@@ -306,7 +306,7 @@ export default async function GymPage({ params }: GymPageProps) {
                   : "No"}
               </div>
 
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 free trial
               </div>
             </div>
@@ -315,7 +315,7 @@ export default async function GymPage({ params }: GymPageProps) {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 {formatShower(typedGym.details)}
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 shower info
               </div>
             </div>
@@ -329,7 +329,7 @@ export default async function GymPage({ params }: GymPageProps) {
                   : "Unknown"}
               </div>
 
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 internet
               </div>
             </div>
