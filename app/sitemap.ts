@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { supabase } from "@/lib/supabase";
+import { blogPosts } from "@/app/blog/posts";
 
 function slugify(text: string) {
   return text
@@ -46,9 +47,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: baseUrl, priority: 1, lastModified: now },
     { url: `${baseUrl}/map`, priority: 0.9, lastModified: now },
     { url: `${baseUrl}/gyms`, priority: 0.9, lastModified: now },
+    { url: `${baseUrl}/blog`, priority: 0.8, lastModified: now },
     { url: `${baseUrl}/about`, priority: 0.6, lastModified: now },
     { url: `${baseUrl}/for-gym-owners`, priority: 0.6, lastModified: now },
   ];
+
+  blogPosts.forEach((post) => {
+    urls.push({
+      url: `${baseUrl}/blog/${post.slug}`,
+      priority: 0.7,
+      lastModified: new Date(post.updatedAt || post.publishedAt),
+    });
+  });
 
   const gyms = await getAllGyms();
 
