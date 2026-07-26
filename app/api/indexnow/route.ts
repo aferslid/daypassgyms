@@ -37,6 +37,8 @@ export async function POST(request: NextRequest) {
     const payload = await request.json();
     const record = payload.record;
 
+    console.log("Supabase record:", record);
+
     if (!record) {
       return NextResponse.json(
         { error: "Missing Supabase record" },
