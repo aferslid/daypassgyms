@@ -65,7 +65,7 @@ async function fetchAllGymSlugs() {
     const { data, error } = await supabase
       .from("spots")
       .select("id, name")
-      .not("slug", "is", null)
+      .not("name", "is", null)
       .order("id")
       .range(from, to);
 
