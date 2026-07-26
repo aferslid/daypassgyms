@@ -350,7 +350,7 @@ export default async function GymPage({ params }: GymPageProps) {
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <div className="rounded-[12px] bg-[#F2F2F0] p-4">
-                <div className="text-[11px] text-[#999]">Day pass price</div>
+                <div className="text-[11px] text-[#999]">Day pass</div>
                 <div className="mt-1 text-[18px] font-extrabold text-[#111]">
                   {formatPrice(typedGym.details)}
                 </div>
