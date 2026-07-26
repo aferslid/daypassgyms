@@ -1,5 +1,17 @@
 import { createClient } from "@supabase/supabase-js";
 
+function slugify(text) {
+  return text
+    .replace(/ß/g, "ss")
+    .replace(/ẞ/g, "ss")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ??
   process.env.SUPABASE_URL;
@@ -52,7 +64,7 @@ async function fetchAllGymSlugs() {
 
     const { data, error } = await supabase
       .from("spots")
-      .select("id, slug")
+      .select("id, name")
       .not("slug", "is", null)
       .order("id")
       .range(from, to);
@@ -131,15 +143,20 @@ async function main() {
 
   const urlList = [
     ...new Set(
-      gyms
-        .map((gym) => gym.slug?.trim())
-        .filter(Boolean)
+        gyms
+        .filter(
+            (gym) =>
+            gym.id !== null &&
+            gym.id !== undefined &&
+            typeof gym.name === "string" &&
+            gym.name.trim()
+        )
         .map(
-          (slug) =>
-            `${SITE_URL}/gym/${encodeURIComponent(slug)}`
+            (gym) =>
+            `${SITE_URL}/gym/${slugify(gym.name)}-${gym.id}`
         )
     ),
-  ];
+    ];
 
   if (urlList.length === 0) {
     console.log("No gym URLs found.");
