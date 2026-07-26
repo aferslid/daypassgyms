@@ -54,7 +54,7 @@ export default async function BlogArticlePage({
             <div className="relative mx-auto max-w-7xl px-6 py-5">
                 <Header />
 
-                <div className="mx-auto max-w-4xl pb-20 pt-16 md:pb-28 md:pt-24">
+                <div className="max-w-4xl pb-20 pt-16 md:pb-28 md:pt-24">
               <Link
                 href="/blog"
                 className="text-sm text-[#999] transition hover:text-white"
