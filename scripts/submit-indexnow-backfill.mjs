@@ -26,7 +26,7 @@ const SITE_URL = "https://www.daypassgyms.com";
 const INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow";
 
 const SUPABASE_PAGE_SIZE = 1000;
-const INDEXNOW_BATCH_SIZE = 1000;
+const INDEXNOW_BATCH_SIZE = 200;
 
 if (!SUPABASE_URL) {
   throw new Error(
