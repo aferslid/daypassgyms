@@ -191,7 +191,7 @@ export default async function Home() {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 {totalGyms || 0}+
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 gyms listed
               </div>
             </div>
@@ -200,7 +200,7 @@ export default async function Home() {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 {countriesCount}
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 countries
               </div>
             </div>
@@ -209,7 +209,7 @@ export default async function Home() {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 {citiesCount}
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 cities
               </div>
             </div>
@@ -218,7 +218,7 @@ export default async function Home() {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 Day pass
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 price focused
               </div>
             </div>

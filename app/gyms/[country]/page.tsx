@@ -347,7 +347,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
                 {(gyms || []).length}
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 gyms listed
               </div>
             </div>
@@ -356,7 +356,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 {cities.length}
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 cities
               </div>
             </div>
@@ -366,7 +366,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
                 {priceRangeText}
               </div>
 
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 price range
               </div>
             </div>
@@ -375,7 +375,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 Day pass
               </div>
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 price focused
               </div>
             </div>            

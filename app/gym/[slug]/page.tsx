@@ -275,7 +275,7 @@ export default async function GymPage({ params }: GymPageProps) {
                     className="h-[320px] w-full rounded-[18px] object-cover"
                   />
                 ) : (
-                  <div className="flex h-[320px] items-center justify-center rounded-[18px] bg-[#171717] text-[#555]">
+                  <div className="flex h-[320px] items-center justify-center rounded-[18px] bg-[#171717] text-[#888]">
                     Photo coming soon
                   </div>
                 )}

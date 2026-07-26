@@ -216,7 +216,7 @@ export default async function GymsPage() {
                 >
                   {num}
                 </div>
-                <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">{label}</div>
+                <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">{label}</div>
               </div>
             ))}
           </div>
