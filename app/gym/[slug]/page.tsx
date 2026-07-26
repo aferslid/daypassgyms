@@ -221,17 +221,14 @@ export default async function GymPage({ params }: GymPageProps) {
   const typedGym = gym as Gym;
 
   const cityGyms: RelatedGym[] = [];
-const countryGyms: RelatedGym[] = [];
 
-if (typedGym.country) {
-  // Salles situées dans la même ville
-  if (typedGym.city) {
+  if (typedGym.country && typedGym.city) {
     const { data: cityResults, error: cityError } = await supabase
       .from("spots")
       .select("id, name, country, country_full, city, details")
       .ilike("type", "%gym%")
       .eq("country", typedGym.country)
-      .eq("city", typedGym.city)
+      .ilike("city", typedGym.city)
       .neq("id", typedGym.id)
       .order("id")
       .limit(4);
@@ -240,35 +237,6 @@ if (typedGym.country) {
       cityGyms.push(...(cityResults as RelatedGym[]));
     }
   }
-
-  // Autres salles du pays, mais situées en dehors de la ville actuelle
-  const { data: countryResults, error: countryError } = await supabase
-    .from("spots")
-    .select("id, name, country, country_full, city, details")
-    .ilike("type", "%gym%")
-    .eq("country", typedGym.country)
-    .neq("id", typedGym.id)
-    .order("id")
-    .limit(20);
-
-  if (!countryError && countryResults) {
-    const cityGymIds = new Set(cityGyms.map((item) => item.id));
-
-    const filteredCountryGyms = (
-      countryResults as RelatedGym[]
-    )
-      .filter((item) => !cityGymIds.has(item.id))
-      .filter((item) => {
-        if (!typedGym.city) return true;
-
-        return item.city?.trim().toLowerCase() !==
-          typedGym.city.trim().toLowerCase();
-      })
-      .slice(0, 4);
-
-    countryGyms.push(...filteredCountryGyms);
-  }
-}
 
   const gymImageUrl = `/images/gyms/${slug}.jpg`;
 
@@ -632,18 +600,24 @@ if (typedGym.country) {
           </div>
         </aside>
       </section>
-      {(cityGyms.length > 0 || countryGyms.length > 0) && (
-          <section className="mx-auto max-w-7xl px-6 pb-16">
-            <div className="space-y-12 rounded-[16px] border border-[#EBEBEB] bg-white p-6 md:p-8">
+      {typedGym.country && (
+        <>
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="border-t border-[#D7D7D0]" />
+            <div className="mt-2 border-t border-[#D7D7D0]" />
+          </div>
+
+          <section className="bg-[#F1F1EC] py-16">
+            <div className="mx-auto max-w-7xl px-6">
               {cityGyms.length > 0 && typedGym.city && (
                 <div>
-                  <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-                    <div>
-                      <p className="inline-flex w-fit rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-                        Nearby options
-                      </p>
+                  <p className="inline-flex w-fit rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+                    Nearby options
+                  </p>
 
-                      <h2 className="mt-4 text-[28px] font-extrabold tracking-[-1px] text-[#0C0C0C]">
+                  <div className="mt-4 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                    <div>
+                      <h2 className="text-[28px] font-extrabold tracking-[-1px] text-[#0C0C0C]">
                         Other gyms in {typedGym.city}
                       </h2>
 
@@ -670,51 +644,44 @@ if (typedGym.country) {
                 </div>
               )}
 
-              {countryGyms.length > 0 && (
-                <div
-                  className={
-                    cityGyms.length > 0
-                      ? "border-t border-[#EBEBEB] pt-10"
-                      : ""
-                  }
-                >
-                  <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-                    <div>
-                      <p className="inline-flex w-fit rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-                        Explore the country
-                      </p>
+              <div
+                className={
+                  cityGyms.length > 0
+                    ? "mt-12 border-t border-[#D7D7D0] pt-10"
+                    : ""
+                }
+              >
+                <p className="inline-flex w-fit rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+                  Explore the country
+                </p>
 
-                      <h2 className="mt-4 text-[28px] font-extrabold tracking-[-1px] text-[#0C0C0C]">
-                        More gyms in{" "}
-                        {typedGym.country_full || getCountryName(typedGym.country)}
-                      </h2>
+                <div className="mt-4 flex flex-col justify-between gap-4 rounded-[16px] border border-[#DDDDD6] bg-white p-6 md:flex-row md:items-center">
+                  <div>
+                    <h2 className="text-[24px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
+                      Browse gyms in{" "}
+                      {typedGym.country_full || getCountryName(typedGym.country)}
+                    </h2>
 
-                      <p className="mt-2 text-[14px] leading-relaxed text-[#777]">
-                        Discover day-pass gyms in other cities across the country.
-                      </p>
-                    </div>
-
-                    <Link
-                      href={`/gyms/${slugify(
-                        typedGym.country_full || getCountryName(typedGym.country)
-                      )}`}
-                      className="text-[13px] font-bold text-[#111] hover:underline"
-                    >
-                      Explore{" "}
-                      {typedGym.country_full || getCountryName(typedGym.country)} →
-                    </Link>
+                    <p className="mt-2 text-[14px] leading-relaxed text-[#777]">
+                      Explore all listed cities and day-pass gyms across the country.
+                    </p>
                   </div>
 
-                  <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    {countryGyms.map((countryGym) => (
-                      <RelatedGymCard key={countryGym.id} gym={countryGym} />
-                    ))}
-                  </div>
+                  <Link
+                    href={`/gyms/${slugify(
+                      typedGym.country_full || getCountryName(typedGym.country)
+                    )}`}
+                    className="shrink-0 rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-[13px] font-bold text-white transition hover:bg-[#222]"
+                  >
+                    Explore{" "}
+                    {typedGym.country_full || getCountryName(typedGym.country)} →
+                  </Link>
                 </div>
-              )}
+              </div>
             </div>
           </section>
-        )}
+        </>
+      )}
     </main>
     <Footer />
 </>
