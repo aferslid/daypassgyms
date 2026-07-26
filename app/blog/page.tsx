@@ -17,6 +17,12 @@ export default function BlogPage() {
             <Header />
 
             <div className="pb-20 pt-16 md:pb-28 md:pt-24">
+                <Link
+                href="/"
+                className="text-sm text-[#888] transition hover:text-white"
+                >
+                ← Back to home
+                </Link>
             <div className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#C8F135]">
               Travel fitness guides
             </div>
@@ -38,11 +44,9 @@ export default function BlogPage() {
       <section className="mx-auto max-w-7xl px-6 py-16 md:py-24">
         <div className="mb-10 flex items-end justify-between gap-6">
           <div>
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#C8F135]">
-                <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+            <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
               Latest articles
-                </p>
-            </div>
+            </p>
 
             <h2 className="mt-3 text-3xl font-extrabold tracking-[-1.5px] md:text-4xl">
               Travel fitness resources
