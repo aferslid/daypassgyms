@@ -113,9 +113,9 @@ function formatPrice(details: Gym["details"]) {
 }
 
 function formatShower(details: Gym["details"]) {
-  if (details?.shower === true) return "Shower available";
-  if (details?.shower === false) return "No shower";
-  return "Shower unknown";
+  if (details?.shower === true) return "Yes";
+  if (details?.shower === false) return "No";
+  return "Unknown";
 }
 
 function getCountryName(code: string | null) {
