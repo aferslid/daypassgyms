@@ -323,9 +323,9 @@ export default async function GymPage({ params }: GymPageProps) {
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 {typedGym.details?.wifi === true
-                  ? "Wi-Fi"
+                  ? "Yes"
                   : typedGym.details?.wifi === false
-                  ? "No Wi-Fi"
+                  ? "No"
                   : "Unknown"}
               </div>
 
