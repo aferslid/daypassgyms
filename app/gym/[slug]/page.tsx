@@ -31,6 +31,8 @@ type Gym = {
   website_url: string | null;
   google_maps_url: string | null;
   country_full: string | null;
+  free_trial: boolean | null;
+  free_trial_duration: string | null;
   details: {
     day_pass_price?: number | null;
     currency?: string | null;
@@ -294,25 +296,27 @@ export default async function GymPage({ params }: GymPageProps) {
             </div>
 
             <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
-                {formatShower(typedGym.details)}
+              <div
+                className={`text-[26px] font-extrabold leading-none tracking-[-1px] text-white ${
+                  typedGym.free_trial ? "text-[#C8F135]" : "text-white"
+                }`}
+              >
+                {typedGym.free_trial
+                  ? typedGym.free_trial_duration || "Available"
+                  : "No"}
               </div>
+
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
-                shower info
+                free trial
               </div>
             </div>
 
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
-                {typedGym.details?.pool === true
-                  ? "Pool"
-                  : typedGym.details?.pool === false
-                  ? "No pool"
-                  : "Unknown"}
+                {formatShower(typedGym.details)}
               </div>
-
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#555]">
-                pool
+                shower info
               </div>
             </div>
 
