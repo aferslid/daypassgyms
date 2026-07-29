@@ -33,6 +33,7 @@ type Gym = {
   country_full: string | null;
   free_trial: boolean | null;
   free_trial_duration: string | null;
+  week_pass_price: number | null;
   details: {
     day_pass_price?: number | null;
     currency?: string | null;
@@ -214,7 +215,7 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const { data: gym, error } = await supabase
     .from("spots")
-    .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details, free_trial, free_trial_duration")
+    .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details, free_trial, free_trial_duration, week_pass_price")
     .eq("id", gymId)
     .single();
 
@@ -435,8 +436,21 @@ export default async function GymPage({ params }: GymPageProps) {
             </div>
 
             <div className="flex-1 px-6 py-4">
+              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
+                {typedGym.week_pass_price !== null &&
+                typedGym.week_pass_price !== undefined
+                  ? `${typedGym.week_pass_price} ${typedGym.details?.currency ?? ""}`
+                  : "Unknown"}
+              </div>
+
+              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
+                week pass
+              </div>
+            </div>
+
+            <div className="flex-1 px-6 py-4">
               <div
-                className={`text-[26px] font-extrabold leading-none tracking-[-1px] text-white ${
+                className={`text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135] ${
                   typedGym.free_trial ? "text-[#C8F135]" : "text-white"
                 }`}
               >
@@ -453,7 +467,7 @@ export default async function GymPage({ params }: GymPageProps) {
             </div>
 
             <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
+              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 {formatShower(typedGym.details)}
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
@@ -461,19 +475,6 @@ export default async function GymPage({ params }: GymPageProps) {
               </div>
             </div>
 
-            <div className="flex-1 px-6 py-4">
-              <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
-                {typedGym.details?.wifi === true
-                  ? "Yes"
-                  : typedGym.details?.wifi === false
-                  ? "No"
-                  : "Unknown"}
-              </div>
-
-              <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
-                Wi-Fi
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -568,6 +569,18 @@ export default async function GymPage({ params }: GymPageProps) {
                   </div>
                 </div>
               )}
+
+              <div className="rounded-[12px] bg-[#F2F2F0] p-4">
+                <div className="text-[11px] text-[#999]">Wi-Fi</div>
+
+                <div className="mt-1 text-[18px] font-extrabold text-[#111]">
+                  {typedGym.details?.wifi === true
+                    ? "Available"
+                    : typedGym.details?.wifi === false
+                    ? "Not available"
+                    : "Unknown"}
+                </div>
+              </div>
             </div>
 
             {typedGym.created_at && (
