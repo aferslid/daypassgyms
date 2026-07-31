@@ -471,7 +471,7 @@ export default async function GymPage({ params }: GymPageProps) {
                 {formatShower(typedGym.details)}
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
-                shower info
+                showers
               </div>
             </div>
 
