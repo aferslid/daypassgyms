@@ -7,6 +7,7 @@ import Header from "../../components/Header";
 import Image from "next/image";
 import { permanentRedirect, notFound } from "next/navigation";
 import CitiesGrid from "@/app/components/CitiesGrid";
+import TravelGuides from "@/app/components/TravelGuides";
 
 type CountryPageProps = {
   params: Promise<{
@@ -446,6 +447,11 @@ export default async function CountryPage({ params }: CountryPageProps) {
           </div>
         )}
       </section>
+        <TravelGuides
+        title={`Training while traveling in ${countryName}?`}
+        description={`Read our practical guides before buying a gym day pass or visiting a gym in ${countryName}.`}
+        limit={2}
+      />
     </main>
     <Footer />
 </>
