@@ -5,6 +5,8 @@ import countriesList from "world-countries";
 import Footer from "@/app/components/Footer";
 import Header from "../../../components/Header";
 import { notFound, permanentRedirect } from "next/navigation";
+import TravelGuides from "@/app/components/TravelGuides";
+import Breadcrumbs from "@/app/components/Breadcrumbs";
 
 type CityPageProps = {
   params: Promise<{
@@ -345,14 +347,29 @@ const priceRangeText =
           <Header />
 
           <div className="pb-16 pt-14">
-            <Link
-              href={`/gyms/${country}`}
-              className="mb-5 inline-block text-[13px] font-medium text-[#777] hover:text-white"
-            >
-              ← Back to {countryName}
-            </Link>
+            <Breadcrumbs
+              light
+              items={[
+                {
+                  label: "Home",
+                  href: "/",
+                },
+                {
+                  label: "Gyms",
+                  href: "/gyms",
+                },
+                {
+                  label: countryName,
+                  href: `/gyms/${resolvedCountry.canonicalSlug}`,
+                },
+                {
+                  label: cityName,
+                  href: `/gyms/${resolvedCountry.canonicalSlug}/${city}`,
+                },
+              ]}
+            />
 
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+            <p className="mb-4 mt-8 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
               City directory
             </p>
 
@@ -474,6 +491,11 @@ const priceRangeText =
           </div>
         )}
       </section>
+        <TravelGuides
+          title={`Training in ${cityName}?`}
+          description={`Before visiting a gym in ${cityName}, learn how gym day passes work, what to bring and how to compare gyms while travelling.`}
+          limit={2}
+        />
     </main>
     <Footer />
 </>

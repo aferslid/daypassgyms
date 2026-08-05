@@ -8,6 +8,9 @@ import Header from "../../components/Header";
 import { notFound } from "next/navigation";
 import fs from "fs";
 import path from "path";
+import Breadcrumbs, {
+  type BreadcrumbItem,
+} from "@/app/components/Breadcrumbs";
 
 type GymPageProps = {
   params: Promise<{
@@ -225,6 +228,41 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const typedGym = gym as Gym;
 
+  const countryName =
+  typedGym.country_full || getCountryName(typedGym.country);
+
+const countrySlug = slugify(countryName);
+
+const breadcrumbItems: BreadcrumbItem[] = [
+  {
+    label: "Home",
+    href: "/",
+  },
+  {
+    label: "Gyms",
+    href: "/gyms",
+  },
+];
+
+if (typedGym.country) {
+  breadcrumbItems.push({
+    label: countryName,
+    href: `/gyms/${countrySlug}`,
+  });
+}
+
+if (typedGym.country && typedGym.city) {
+  breadcrumbItems.push({
+    label: typedGym.city,
+    href: `/gyms/${countrySlug}/${slugify(typedGym.city)}`,
+  });
+}
+
+breadcrumbItems.push({
+  label: typedGym.name,
+  href: `/gym/${slug}`,
+});
+
   const baseUrl = "https://www.daypassgyms.com";
   const gymUrl = `${baseUrl}/gym/${slug}`;
 
@@ -329,28 +367,12 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const hasGymImage = fs.existsSync(gymImagePath);
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "HealthClub",
-    name: typedGym.name,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: typedGym.city,
-      addressCountry: typedGym.country,
-    },
-    url: "https://www.daypassgyms.com/gym/...",
-    sameAs: [
-      typedGym.website_url,
-      typedGym.google_maps_url,
-    ].filter(Boolean),
-  };
-
   return (
     <>
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(structuredData),
+        __html: JSON.stringify(gymStructuredData).replace(/</g, "\\u003c"),
       }}
     />
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">
@@ -363,14 +385,9 @@ export default async function GymPage({ params }: GymPageProps) {
 
           <div className="grid gap-10 pb-16 pt-14 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
-              <Link
-                href="/gyms"
-                className="mb-5 inline-block text-[13px] font-medium text-[#777] hover:text-white"
-              >
-                ← Back to gyms
-              </Link>
+              <Breadcrumbs light items={breadcrumbItems} />
 
-              <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+              <p className="mb-4 mt-8 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
                 Gym profile
               </p>
 

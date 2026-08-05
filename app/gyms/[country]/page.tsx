@@ -8,6 +8,7 @@ import Image from "next/image";
 import { permanentRedirect, notFound } from "next/navigation";
 import CitiesGrid from "@/app/components/CitiesGrid";
 import TravelGuides from "@/app/components/TravelGuides";
+import Breadcrumbs from "@/app/components/Breadcrumbs";
 
 type CountryPageProps = {
   params: Promise<{
@@ -305,14 +306,25 @@ export default async function CountryPage({ params }: CountryPageProps) {
 
           <div className="grid gap-12 pb-16 pt-14 lg:grid-cols-2 lg:items-center">
             <div>
-            <Link
-              href="/gyms"
-              className="mb-5 inline-block text-[13px] font-medium text-[#777] hover:text-white"
-            >
-              ← Back to countries
-            </Link>
+            <Breadcrumbs
+              light
+              items={[
+                {
+                  label: "Home",
+                  href: "/",
+                },
+                {
+                  label: "Gyms",
+                  href: "/gyms",
+                },
+                {
+                  label: countryName,
+                  href: `/gyms/${resolvedCountry.canonicalSlug}`,
+                },
+              ]}
+            />
 
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+            <p className="mb-4 mt-8 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
               Country directory
             </p>
 
@@ -448,10 +460,10 @@ export default async function CountryPage({ params }: CountryPageProps) {
         )}
       </section>
         <TravelGuides
-        title={`Training while traveling in ${countryName}?`}
-        description={`Read our practical guides before buying a gym day pass or visiting a gym in ${countryName}.`}
-        limit={2}
-      />
+          title={`Training while traveling in ${countryName}?`}
+          description={`Read our practical guides before buying a gym day pass or visiting a gym in ${countryName}.`}
+          limit={2}
+        />
     </main>
     <Footer />
 </>
