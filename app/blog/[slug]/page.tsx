@@ -28,11 +28,40 @@ export async function generateMetadata({
     };
   }
 
+  const articleUrl = `https://www.daypassgyms.com/blog/${post.slug}`;
+  const imageUrl = "https://www.daypassgyms.com/og-image.png";
+
   return {
     title: `${post.title} | DayPassGyms`,
     description: post.excerpt,
+
     alternates: {
-      canonical: `/blog/${post.slug}`,
+      canonical: articleUrl,
+    },
+
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: articleUrl,
+      siteName: "DayPassGyms",
+      type: "article",
+      publishedTime: post.publishedAt,
+      modifiedTime: post.updatedAt || post.publishedAt,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [imageUrl],
     },
   };
 }
@@ -179,6 +208,20 @@ export default async function BlogArticlePage({
                       ))}
                     </ul>
                   )}
+
+                  {section.links && section.links.length > 0 && (
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      {section.links.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="inline-flex items-center rounded-[10px] border border-[#DADAD5] bg-white px-4 py-3 text-sm font-bold text-[#111] transition hover:border-[#A7C927] hover:text-[#6F8500]"
+                        >
+                          {link.label} →
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </section>
               ))}
             </div>
@@ -248,23 +291,24 @@ export default async function BlogArticlePage({
 
             <div className="mt-16 rounded-[20px] bg-[#111] p-8 text-white md:p-10">
               <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#C8F135]">
-                Find your next gym
+                Ready for your next workout?
               </div>
 
               <h2 className="mt-4 text-3xl font-extrabold tracking-[-1px]">
-                Browse gyms offering temporary access.
+                Find a gym that welcomes temporary visitors.
               </h2>
 
               <p className="mt-4 max-w-xl leading-7 text-[#999]">
-                Search by country and city, compare day-pass information and
-                check useful facilities before you go.
+                Browse gyms by country and city, compare day-pass and weekly-pass
+                prices, and check showers, lockers, Wi-Fi and visitor requirements
+                before you go.
               </p>
 
               <Link
                 href="/gyms"
                 className="mt-7 inline-flex rounded-[10px] bg-[#C8F135] px-5 py-3 text-sm font-bold text-[#111] transition hover:bg-[#D7FF45]"
               >
-                Browse countries
+                Find a gym →
               </Link>
             </div>
           </div>

@@ -1,7 +1,13 @@
+export type BlogLink = {
+  href: string;
+  label: string;
+};
+
 export type BlogSection = {
   heading?: string;
   paragraphs?: string[];
   bullets?: string[];
+  links?: BlogLink[];
 };
 
 export type BlogPost = {
@@ -123,6 +129,17 @@ export const blogPosts: BlogPost[] = [
         heading: "Find a gym day pass",
         paragraphs: [
           "Use DayPassGyms to browse gyms by country and city, compare visitor prices and check useful amenities before your next workout abroad.",
+          "If you are still researching your destination, our complete guide explains how to identify gyms that accept temporary visitors and how to compare the available options.",
+        ],
+        links: [
+          {
+            href: "/blog/how-to-find-a-gym-while-traveling",
+            label: "How to find a gym while traveling",
+          },
+          {
+            href: "/gyms",
+            label: "Browse gyms with day passes",
+          },
         ],
       },
         ],
@@ -197,6 +214,12 @@ export const blogPosts: BlogPost[] = [
                   "Compare the total cost based on how many times you plan to train.",
                   "Check whether the weekly pass starts on the purchase date.",
                   "Confirm whether access is valid at one location or several branches.",
+                ],
+                links: [
+                  {
+                    href: "/blog/how-to-use-a-gym-day-pass-while-traveling",
+                    label: "How to use a gym day pass while traveling",
+                  },
                 ],
               },
               {
@@ -278,6 +301,12 @@ export const blogPosts: BlogPost[] = [
                   "Free trials",
                   "Visitor-access information",
                   "Google Maps directions",
+                ],
+                links: [
+                  {
+                    href: "/gyms",
+                    label: "Browse all gyms",
+                  },
                 ],
               },
               {
