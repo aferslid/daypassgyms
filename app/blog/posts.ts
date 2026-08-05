@@ -125,9 +125,179 @@ export const blogPosts: BlogPost[] = [
           "Use DayPassGyms to browse gyms by country and city, compare visitor prices and check useful amenities before your next workout abroad.",
         ],
       },
-    ],
-  },
-];
+        ],
+          },
+          {
+            slug: "how-to-find-a-gym-while-traveling",
+            title: "How to Find a Gym While Traveling: The Complete Guide",
+            excerpt:
+              "Learn how to find gyms with day passes while traveling, compare prices, check visitor requirements and avoid wasting time abroad.",
+            category: "Travel fitness",
+            publishedAt: "2026-08-05",
+            readingTime: "8 min read",
+            sections: [
+              {
+                paragraphs: [
+                  "Finding a gym while traveling can be surprisingly difficult.",
+                  "You arrive in a new city, search for somewhere to train, and discover that many gyms require a monthly membership, a local bank account, an app registration or a long-term contract.",
+                  "For travelers who only want to train once or twice, finding a gym with temporary access should be much easier.",
+                  "This guide explains how to find gyms with day passes, what to check before visiting and how to avoid wasting time when training abroad.",
+                ],
+              },
+              {
+                heading: "1. Search specifically for day passes",
+                paragraphs: [
+                  "Searching only for “gym near me” may show dozens of gyms, but it does not tell you whether any of them allow one-time access.",
+                  "Instead, include visitor-access terms in your search. Different gyms and countries use different expressions for the same type of access.",
+                ],
+                bullets: [
+                  "Gym day pass",
+                  "Single-entry gym",
+                  "Guest pass",
+                  "Drop-in gym",
+                  "Daily gym pass",
+                  "Weekly gym pass",
+                ],
+              },
+              {
+                heading: "2. Use Google before relying only on Google Maps",
+                paragraphs: [
+                  "Google Maps is useful for finding nearby gyms, checking reviews and getting directions.",
+                  "However, it often does not clearly answer the most important question for a traveler: can I train here today without becoming a member?",
+                  "A normal Google search is often more effective because it can show the gym's pricing page, visitor policy, frequently asked questions or a page specifically dedicated to day passes.",
+                ],
+                bullets: [
+                  "Search for the gym name followed by “day pass”.",
+                  "Add the city name to avoid results from another branch.",
+                  "Check the official website before relying on old reviews.",
+                ],
+              },
+              {
+                heading: "3. Check the price before traveling to the gym",
+                paragraphs: [
+                  "Day-pass prices can vary significantly, even between gyms located in the same city.",
+                  "A basic local gym may charge the equivalent of a few euros, while a premium health club nearby may charge several times more.",
+                  "Prices can also vary between branches of the same chain, especially when individual locations are operated as franchises.",
+                ],
+                bullets: [
+                  "Check whether the displayed price is for one visit or one full day.",
+                  "Look for registration or access-card fees.",
+                  "Confirm whether the price changes by time of day.",
+                  "Check whether online purchase is cheaper than paying at reception.",
+                ],
+              },
+              {
+                heading: "4. Compare day passes and weekly passes",
+                paragraphs: [
+                  "If you are staying in the same destination for several days, a weekly pass may provide much better value than buying several individual entries.",
+                  "For example, three day passes may cost more than one seven-day pass.",
+                  "Weekly access is particularly useful for backpackers, digital nomads, business travelers and anyone staying in one city for several nights.",
+                ],
+                bullets: [
+                  "Compare the total cost based on how many times you plan to train.",
+                  "Check whether the weekly pass starts on the purchase date.",
+                  "Confirm whether access is valid at one location or several branches.",
+                ],
+              },
+              {
+                heading: "5. Confirm that visitors are allowed",
+                paragraphs: [
+                  "A gym may advertise temporary access while still applying specific visitor requirements.",
+                  "Some clubs only allow local residents, require advance registration or limit day-pass access to staffed hours.",
+                ],
+                bullets: [
+                  "Passport or national identity card",
+                  "Minimum age requirement",
+                  "Local phone number",
+                  "Advance booking",
+                  "App download",
+                  "Temporary access-card deposit",
+                  "Existing-member accompaniment",
+                ],
+              },
+              {
+                heading: "6. Check the staffed hours",
+                paragraphs: [
+                  "A 24-hour gym does not necessarily sell day passes 24 hours a day.",
+                  "Many gyms are open around the clock for existing members but only admit visitors when reception staff are present.",
+                  "Always check staffed or reception hours separately from the general opening hours.",
+                ],
+              },
+              {
+                heading: "7. Check the facilities you need",
+                paragraphs: [
+                  "When traveling, the facilities around the workout can be just as important as the gym equipment itself.",
+                  "If you are carrying luggage, training before sightseeing or heading directly to an airport, showers and lockers may be essential.",
+                ],
+                bullets: [
+                  "Showers",
+                  "Lockers",
+                  "Wi-Fi",
+                  "Towel rental",
+                  "Changing rooms",
+                  "Swimming pool",
+                  "Sauna or steam room",
+                  "Drinking-water access",
+                ],
+              },
+              {
+                heading: "8. Do not assume every branch has the same policy",
+                paragraphs: [
+                  "Large gym chains can be confusing because day-pass availability and pricing may differ from one location to another.",
+                  "This is particularly common with franchise-based chains, where individual club owners may decide their own visitor policy.",
+                  "Always verify the exact branch you intend to visit rather than assuming that information from another location applies everywhere.",
+                ],
+              },
+              {
+                heading: "9. Contact the gym when the information is unclear",
+                paragraphs: [
+                  "If the website does not provide a clear answer, contacting the gym directly is often the fastest solution.",
+                  "Instagram, WhatsApp, Facebook, email and website contact forms can all work well depending on the country.",
+                  "A short and direct message is usually enough.",
+                ],
+                bullets: [
+                  "Do you offer a one-day gym pass?",
+                  "What is the price?",
+                  "Can I purchase it at reception?",
+                  "Are showers and lockers included?",
+                  "Do I need to bring identification?",
+                ],
+              },
+              {
+                heading: "10. Use DayPassGyms to compare visitor access",
+                paragraphs: [
+                  "DayPassGyms was created specifically for travelers who want to continue training without searching dozens of individual websites.",
+                  "You can browse gyms by country and city, compare day-pass and weekly-pass information and check useful amenities before visiting.",
+                ],
+                bullets: [
+                  "Day-pass price",
+                  "Weekly-pass price",
+                  "Showers",
+                  "Lockers",
+                  "Wi-Fi",
+                  "Free trials",
+                  "Visitor-access information",
+                  "Google Maps directions",
+                ],
+              },
+              {
+                heading: "Final thoughts",
+                paragraphs: [
+                  "Training while traveling should not require signing a long-term membership contract.",
+                  "Whether you are away for a weekend, backpacking for several months or working remotely, there are gyms around the world that accept short-term visitors.",
+                  "The challenge is not usually finding a gym. It is finding one that clearly explains its visitor policy, price and conditions.",
+                  "A few minutes of research before you go can save time, money and frustration.",
+                ],
+              },
+              {
+                heading: "Find a gym while traveling",
+                paragraphs: [
+                  "Browse DayPassGyms by country and city to find gyms offering day passes, weekly passes and temporary visitor access around the world.",
+                ],
+              },
+            ],
+          },
+        ];
 
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);

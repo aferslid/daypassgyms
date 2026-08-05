@@ -46,11 +46,11 @@ export default function BlogPage() {
         <div className="mb-10 flex items-end justify-between gap-6">
           <div>
             <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-              Latest articles
+              Latest travel fitness guides
             </p>
 
             <h2 className="mt-3 text-3xl font-extrabold tracking-[-1.5px] md:text-4xl">
-              Travel fitness resources
+              Gym day pass guides
             </h2>
           </div>
 
