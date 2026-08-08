@@ -5,7 +5,7 @@ import countriesList from "world-countries";
 import GymMiniMapClient from "@/app/components/GymMiniMapClient";
 import Footer from "@/app/components/Footer";
 import Header from "../../components/Header";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import fs from "fs";
 import path from "path";
 import Breadcrumbs, {
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: GymPageProps) {
 
   const { data: gym } = await supabase
     .from("spots")
-    .select("name, details")
+    .select("id, name, details")
     .eq("id", gymId)
     .single();
 
@@ -83,8 +83,10 @@ export async function generateMetadata({ params }: GymPageProps) {
     : `View day pass information for ${gym.name}. Check showers, lockers, Wi-Fi, facilities, location and visitor access details.`;
 
   const title = `${gym.name} Day Pass Price`;
+  const canonicalSlug = `${slugify(gym.name)}-${gym.id}`;
+
   const canonicalUrl =
-    `https://www.daypassgyms.com/gym/${slug}`;
+    `https://www.daypassgyms.com/gym/${canonicalSlug}`;
 
   return {
     title,
@@ -227,6 +229,12 @@ export default async function GymPage({ params }: GymPageProps) {
   }
 
   const typedGym = gym as Gym;
+
+  const canonicalSlug = `${slugify(typedGym.name)}-${typedGym.id}`;
+
+  if (slug !== canonicalSlug) {
+    redirect(`/gym/${canonicalSlug}`);
+  }
 
   const countryName =
   typedGym.country_full || getCountryName(typedGym.country);
