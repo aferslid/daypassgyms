@@ -8,6 +8,7 @@ export type BlogSection = {
   paragraphs?: string[];
   bullets?: string[];
   links?: BlogLink[];
+  
 };
 
 export type BlogPost = {
@@ -18,6 +19,8 @@ export type BlogPost = {
   publishedAt: string;
   updatedAt?: string;
   readingTime: string;
+  metaTitle?: string;
+  metaDescription?: string;
   sections: BlogSection[];
 };
 
@@ -30,6 +33,9 @@ export const blogPosts: BlogPost[] = [
     category: "Travel fitness",
     publishedAt: "2026-07-26",
     readingTime: "6 min read",
+    metaTitle: "How to Use a Gym Day Pass While Traveling",
+    metaDescription:
+      "Learn how to use a gym day pass while traveling, including staffed hours, ID requirements, towels, indoor shoes, lockers and payment.",
     sections: [
       {
         paragraphs: [
@@ -152,6 +158,9 @@ export const blogPosts: BlogPost[] = [
             category: "Travel fitness",
             publishedAt: "2026-08-05",
             readingTime: "8 min read",
+            metaTitle: "How to Find a Gym While Traveling",
+            metaDescription:
+              "Learn how to find a gym while traveling, compare day-pass options, check visitor requirements and choose the right gym for your trip.",
             sections: [
               {
                 paragraphs: [
@@ -334,6 +343,9 @@ export const blogPosts: BlogPost[] = [
             category: "Travel fitness",
             publishedAt: "2026-08-09",
             readingTime: "6 min read",
+            metaTitle: "Hotel Gym vs Local Gym: Which Is Better?",
+            metaDescription:
+              "Compare hotel gyms and local gyms while traveling, including equipment, convenience, cost and when buying a gym day pass is worth it.",
             sections: [
               {
                 paragraphs: [
@@ -418,6 +430,12 @@ export const blogPosts: BlogPost[] = [
                 paragraphs: [
                   "If your hotel gym does not have what you need, DayPassGyms helps you find local gyms that offer single-entry access without requiring a long-term membership.",
                   "You can browse gyms by country and city, compare day-pass prices and check useful information such as showers, lockers and location before deciding whether leaving the hotel is worth it.",
+                ],
+                links: [
+                  {
+                    href: "/gyms",
+                    label: "Browse gyms with day passes →",
+                  },
                 ],
               },
             ],

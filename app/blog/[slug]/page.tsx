@@ -31,17 +31,20 @@ export async function generateMetadata({
   const articleUrl = `https://www.daypassgyms.com/blog/${post.slug}`;
   const imageUrl = "https://www.daypassgyms.com/og-image.png";
 
+  const metaTitle = post.metaTitle ?? post.title;
+  const metaDescription = post.metaDescription ?? post.excerpt;
+
   return {
-    title: `${post.title} | DayPassGyms`,
-    description: post.excerpt,
+    title: `${metaTitle} | DayPassGyms`,
+    description: metaDescription,
 
     alternates: {
       canonical: articleUrl,
     },
 
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
+      title: metaTitle,
+      description: metaDescription,
       url: articleUrl,
       siteName: "DayPassGyms",
       type: "article",
@@ -59,8 +62,8 @@ export async function generateMetadata({
 
     twitter: {
       card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
+      title: metaTitle,
+      description: metaDescription,
       images: [imageUrl],
     },
   };
