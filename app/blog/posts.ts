@@ -434,7 +434,7 @@ export const blogPosts: BlogPost[] = [
                 links: [
                   {
                     href: "/gyms",
-                    label: "Browse gyms with day passes →",
+                    label: "Browse gyms with day passes ",
                   },
                 ],
               },
