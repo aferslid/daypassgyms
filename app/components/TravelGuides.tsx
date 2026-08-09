@@ -10,7 +10,7 @@ type TravelGuidesProps = {
 export default function TravelGuides({
   title = "Travel fitness guides",
   description = "Practical advice for finding gyms, using day passes and training while traveling.",
-  limit = 2,
+  limit = 3,
 }: TravelGuidesProps) {
   const guides = [...blogPosts]
     .sort(
