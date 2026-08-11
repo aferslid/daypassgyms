@@ -187,7 +187,7 @@ export default async function GymsPage() {
                 className="rounded-[8px] bg-[#C8F135] px-5 py-2.5 text-[13px] font-bold text-[#0C0C0C] transition hover:opacity-90"
                 style={{ fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                Browse countries
+                Browse gym day passes by country
               </Link>
               <Link
                 href="/map"

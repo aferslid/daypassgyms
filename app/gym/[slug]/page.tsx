@@ -404,8 +404,8 @@ breadcrumbItems.push({
               </h1>
 
               <p className="mt-5 max-w-md text-[14px] leading-relaxed text-[#777]">
-                Day-pass gym information for travelers. Check price, shower
-                availability and location before you go.
+                Check the gym day pass price for {typedGym.name}. See shower
+                availability, facilities and location before you go.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2">
@@ -751,7 +751,7 @@ breadcrumbItems.push({
                       )}/${slugify(typedGym.city)}`}
                       className="text-[13px] font-bold text-[#111] hover:underline"
                     >
-                      View all gyms in {typedGym.city} →
+                      View all gym day passes in {typedGym.city} →
                     </Link>
                   </div>
 
@@ -777,7 +777,7 @@ breadcrumbItems.push({
                 <div className="mt-4 flex flex-col justify-between gap-4 rounded-[16px] border border-[#DDDDD6] bg-white p-6 md:flex-row md:items-center">
                   <div>
                     <h2 className="text-[24px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
-                      Browse gyms in{" "}
+                      Browse gym day passes in{" "}
                       {typedGym.country_full || getCountryName(typedGym.country)}
                     </h2>
 
@@ -792,7 +792,7 @@ breadcrumbItems.push({
                     )}`}
                     className="shrink-0 rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-[13px] font-bold text-white transition hover:bg-[#222]"
                   >
-                    Explore{" "}
+                    View gym day passes in{" "}
                     {typedGym.country_full || getCountryName(typedGym.country)} →
                   </Link>
                 </div>

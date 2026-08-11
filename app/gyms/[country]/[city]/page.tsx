@@ -146,7 +146,7 @@ export async function generateMetadata({ params }: CityPageProps) {
     .join(" ");
 
   const title =
-    `Day Pass Gyms in ${cityName}, ${countryName}`;
+  `Gym Day Passes in ${cityName}, ${countryName} | DayPassGyms`;
 
   const description =
   `Find gyms offering day passes in ${cityName}, ${countryName}. ` +
@@ -374,7 +374,7 @@ const priceRangeText =
             </p>
 
             <h1 className="max-w-3xl text-[56px] font-extrabold leading-[0.93] tracking-[-2.5px] text-white md:text-[72px]">
-              Gyms in<br />
+              Gym day passes in<br />
               <span className="text-[#C8F135]">{cityName}.</span>
             </h1>
 
@@ -433,7 +433,7 @@ const priceRangeText =
           </p>
 
           <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
-            All gyms in {cityName}
+            Gyms with day passes in {cityName}
           </h2>
 
           <p className="mt-1 text-[13px] text-[#999]">

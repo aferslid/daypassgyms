@@ -157,7 +157,7 @@ export async function generateMetadata({
         item.cca2.toLowerCase() === normalizedCountryCode
     )?.name.common ?? formatCountry(country);
 
-  const title = `Day Pass Gyms in ${countryName}`;
+  const title = `Gym Day Passes in ${countryName} | DayPassGyms`;
 
   const description =
   `Find the best gyms offering day passes in ${countryName}. ` +
@@ -329,7 +329,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
             </p>
 
             <h1 className="max-w-3xl text-[56px] font-extrabold leading-[0.93] tracking-[-2.5px] text-white md:text-[72px]">
-              Gyms in<br />
+              Gym day passes in<br />
               <span className="text-[#C8F135]">{countryName}.</span>
             </h1>
 
@@ -412,7 +412,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
             Gyms
           </p>
           <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
-            All gyms in {countryName}
+            All gyms with day passes in {countryName}
           </h2>
         </div>
 
