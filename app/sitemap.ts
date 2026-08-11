@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { supabase } from "@/lib/supabase";
 import { blogPosts } from "@/app/blog/posts";
+import countriesList from "world-countries";
 
 function slugify(text: string) {
   return text
@@ -12,6 +13,26 @@ function slugify(text: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function getCountryName(code: string | null) {
+  if (!code) return null;
+
+  const specialCases: Record<string, string> = {
+    SX: "Sint Maarten",
+    MF: "Saint Martin",
+    TR: "Turkey",
+  };
+
+  if (specialCases[code.toUpperCase()]) {
+    return specialCases[code.toUpperCase()];
+  }
+
+  const country = countriesList.find(
+    (c) => c.cca2.toUpperCase() === code.toUpperCase()
+  );
+
+  return country?.name.common || null;
 }
 
 async function getAllGyms() {
@@ -71,10 +92,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     urls.push({
       url: `${baseUrl}/gym/${slugify(gym.name)}-${gym.id}`,
       priority: 0.7,
-      lastModified: now,
     });
 
-    const countryName = gym.country_full || gym.country;
+    const countryName =
+      gym.country_full || getCountryName(gym.country);
 
     if (countryName) {
       countries.add(slugify(countryName));
@@ -89,7 +110,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     urls.push({
       url: `${baseUrl}/gyms/${country}`,
       priority: 0.8,
-      lastModified: now,
     });
   });
 
@@ -97,7 +117,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     urls.push({
       url: `${baseUrl}/gyms/${city}`,
       priority: 0.8,
-      lastModified: now,
     });
   });
 
