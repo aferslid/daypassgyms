@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: GymPageProps) {
 
   const { data: gym } = await supabase
     .from("spots")
-    .select("id, name, details")
+    .select("id, name, city, country_full, details")
     .eq("id", gymId)
     .single();
 
@@ -82,7 +82,11 @@ export async function generateMetadata({ params }: GymPageProps) {
     ? `View the ${price} day pass price for ${gym.name}. Check showers, lockers, Wi-Fi, facilities, location and visitor access information.`
     : `View day pass information for ${gym.name}. Check showers, lockers, Wi-Fi, facilities, location and visitor access details.`;
 
-  const title = `${gym.name} Day Pass Price`;
+  const locationParts = [gym.city, gym.country_full].filter(Boolean);
+  const locationText =
+    locationParts.length > 0 ? ` | ${locationParts.join(", ")}` : "";
+
+  const title = `${gym.name} Day Pass Price${locationText}`;
   const canonicalSlug = `${slugify(gym.name)}-${gym.id}`;
 
   const canonicalUrl =
