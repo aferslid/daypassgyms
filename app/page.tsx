@@ -158,13 +158,13 @@ export default async function Home() {
             </p>
 
             <h1 className="max-w-3xl text-[58px] font-extrabold leading-[0.93] tracking-[-2.5px] text-white md:text-[82px]">
-              Train<br />
+              Find a gym day pass<br />
               <span className="text-[#C8F135]">anywhere.</span>
             </h1>
 
             <p className="mt-5 max-w-md text-[14px] leading-relaxed text-[#777]">
-              Find gyms with day passes while traveling. Browse by country,
-              compare prices, check showers and train on your terms.
+              Find a gym day pass near you or while traveling. Browse by country,
+              compare day-pass prices, check showers and train on your terms.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">

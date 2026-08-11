@@ -172,13 +172,13 @@ export default async function GymsPage() {
               className="max-w-2xl text-[58px] font-extrabold leading-[0.93] tracking-[-2.5px] text-white md:text-[72px]"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Train<br />
-              <span className="text-[#C8F135]">anywhere.</span>
+              Gym day passes<br />
+              <span className="text-[#C8F135]">by country.</span>
             </h1>
 
             <p className="mt-5 max-w-md text-[14px] leading-relaxed text-[#777]">
-              Day-pass gyms for travelers. Browse by country, compare prices,
-              check showers — train on your terms.
+              Browse gyms offering day passes by country and city. Compare day-pass
+              prices, locations and available facilities before you train.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
