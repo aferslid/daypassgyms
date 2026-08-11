@@ -78,9 +78,11 @@ export async function generateMetadata({ params }: GymPageProps) {
       ? `${gym.details.day_pass_price} ${gym.details.currency}`
       : null;
 
+  const locationLabel = [gym.city, gym.country_full].filter(Boolean).join(", ");
+
   const description = price
-    ? `View the ${price} day pass price for ${gym.name}. Check showers, lockers, Wi-Fi, facilities, location and visitor access information.`
-    : `View day pass information for ${gym.name}. Check showers, lockers, Wi-Fi, facilities, location and visitor access details.`;
+    ? `View the ${price} day pass price for ${gym.name}${locationLabel ? ` in ${locationLabel}` : ""}. Check showers, lockers, Wi-Fi, facilities and visitor access information.`
+    : `View day pass information for ${gym.name}${locationLabel ? ` in ${locationLabel}` : ""}. Check showers, lockers, Wi-Fi, facilities and visitor access details.`;
 
   const locationParts = [gym.city, gym.country_full].filter(Boolean);
   const locationText =
