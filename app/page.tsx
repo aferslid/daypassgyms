@@ -172,7 +172,7 @@ export default async function Home() {
                 href="/gyms"
                 className="rounded-[8px] bg-[#C8F135] px-5 py-2.5 text-[13px] font-bold text-[#0C0C0C] transition hover:opacity-90"
               >
-                Browse countries
+                Find a gym day pass
               </Link>
 
               <Link
@@ -241,9 +241,9 @@ export default async function Home() {
           style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}
         >
           {[
-            ["Browse by country", "Find countries and cities with listed day-pass gyms."],
+            ["Browse gym day passes", "Find gyms with day passes by country and city."],
             ["Check the essentials", "See day-pass price, shower info and location."],
-            ["Open the map", "Use the map when you need a gym close to you."],
+            ["Open the map", "Use the map to find a gym day pass near you."],
           ].map(([title, text]) => (
             <div
               key={title}
@@ -371,7 +371,7 @@ export default async function Home() {
           },
           {
             q: "How much does a gym day pass cost?",
-            a: "It depends on the city and gym. DayPassGyms helps you compare listed day pass prices.",
+            a: "Gym day pass prices vary by country, city and gym. DayPassGyms helps you compare listed day pass prices before you visit.",
           },
           {
             q: "Do day pass gyms have showers?",

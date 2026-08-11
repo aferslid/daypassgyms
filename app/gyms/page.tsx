@@ -165,7 +165,7 @@ export default async function GymsPage() {
             <p
               className="mb-4 text-[11px] font-medium uppercase tracking-[0.12em] text-[#C8F135]"
             >
-              Global gym day-pass directory
+              Browse gyms with day passes worldwide
             </p>
 
             <h1
