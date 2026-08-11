@@ -14,7 +14,7 @@ export default function Header() {
 
       <div className="hidden items-center gap-6 text-[13px] text-[#999] md:flex">
         <Link href="/gyms" className="transition hover:text-white">
-          Explore
+          Gym day passes
         </Link>
         <Link href="/map" className="transition hover:text-white">
           Map

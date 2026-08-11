@@ -17,7 +17,7 @@ export default function Footer() {
             </div>
 
             <p className="mt-5 max-w-xs text-[13px] leading-relaxed text-[#777]">
-              Find gyms with day passes while traveling. Compare prices,
+              Find a gym day pass near you or while traveling. Compare prices,
               check showers and train anywhere.
             </p>
           </div>
@@ -29,7 +29,7 @@ export default function Footer() {
 
             <div className="space-y-3 text-[13px] text-[#777]">
               <Link href="/gyms" className="block hover:text-black">
-                Countries
+                Gym day passes
               </Link>
 
               <Link href="/map" className="block hover:text-black">
