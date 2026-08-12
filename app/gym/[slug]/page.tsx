@@ -37,7 +37,7 @@ type Gym = {
   free_trial: boolean | null;
   free_trial_duration: string | null;
   week_pass_price: number | null;
-  gender_access: string | null;
+  access_gender: string | null;
   details: {
     day_pass_price?: number | null;
     currency?: string | null;
@@ -227,7 +227,7 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const { data: gym, error } = await supabase
     .from("spots")
-    .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details, free_trial, free_trial_duration, week_pass_price, gender_access")
+    .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details, free_trial, free_trial_duration, week_pass_price, access_gender")
     .eq("id", gymId)
     .single();
 
@@ -614,20 +614,20 @@ breadcrumbItems.push({
                 </div>
               </div>
 
-              {typedGym.gender_access && (
+              {typedGym.access_gender && (
                 <div className="rounded-[12px] bg-[#F2F2F0] p-4">
                   <div className="text-[11px] text-[#999]">
                     Gym type
                   </div>
 
                   <div className="mt-1 text-[18px] font-extrabold text-[#111]">
-                    {typedGym.gender_access === "mixed"
+                    {typedGym.access_gender === "mixed"
                       ? "Mixed"
-                      : typedGym.gender_access === "women_only"
+                      : typedGym.access_gender === "women_only"
                       ? "Women only"
-                      : typedGym.gender_access === "men_only"
+                      : typedGym.access_gender === "men_only"
                       ? "Men only"
-                      : typedGym.gender_access}
+                      : typedGym.access_gender}
                   </div>
                 </div>
               )}
