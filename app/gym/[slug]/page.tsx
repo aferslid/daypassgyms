@@ -471,7 +471,7 @@ breadcrumbItems.push({
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 {typedGym.week_pass_price !== null &&
                 typedGym.week_pass_price !== undefined
-                  ? `${typedGym.week_pass_price} ${typedGym.details?.currency ?? ""}`
+                  ? `${Number(typedGym.week_pass_price).toLocaleString("en-US")} ${typedGym.details?.currency ?? ""}`
                   : "Unknown"}
               </div>
 
