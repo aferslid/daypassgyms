@@ -6,6 +6,7 @@ import L from "leaflet";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import "leaflet/dist/leaflet.css";
+import { slugify } from "@/lib/slugify";
 
 type Spot = {
   id: number;
@@ -35,17 +36,6 @@ type MapMarker = {
   country?: string | null;
 };
 
-function slugify(text: string) {
-  return text
-    .replace(/ß/g, "ss")
-    .replace(/ẞ/g, "ss")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 function formatPrice(details: Spot["details"]) {
   if (!details?.day_pass_price) return "Price unknown";

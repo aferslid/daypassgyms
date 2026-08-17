@@ -2,18 +2,7 @@ import { MetadataRoute } from "next";
 import { supabase } from "@/lib/supabase";
 import { blogPosts } from "@/app/blog/posts";
 import countriesList from "world-countries";
-
-function slugify(text: string) {
-  return text
-    .replace(/ß/g, "ss")
-    .replace(/ẞ/g, "ss")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
+import { slugify } from "@/lib/slugify";
 
 function getCountryName(code: string | null) {
   if (!code) return null;

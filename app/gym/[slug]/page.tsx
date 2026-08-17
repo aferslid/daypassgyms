@@ -11,6 +11,7 @@ import path from "path";
 import Breadcrumbs, {
   type BreadcrumbItem,
 } from "@/app/components/Breadcrumbs";
+import { slugify } from "@/lib/slugify";
 
 type GymPageProps = {
   params: Promise<{
@@ -172,18 +173,6 @@ function getFlagEmoji(countryCode: string | null) {
     .replace(/./g, (char) =>
       String.fromCodePoint(127397 + char.charCodeAt(0))
     );
-}
-
-function slugify(text: string) {
-  return text
-    .replace(/ß/g, "ss")
-    .replace(/ẞ/g, "ss")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 }
 
 function RelatedGymCard({ gym }: { gym: RelatedGym }) {

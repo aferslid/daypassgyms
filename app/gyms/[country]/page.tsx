@@ -9,6 +9,7 @@ import { permanentRedirect, notFound } from "next/navigation";
 import CitiesGrid from "@/app/components/CitiesGrid";
 import TravelGuides from "@/app/components/TravelGuides";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
+import { slugify } from "@/lib/slugify";
 
 type CountryPageProps = {
   params: Promise<{
@@ -30,17 +31,6 @@ type Gym = {
   } | null;
 };
 
-function slugify(text: string) {
-  return text
-    .replace(/ß/g, "ss")
-    .replace(/ẞ/g, "ss")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 function resolveCountryFromSlug(slug: string) {
   const normalizedSlug = slug.toLowerCase();

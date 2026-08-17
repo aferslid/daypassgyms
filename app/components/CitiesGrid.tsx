@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import CitySearch from "./CitySearch";
+import { slugify } from "@/lib/slugify";
 
 type CityEntry = [string, number];
 
@@ -12,17 +13,6 @@ type Props = {
   countrySlug: string;
 };
 
-function slugify(text: string) {
-  return text
-    .replace(/ß/g, "ss")
-    .replace(/ẞ/g, "ss")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 export default function CitiesGrid({
   cities,

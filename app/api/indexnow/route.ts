@@ -1,17 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { slugify } from "@/lib/slugify";
 
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY;
 const INDEXNOW_SECRET = process.env.INDEXNOW_SECRET;
 
-function slugify(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 export async function POST(request: NextRequest) {
   try {

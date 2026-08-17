@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import CountrySearch from "./CountrySearch";
+import { slugify } from "@/lib/slugify";
 
 type Country = {
   code: string;
@@ -12,15 +13,6 @@ type Country = {
   count: number;
 };
 
-function slugify(text: string) {
-  return text
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 function getCountrySlug(country: Country) {
   const specialCases: Record<string, string> = {
