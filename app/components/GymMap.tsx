@@ -74,18 +74,29 @@ function MapBoundsUpdater({
 }) {
   const map = useMapEvents({
     moveend: () => {
-      const b = map.getBounds();
-      setBounds({
-        north: b.getNorth(),
-        south: b.getSouth(),
-        east: b.getEast(),
-        west: b.getWest(),
-      });
+      updateMapState();
     },
     zoomend: () => {
-      setZoomLevel(map.getZoom());
+      updateMapState();
     },
   });
+
+  const updateMapState = () => {
+    const b = map.getBounds();
+
+    setBounds({
+      north: b.getNorth(),
+      south: b.getSouth(),
+      east: b.getEast(),
+      west: b.getWest(),
+    });
+
+    setZoomLevel(map.getZoom());
+  };
+
+  useEffect(() => {
+    updateMapState();
+  }, [map]);
 
   return null;
 }
@@ -94,7 +105,7 @@ export default function GymMap() {
   const mapRef = useRef<L.Map | null>(null);
 
   const [bounds, setBounds] = useState<any>(null);
-  const [zoomLevel, setZoomLevel] = useState(6);
+  const [zoomLevel, setZoomLevel] = useState(3);
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [spots, setSpots] = useState<Spot[]>([]);
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
