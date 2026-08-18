@@ -17,7 +17,13 @@ type Spot = {
   description: string | null;
   photo_url?: string | null;
   created_at?: string | null;
-  details?: Record<string, any> | null;
+  day_pass_price?: number | null;
+  currency?: string | null;
+  shower?: boolean | null;
+  locker?: boolean | null;
+  wifi?: boolean | null;
+  pool?: boolean | null;
+  google_maps_url?: string | null;
   country?: string | null;
 };
 
@@ -31,22 +37,31 @@ type MapMarker = {
   description: string | null;
   photo_url: string | null;
   point_count: number;
-  details?: Record<string, any> | null;
+  day_pass_price?: number | null;
+  currency?: string | null;
+  shower?: boolean | null;
+  locker?: boolean | null;
+  wifi?: boolean | null;
+  pool?: boolean | null;
+  google_maps_url?: string | null;
   created_at?: string | null;
   country?: string | null;
 };
 
 
-function formatPrice(details: Spot["details"]) {
-  if (!details?.day_pass_price) return "Price unknown";
-  return `${new Intl.NumberFormat().format(details.day_pass_price)} ${
-    details.currency || ""
+function formatPrice(spot: Spot) {
+  if (spot.day_pass_price === null || spot.day_pass_price === undefined) {
+    return "Price unknown";
+  }
+
+  return `${new Intl.NumberFormat().format(spot.day_pass_price)} ${
+    spot.currency || ""
   }`;
 }
 
-function formatShower(details: Spot["details"]) {
-  if (details?.shower === true) return "Shower available";
-  if (details?.shower === false) return "No shower";
+function formatShower(spot: Spot) {
+  if (spot.shower === true) return "Shower available";
+  if (spot.shower === false) return "No shower";
   return "Shower unknown";
 }
 
@@ -92,13 +107,13 @@ export default function GymMap() {
 
       setIsLoading(true);
 
-      const { data, error } = await supabase.rpc("get_map_markers", {
+      const { data, error } = await supabase.rpc("get_map_markers_v2", {
         min_lat: bounds.south,
         min_lng: bounds.west,
         max_lat: bounds.north,
         max_lng: bounds.east,
         zoom_level: zoomLevel,
-        spot_type: "gym",
+        spot_type: null,
       });
 
       if (error) {
@@ -120,7 +135,13 @@ export default function GymMap() {
           lng: m.lng,
           description: m.description,
           photo_url: m.photo_url,
-          details: m.details,
+          day_pass_price: m.day_pass_price,
+          currency: m.currency,
+          shower: m.shower,
+          locker: m.locker,
+          wifi: m.wifi,
+          pool: m.pool,
+          google_maps_url: m.google_maps_url,
           created_at: m.created_at,
           country: m.country,
         }));
@@ -321,11 +342,11 @@ export default function GymMap() {
 
           <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
             <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
-              💰 {formatPrice(selectedSpot.details)}
+              💰 {formatPrice(selectedSpot)}
             </span>
 
             <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
-              🚿 {formatShower(selectedSpot.details)}
+              🚿 {formatShower(selectedSpot)}
             </span>
           </div>
 
@@ -346,7 +367,10 @@ export default function GymMap() {
             </Link>
 
             <a
-              href={`https://www.google.com/maps?q=${selectedSpot.lat},${selectedSpot.lng}`}
+              href={
+                selectedSpot.google_maps_url ||
+                `https://www.google.com/maps?q=${selectedSpot.lat},${selectedSpot.lng}`
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-[10px] border border-[#EBEBEB] px-4 py-3 text-center text-[13px] font-bold text-[#111]"
