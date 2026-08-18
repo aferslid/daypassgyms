@@ -606,7 +606,7 @@ breadcrumbItems.push({
               {typedGym.access_gender && (
                 <div className="rounded-[12px] bg-[#F2F2F0] p-4">
                   <div className="text-[11px] text-[#999]">
-                    Gym type (men/women/mixed)
+                    Gender (men/women/mixed)
                   </div>
 
                   <div className="mt-1 text-[18px] font-extrabold text-[#111]">
