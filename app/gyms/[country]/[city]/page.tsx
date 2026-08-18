@@ -19,15 +19,14 @@ type CityPageProps = {
 type Gym = {
   id: number;
   name: string;
+  type: string | null;
   description: string | null;
   country: string | null;
   city: string | null;
   photo_url: string | null;
-  details: {
-    day_pass_price?: number | null;
-    currency?: string | null;
-    shower?: boolean | null;
-  } | null;
+  day_pass_price: number | null;
+  currency: string | null;
+  shower: boolean | null;
 };
 
 
@@ -93,23 +92,19 @@ function getCountryCodeFromSlug(slug: string) {
   return country?.cca2.toUpperCase() || null;
 }
 
-function formatPrice(details: Gym["details"]) {
-  if (!details?.day_pass_price) return "Price unknown";
-
-  // Si c'est un nombre
-  if (!isNaN(Number(details.day_pass_price))) {
-    return `${new Intl.NumberFormat().format(Number(details.day_pass_price))} ${
-      details.currency || ""
-    }`;
+function formatPrice(gym: Gym) {
+  if (gym.day_pass_price === null || gym.day_pass_price === undefined) {
+    return "Price unknown";
   }
 
-  // Si c'est du texte ("One-time free trial", "1-day free", etc.)
-  return details.day_pass_price;
+  return `${new Intl.NumberFormat().format(gym.day_pass_price)} ${
+    gym.currency || ""
+  }`;
 }
 
-function formatShower(details: Gym["details"]) {
-  if (details?.shower === true) return "🚿 Shower";
-  if (details?.shower === false) return "No shower info";
+function formatShower(gym: Gym) {
+  if (gym.shower === true) return "🚿 Shower";
+  if (gym.shower === false) return "No shower";
   return "Shower unknown";
 }
 
@@ -188,9 +183,10 @@ async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
   while (true) {
     const { data, error } = await supabase
       .from("spots")
-      .select("id, name, description, country, city, photo_url, details")
+      .select(
+        "id, name, type, description, country, city, photo_url, day_pass_price, currency, shower"
+      )
       .eq("country", countryCode)
-      .ilike("type", "%gym%")
       .order("name")
       .range(from, from + pageSize - 1);
 
@@ -284,8 +280,8 @@ export default async function CityPage({ params }: CityPageProps) {
 
   const priceRanges = Object.entries(
   (gyms || []).reduce((acc, gym) => {
-    const price = Number(gym.details?.day_pass_price);
-    const currency = gym.details?.currency || "Unknown";
+    const price = Number(gym.day_pass_price);
+    const currency = gym.currency || "Unknown";
 
     if (isNaN(price) || price <= 0) return acc;
 
@@ -460,11 +456,11 @@ const priceRangeText =
 
               <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
                 <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
-                  💰 {formatPrice(gym.details)}
+                  💰 {formatPrice(gym)}
                 </span>
 
                 <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
-                  {formatShower(gym.details)}
+                  {formatShower(gym)}
                 </span>
               </div>
 

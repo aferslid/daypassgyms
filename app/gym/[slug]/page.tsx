@@ -22,6 +22,7 @@ type GymPageProps = {
 type Gym = {
   id: number;
   name: string;
+  type: string | null;
   description: string | null;
   country: string | null;
   city: string | null;
@@ -35,27 +36,32 @@ type Gym = {
   website_url: string | null;
   google_maps_url: string | null;
   country_full: string | null;
+
+  day_pass_price: number | null;
+  day_pass_note: string | null;
+  currency: string | null;
+  shower: boolean | null;
+  pool: boolean | null;
+  wifi: boolean | null;
+  locker: boolean | null;
+
   free_trial: boolean | null;
   free_trial_duration: string | null;
   week_pass_price: number | null;
   access_gender: string | null;
-  details: {
-    day_pass_price?: number | null;
-    currency?: string | null;
-    shower?: boolean | null;
-    pool: boolean | null;
-    wifi: boolean | null;
-    locker: boolean | null;
-  } | null;
 };
 
 type RelatedGym = {
   id: number;
   name: string;
+  type: string | null;
   country: string | null;
   country_full: string | null;
   city: string | null;
-  details: Gym["details"];
+  day_pass_price: number | null;
+  day_pass_note: string | null;
+  currency: string | null;
+  shower: boolean | null;
 };
 
 export async function generateMetadata({ params }: GymPageProps) {
@@ -64,7 +70,9 @@ export async function generateMetadata({ params }: GymPageProps) {
 
   const { data: gym } = await supabase
     .from("spots")
-    .select("id, name, city, country_full, details")
+    .select(
+      "id, name, city, country_full, day_pass_price, day_pass_note, currency"
+    )
     .eq("id", gymId)
     .single();
 
@@ -76,9 +84,9 @@ export async function generateMetadata({ params }: GymPageProps) {
   }
 
   const price =
-    gym.details?.day_pass_price && gym.details?.currency
-      ? `${gym.details.day_pass_price} ${gym.details.currency}`
-      : null;
+  gym.day_pass_price !== null && gym.day_pass_price !== undefined
+    ? `${gym.day_pass_price} ${gym.currency || ""}`.trim()
+    : gym.day_pass_note || null;
 
   const locationLabel = [gym.city, gym.country_full].filter(Boolean).join(", ");
 
@@ -125,23 +133,25 @@ function getIdFromSlug(slug: string) {
   return Number(parts[parts.length - 1]);
 }
 
-function formatPrice(details: Gym["details"]) {
-  if (!details?.day_pass_price) return "Price unknown";
-
-  // Si c'est un nombre
-  if (!isNaN(Number(details.day_pass_price))) {
-    return `${new Intl.NumberFormat().format(Number(details.day_pass_price))} ${
-      details.currency || ""
-    }`;
+function formatPrice(
+  gym: Pick<Gym, "day_pass_price" | "day_pass_note" | "currency">
+) {
+  if (gym.day_pass_price !== null && gym.day_pass_price !== undefined) {
+    return `${new Intl.NumberFormat().format(gym.day_pass_price)} ${
+      gym.currency || ""
+    }`.trim();
   }
 
-  // Si c'est du texte ("One-time free trial", "1-day free", etc.)
-  return details.day_pass_price;
+  if (gym.day_pass_note) {
+    return gym.day_pass_note;
+  }
+
+  return "Price unknown";
 }
 
-function formatShower(details: Gym["details"]) {
-  if (details?.shower === true) return "Yes";
-  if (details?.shower === false) return "No";
+function formatShower(gym: Pick<Gym, "shower">) {
+  if (gym.shower === true) return "Yes";
+  if (gym.shower === false) return "No";
   return "Unknown";
 }
 
@@ -191,11 +201,11 @@ function RelatedGymCard({ gym }: { gym: RelatedGym }) {
 
       <div className="mt-5 flex flex-wrap gap-2">
         <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#555]">
-          {formatPrice(gym.details)}
+          {formatPrice(gym)}
         </span>
 
         <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#555]">
-          Shower: {formatShower(gym.details)}
+          Shower: {formatShower(gym)}
         </span>
       </div>
 
@@ -216,7 +226,9 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const { data: gym, error } = await supabase
     .from("spots")
-    .select("id, name, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, details, free_trial, free_trial_duration, week_pass_price, access_gender")
+    .select(
+      "id, name, type, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender"
+    )
     .eq("id", gymId)
     .single();
 
@@ -326,14 +338,15 @@ breadcrumbItems.push({
       hasMap: typedGym.google_maps_url,
     }),
 
-    ...(typedGym.details?.day_pass_price &&
-    typedGym.details?.currency
+    ...(typedGym.day_pass_price !== null &&
+    typedGym.day_pass_price !== undefined &&
+    typedGym.currency
       ? {
           makesOffer: {
             "@type": "Offer",
             name: "Gym day pass",
-            price: typedGym.details.day_pass_price,
-            priceCurrency: typedGym.details.currency,
+            price: typedGym.day_pass_price,
+            priceCurrency: typedGym.currency,
             url: gymUrl,
             availability: "https://schema.org/InStock",
           },
@@ -346,8 +359,9 @@ breadcrumbItems.push({
   if (typedGym.country && typedGym.city) {
     const { data: cityResults, error: cityError } = await supabase
       .from("spots")
-      .select("id, name, country, country_full, city, details")
-      .ilike("type", "%gym%")
+      .select(
+        "id, name, type, country, country_full, city, day_pass_price, day_pass_note, currency, shower"
+      )
       .eq("country", typedGym.country)
       .ilike("city", typedGym.city)
       .neq("id", typedGym.id)
@@ -406,11 +420,11 @@ breadcrumbItems.push({
 
               <div className="mt-6 flex flex-wrap gap-2">
                 <span className="rounded-full bg-[#C8F135] px-4 py-2 text-[12px] font-bold text-[#0C0C0C]">
-                  💰 {formatPrice(typedGym.details)}
+                  💰 formatPrice(typedGym)
                 </span>
 
                 <span className="rounded-full border border-[#2a2a2a] bg-white/5 px-4 py-2 text-[12px] font-bold text-[#aaa]">
-                  🚿 {formatShower(typedGym.details)}
+                  🚿 formatShower(typedGym)
                 </span>
 
                 {typedGym.city && (
@@ -449,7 +463,7 @@ breadcrumbItems.push({
           <div className="mx-auto max-w-7xl divide-x divide-[#1e1e1e] px-0 md:flex">
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-[#C8F135]">
-                {formatPrice(typedGym.details)}
+                {formatPrice(typedGym)}
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 day pass
@@ -460,7 +474,7 @@ breadcrumbItems.push({
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
                 {typedGym.week_pass_price !== null &&
                 typedGym.week_pass_price !== undefined
-                  ? `${Number(typedGym.week_pass_price).toLocaleString("en-US")} ${typedGym.details?.currency ?? ""}`
+                  ? `${Number(typedGym.week_pass_price).toLocaleString("en-US")} ${typedGym.currency ?? ""}`
                   : "Unknown"}
               </div>
 
@@ -489,7 +503,7 @@ breadcrumbItems.push({
 
             <div className="flex-1 px-6 py-4">
               <div className="text-[26px] font-extrabold leading-none tracking-[-1px] text-white">
-                {formatShower(typedGym.details)}
+                {formatShower(typedGym)}
               </div>
               <div className="mt-1 text-[11px] tracking-[0.04em] text-[#888]">
                 showers
@@ -515,14 +529,14 @@ breadcrumbItems.push({
               <div className="rounded-[12px] bg-[#F2F2F0] p-4">
                 <div className="text-[11px] text-[#999]">Day pass</div>
                 <div className="mt-1 text-[18px] font-extrabold text-[#111]">
-                  {formatPrice(typedGym.details)}
+                  {formatPrice(typedGym)}
                 </div>
               </div>
 
               <div className="rounded-[12px] bg-[#F2F2F0] p-4">
                 <div className="text-[11px] text-[#999]">Shower</div>
                 <div className="mt-1 text-[18px] font-extrabold text-[#111]">
-                  {formatShower(typedGym.details)}
+                  {formatShower(typedGym)}
                 </div>
               </div>
 
@@ -567,26 +581,26 @@ breadcrumbItems.push({
                 </div>
               )}
 
-              {typedGym.details?.pool != null && typedGym.details?.pool !== undefined && (
+              {typedGym.pool !== null && typedGym.pool !== undefined && (
                 <div className="rounded-[12px] bg-[#F2F2F0] p-4">
                   <div className="text-[11px] text-[#999]">
                     Pool
                   </div>
 
                   <div className="mt-1 text-[18px] font-extrabold text-[#111]">
-                    {typedGym.details?.pool ? "Available" : "Not available"}
+                    {typedGym.pool ? "Available" : "Not available"}
                   </div>
                 </div>
               )}
 
-              {typedGym.details?.locker !== null && typedGym.details?.locker !== undefined && (
+              {typedGym.locker !== null && typedGym.locker !== undefined && (
                 <div className="rounded-[12px] bg-[#F2F2F0] p-4">
                   <div className="text-[11px] text-[#999]">
                     Locker
                   </div>
 
                   <div className="mt-1 text-[18px] font-extrabold text-[#111]">
-                    {typedGym.details?.locker ? "Available" : "Not available"}
+                    {typedGym.locker ? "Available" : "Not available"}
                   </div>
                 </div>
               )}
@@ -595,9 +609,9 @@ breadcrumbItems.push({
                 <div className="text-[11px] text-[#999]">Wi-Fi</div>
 
                 <div className="mt-1 text-[18px] font-extrabold text-[#111]">
-                  {typedGym.details?.wifi === true
+                  {typedGym.wifi === true
                     ? "Available"
-                    : typedGym.details?.wifi === false
+                    : typedGym.wifi === false
                     ? "Not available"
                     : "Unknown"}
                 </div>
