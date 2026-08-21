@@ -420,11 +420,11 @@ breadcrumbItems.push({
 
               <div className="mt-6 flex flex-wrap gap-2">
                 <span className="rounded-full bg-[#C8F135] px-4 py-2 text-[12px] font-bold text-[#0C0C0C]">
-                  💰 formatPrice(typedGym)
+                  💰 {formatPrice(typedGym)}
                 </span>
 
                 <span className="rounded-full border border-[#2a2a2a] bg-white/5 px-4 py-2 text-[12px] font-bold text-[#aaa]">
-                  🚿 formatShower(typedGym)
+                  🚿 {formatShower(typedGym)}
                 </span>
 
                 {typedGym.city && (
