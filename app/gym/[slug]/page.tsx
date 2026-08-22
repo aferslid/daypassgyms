@@ -155,6 +155,29 @@ function formatShower(gym: Pick<Gym, "shower">) {
   return "Unknown";
 }
 
+function formatGymType(type: string | null) {
+  if (!type) return null;
+
+  const labels: Record<string, string> = {
+    gym: "Gym",
+    crossfit: "CrossFit",
+    functional: "Functional training",
+    boxing: "Boxing",
+    yoga: "Yoga",
+    calisthenics: "Calisthenics",
+    martial_arts: "Martial arts",
+  };
+
+  const normalized = type.trim().toLowerCase();
+
+  return (
+    labels[normalized] ||
+    type
+      .replace(/[_-]/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  );
+}
+
 function getCountryName(code: string | null) {
   if (!code) return "";
 
@@ -419,6 +442,12 @@ breadcrumbItems.push({
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2">
+
+                {typedGym.type && (
+                  <span className="rounded-full border border-[#C8F135]/30 bg-[#C8F135]/10 px-4 py-2 text-[12px] font-bold text-[#C8F135]">
+                    🏋️ {formatGymType(typedGym.type)}
+                  </span>
+                )}
                 <span className="rounded-full bg-[#C8F135] px-4 py-2 text-[12px] font-bold text-[#0C0C0C]">
                   💰 {formatPrice(typedGym)}
                 </span>
