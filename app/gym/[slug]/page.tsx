@@ -62,6 +62,8 @@ type RelatedGym = {
   day_pass_note: string | null;
   currency: string | null;
   shower: boolean | null;
+  week_pass_price: number | null;
+  free_trial: boolean | null;
 };
 
 export async function generateMetadata({ params }: GymPageProps) {
@@ -383,7 +385,7 @@ breadcrumbItems.push({
     const { data: cityResults, error: cityError } = await supabase
       .from("spots")
       .select(
-        "id, name, type, country, country_full, city, day_pass_price, day_pass_note, currency, shower"
+        "id, name, type, country, country_full, city, day_pass_price, day_pass_note, currency, shower, week_pass_price, free_trial"
       )
       .eq("country", typedGym.country)
       .ilike("city", typedGym.city)
