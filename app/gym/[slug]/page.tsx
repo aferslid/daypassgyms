@@ -225,13 +225,36 @@ function RelatedGymCard({ gym }: { gym: RelatedGym }) {
       </h3>
 
       <div className="mt-5 flex flex-wrap gap-2">
+
+        {gym.type && (
+          <span className="rounded-full bg-[#EAF5B5] px-3 py-1 text-[11px] font-bold text-[#465600]">
+            {formatGymType(gym.type)}
+          </span>
+        )}
+
         <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#555]">
-          {formatPrice(gym)}
+          Day: {formatPrice(gym)}
         </span>
+
+        {gym.week_pass_price !== null &&
+          gym.week_pass_price !== undefined && (
+            <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#555]">
+              Week: {Number(gym.week_pass_price).toLocaleString("en-US")}{" "}
+              {gym.currency || ""}
+            </span>
+          )}
+
+        {gym.free_trial !== null &&
+          gym.free_trial !== undefined && (
+            <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#555]">
+              Trial: {gym.free_trial ? "Yes" : "No"}
+            </span>
+          )}
 
         <span className="rounded-full bg-white px-3 py-1 text-[11px] font-bold text-[#555]">
           Shower: {formatShower(gym)}
         </span>
+
       </div>
 
       <p className="mt-5 text-[12px] font-bold text-[#111]">
