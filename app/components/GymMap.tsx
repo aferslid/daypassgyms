@@ -25,6 +25,8 @@ type Spot = {
   pool?: boolean | null;
   google_maps_url?: string | null;
   country?: string | null;
+  week_pass_price?: number | null;
+  free_trial?: boolean | null;
 };
 
 type MapMarker = {
@@ -46,6 +48,8 @@ type MapMarker = {
   google_maps_url?: string | null;
   created_at?: string | null;
   country?: string | null;
+  week_pass_price?: number | null;
+  free_trial?: boolean | null;
 };
 
 
@@ -155,6 +159,8 @@ export default function GymMap() {
           google_maps_url: m.google_maps_url,
           created_at: m.created_at,
           country: m.country,
+          week_pass_price: m.week_pass_price,
+          free_trial: m.free_trial,
         }));
 
       setSpots(realSpots);
@@ -343,9 +349,9 @@ export default function GymMap() {
             ×
           </button>
 
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-            Gym
-          </p>
+          {selectedSpot.type
+            ? selectedSpot.type.replace(/[_-]/g, " ")
+            : "Gym"}
 
           <h2 className="mt-1 pr-8 text-[20px] font-extrabold tracking-[-0.5px] text-[#111]">
             {selectedSpot.name}
@@ -353,12 +359,26 @@ export default function GymMap() {
 
           <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
             <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
-              💰 {formatPrice(selectedSpot)}
+              💰 Day: {formatPrice(selectedSpot)}
             </span>
+
+            {selectedSpot.week_pass_price !== null &&
+              selectedSpot.week_pass_price !== undefined && (
+                <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
+                  Week: {Number(selectedSpot.week_pass_price).toLocaleString("en-US")}{" "}
+                  {selectedSpot.currency || ""}
+                </span>
+              )}
 
             <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
               🚿 {formatShower(selectedSpot)}
             </span>
+
+            {selectedSpot.free_trial === true && (
+              <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
+                🎟️ Free trial
+              </span>
+            )}
           </div>
 
           {selectedSpot.photo_url && (
