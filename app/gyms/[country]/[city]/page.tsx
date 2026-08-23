@@ -108,6 +108,28 @@ function formatShower(gym: Gym) {
   return "Shower unknown";
 }
 
+function formatGymType(type: string | null) {
+  if (!type) return null;
+
+  const labels: Record<string, string> = {
+    gym: "Gym",
+    crossfit: "CrossFit",
+    functional: "Functional training",
+    boxing: "Boxing",
+    yoga: "Yoga",
+    calisthenics: "Calisthenics",
+    martial_arts: "Martial arts",
+  };
+
+  const normalized = type.trim().toLowerCase();
+
+  return (
+    labels[normalized] ||
+    type
+      .replace(/[_-]/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  );
+}
 
 export async function generateMetadata({ params }: CityPageProps) {
   const { country, city } = await params;
@@ -439,6 +461,12 @@ const priceRangeText =
               className="group relative overflow-hidden rounded-[14px] border border-[#EBEBEB] bg-white p-4 transition duration-150 hover:-translate-y-0.5 hover:border-[#C8F135]"
             >
               <span className="absolute inset-y-0 left-0 w-[3px] bg-[#C8F135] opacity-0 transition-opacity group-hover:opacity-100" />
+
+              {gym.type && (
+                <span className="mb-2 inline-flex rounded-full bg-[#EEF6C8] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-[#536600]">
+                  {formatGymType(gym.type)}
+                </span>
+              )}
 
               <h3 className="pr-10 text-[16px] font-extrabold tracking-[-0.4px] text-[#111]">
                 {gym.name}
