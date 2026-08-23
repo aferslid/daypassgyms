@@ -7,6 +7,10 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import "leaflet/dist/leaflet.css";
 import { slugify } from "@/lib/slugify";
+import {
+  formatGymType,
+  getGymTypeBadgeClass,
+} from "@/lib/gymType";
 
 type Spot = {
   id: number;
@@ -349,9 +353,11 @@ export default function GymMap() {
             ×
           </button>
 
-          {selectedSpot.type
-            ? selectedSpot.type.replace(/[_-]/g, " ")
-            : "Gym"}
+          <span
+            className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${getGymTypeBadgeClass(selectedSpot.type)}`}
+          >
+            {formatGymType(selectedSpot.type)}
+          </span>
 
           <h2 className="mt-1 pr-8 text-[20px] font-extrabold tracking-[-0.5px] text-[#111]">
             {selectedSpot.name}
