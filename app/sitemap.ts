@@ -33,7 +33,6 @@ async function getAllGyms() {
     const { data, error } = await supabase
       .from("spots")
       .select("id,name,country,country_full,city")
-      .ilike("type", "%gym%")
       .order("id")
       .range(from, from + pageSize - 1);
 

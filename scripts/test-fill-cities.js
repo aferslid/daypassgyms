@@ -1,7 +1,10 @@
+const { loadEnvConfig } = require("@next/env");
+loadEnvConfig(process.cwd());
+
 const { createClient } = require("@supabase/supabase-js");
 
-const supabaseUrl = "https://ffcpucpunnsjdhxxwwae.supabase.co";
-const supabaseServiceKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmY3B1Y3B1bm5zamRoeHh3d2FlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDU1NTYxMSwiZXhwIjoyMDkwMTMxNjExfQ.q5h_MjDYq83I2c4raFHpaxnrd1Trwo0qfr9qBooDaII";
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SECRET_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -35,7 +38,6 @@ async function main() {
   const { data: gyms, error } = await supabase
     .from("spots")
     .select("id, name, lat, lng, country, city")
-    .ilike("type", "gym")
     .is("city", null)
     .not("lat", "is", null)
     .not("lng", "is", null)

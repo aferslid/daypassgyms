@@ -30,7 +30,7 @@ const SUPABASE_URL =
   process.env.SUPABASE_URL;
 
 const SUPABASE_KEY =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ??
+  process.env.SUPABASE_SECRET_KEY ??
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const INDEXNOW_KEY = process.env.INDEXNOW_KEY;
@@ -49,7 +49,7 @@ if (!SUPABASE_URL) {
 
 if (!SUPABASE_KEY) {
   throw new Error(
-    "Missing SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY."
+    "Missing SUPABASE_SECRET_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY."
   );
 }
 

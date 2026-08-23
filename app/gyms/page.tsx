@@ -75,7 +75,6 @@ async function fetchAllSpots(): Promise<any[]> {
     const { data, error } = await supabase
       .from("spots")
       .select("country, city")
-      .ilike("type", "%gym%")
       .not("country", "is", null)
       .order("id", { ascending: true })
       .range(from, from + pageSize - 1);

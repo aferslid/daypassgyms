@@ -54,7 +54,6 @@ async function fetchAll(select: string): Promise<any[]> {
     const { data, error } = await supabase
       .from("spots")
       .select(select)
-      .ilike("type", "%gym%")
       .order("id", { ascending: true })
       .range(from, from + pageSize - 1);
 
@@ -73,8 +72,7 @@ async function fetchAll(select: string): Promise<any[]> {
 export default async function Home() {
   const { count: totalGyms } = await supabase
     .from("spots")
-    .select("*", { count: "exact", head: true })
-    .ilike("type", "%gym%");
+    .select("*", { count: "exact", head: true });
 
   const countriesData = (await fetchAll("country"))
   .filter((row) => row.country);
