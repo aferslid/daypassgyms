@@ -114,6 +114,7 @@ function formatGymType(type: string | null) {
   const labels: Record<string, string> = {
     gym: "Gym",
     crossfit: "CrossFit",
+    hyrox: "HYROX",
     functional: "Functional training",
     boxing: "Boxing",
     yoga: "Yoga",
@@ -129,6 +130,20 @@ function formatGymType(type: string | null) {
       .replace(/[_-]/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase())
   );
+}
+
+function getGymTypeBadgeClass(type: string | null) {
+  const normalized = (type || "gym").trim().toLowerCase();
+
+  const styles: Record<string, string> = {
+    gym: "bg-[#EEF6C8] text-[#536600]",
+    crossfit: "bg-[#FFE1DC] text-[#A52A1A]",
+    hyrox: "bg-[#DCEBFF] text-[#1556A8]",
+    functional: "bg-[#EDE3FF] text-[#6941A5]",
+    boxing: "bg-[#FFE7C2] text-[#9A5200]",
+  };
+
+  return styles[normalized] || styles.gym;
 }
 
 export async function generateMetadata({ params }: CityPageProps) {
@@ -463,7 +478,9 @@ const priceRangeText =
               <span className="absolute inset-y-0 left-0 w-[3px] bg-[#C8F135] opacity-0 transition-opacity group-hover:opacity-100" />
 
               {gym.type && (
-                <span className="mb-2 inline-flex rounded-full bg-[#EEF6C8] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] text-[#536600]">
+                <span
+                  className={`mb-2 inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.08em] ${getGymTypeBadgeClass(gym.type)}`}
+                >
                   {formatGymType(gym.type)}
                 </span>
               )}
