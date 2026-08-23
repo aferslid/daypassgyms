@@ -453,8 +453,8 @@ breadcrumbItems.push({
             <div>
               <Breadcrumbs light items={breadcrumbItems} />
 
-              <p className="mb-4 mt-8 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-                Gym profile
+              <p className="mb-4 mt-8 text-[13px] font-extrabold uppercase tracking-[0.12em] text-[#C8F135]">
+                {formatGymType(typedGym.type) || "Gym"}
               </p>
 
               <h1 className="max-w-3xl text-[48px] font-extrabold leading-[0.95] tracking-[-2px] text-white md:text-[68px]">
@@ -468,11 +468,6 @@ breadcrumbItems.push({
 
               <div className="mt-6 flex flex-wrap gap-2">
 
-                {typedGym.type && (
-                  <span className="rounded-full border border-[#C8F135]/30 bg-[#C8F135]/10 px-4 py-2 text-[12px] font-bold text-[#C8F135]">
-                    🏋️ {formatGymType(typedGym.type)}
-                  </span>
-                )}
                 <span className="rounded-full bg-[#C8F135] px-4 py-2 text-[12px] font-bold text-[#0C0C0C]">
                   💰 {formatPrice(typedGym)}
                 </span>
