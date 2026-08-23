@@ -8,6 +8,10 @@ import { notFound, permanentRedirect } from "next/navigation";
 import TravelGuides from "@/app/components/TravelGuides";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
 import { slugify } from "@/lib/slugify";
+import {
+  formatGymType,
+  getGymTypeBadgeClass,
+} from "@/lib/gymType";
 
 type CityPageProps = {
   params: Promise<{
@@ -106,44 +110,6 @@ function formatShower(gym: Gym) {
   if (gym.shower === true) return "🚿 Shower";
   if (gym.shower === false) return "No shower";
   return "Shower unknown";
-}
-
-function formatGymType(type: string | null) {
-  if (!type) return null;
-
-  const labels: Record<string, string> = {
-    gym: "Gym",
-    crossfit: "CrossFit",
-    hyrox: "HYROX",
-    functional: "Functional training",
-    boxing: "Boxing",
-    yoga: "Yoga",
-    calisthenics: "Calisthenics",
-    martial_arts: "Martial arts",
-  };
-
-  const normalized = type.trim().toLowerCase();
-
-  return (
-    labels[normalized] ||
-    type
-      .replace(/[_-]/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase())
-  );
-}
-
-function getGymTypeBadgeClass(type: string | null) {
-  const normalized = (type || "gym").trim().toLowerCase();
-
-  const styles: Record<string, string> = {
-    gym: "bg-[#EEF6C8] text-[#536600]",
-    crossfit: "bg-[#FFE1DC] text-[#A52A1A]",
-    hyrox: "bg-[#DCEBFF] text-[#1556A8]",
-    functional: "bg-[#EDE3FF] text-[#6941A5]",
-    boxing: "bg-[#FFE7C2] text-[#9A5200]",
-  };
-
-  return styles[normalized] || styles.gym;
 }
 
 export async function generateMetadata({ params }: CityPageProps) {
