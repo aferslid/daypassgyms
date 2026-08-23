@@ -49,7 +49,7 @@ if (!SUPABASE_URL) {
 
 if (!SUPABASE_KEY) {
   throw new Error(
-    "Missing SUPABASE_SECRET_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY."
+    "Missing SUPABASE_SECRET_KEY"
   );
 }
 
