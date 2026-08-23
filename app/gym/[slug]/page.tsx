@@ -12,6 +12,10 @@ import Breadcrumbs, {
   type BreadcrumbItem,
 } from "@/app/components/Breadcrumbs";
 import { slugify } from "@/lib/slugify";
+import {
+  formatGymType,
+  getGymTypeBadgeClass,
+} from "@/lib/gymType";
 
 type GymPageProps = {
   params: Promise<{
@@ -157,28 +161,6 @@ function formatShower(gym: Pick<Gym, "shower">) {
   return "Unknown";
 }
 
-function formatGymType(type: string | null) {
-  if (!type) return null;
-
-  const labels: Record<string, string> = {
-    gym: "Gym",
-    crossfit: "CrossFit",
-    functional: "Functional training",
-    boxing: "Boxing",
-    yoga: "Yoga",
-    calisthenics: "Calisthenics",
-    martial_arts: "Martial arts",
-  };
-
-  const normalized = type.trim().toLowerCase();
-
-  return (
-    labels[normalized] ||
-    type
-      .replace(/[_-]/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase())
-  );
-}
 
 function getCountryName(code: string | null) {
   if (!code) return "";
@@ -227,7 +209,9 @@ function RelatedGymCard({ gym }: { gym: RelatedGym }) {
       <div className="mt-5 flex flex-wrap gap-2">
 
         {gym.type && (
-          <span className="rounded-full bg-[#EAF5B5] px-3 py-1 text-[11px] font-bold text-[#465600]">
+          <span
+            className={`rounded-full px-3 py-1 text-[11px] font-bold ${getGymTypeBadgeClass(gym.type)}`}
+          >
             {formatGymType(gym.type)}
           </span>
         )}
@@ -453,9 +437,13 @@ breadcrumbItems.push({
             <div>
               <Breadcrumbs light items={breadcrumbItems} />
 
-              <p className="mb-4 mt-8 text-[13px] font-extrabold uppercase tracking-[0.12em] text-[#C8F135]">
-                {formatGymType(typedGym.type) || "Gym"}
-              </p>
+              <div className="mb-4 mt-8">
+                <span
+                  className={`inline-flex rounded-full px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.1em] ${getGymTypeBadgeClass(typedGym.type)}`}
+                >
+                  {formatGymType(typedGym.type)}
+                </span>
+              </div>
 
               <h1 className="max-w-3xl text-[48px] font-extrabold leading-[0.95] tracking-[-2px] text-white md:text-[68px]">
                 {typedGym.name}
