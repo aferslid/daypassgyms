@@ -248,6 +248,14 @@ export default async function CountryPage({ params }: CountryPageProps) {
     }, {} as Record<string, number>)
   ).sort((a, b) => b[1] - a[1]);
 
+  const displayedGyms =
+  gyms.length <= 18
+    ? gyms
+    : cities
+        .slice(0, 12)
+        .map(([city]) => gyms.find((gym) => gym.city === city))
+        .filter((gym): gym is Gym => Boolean(gym));
+
   const priceRanges = Object.entries(
     (gyms || []).reduce((acc, gym) => {
       const price = Number(gym.day_pass_price);
@@ -416,15 +424,24 @@ export default async function CountryPage({ params }: CountryPageProps) {
             Gyms
           </p>
           <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.5px] text-[#0C0C0C]">
-            All gyms with day passes in {countryName}
+            {gyms.length <= 18
+              ? `Gyms with day passes in ${countryName}`
+              : `Explore gyms in ${countryName}`}
           </h2>
+
+          {gyms.length > 18 && (
+            <p className="mt-2 text-[13px] text-[#999]">
+              Showing gyms across popular cities. Choose a city above to explore all{" "}
+              {gyms.length} listed gyms in {countryName}.
+            </p>
+          )}
         </div>
 
         <div
           className="grid gap-3"
           style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
         >
-          {(gyms || []).map((gym: Gym) => (
+          {displayedGyms.map((gym: Gym) => (
             <Link
               key={gym.id}
               href={`/gym/${slugify(gym.name)}-${gym.id}`}
