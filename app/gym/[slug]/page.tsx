@@ -285,6 +285,12 @@ export default async function GymPage({ params }: GymPageProps) {
 
   const typedGym = gym as Gym;
 
+  const isFreeTrialOnly =
+  typedGym.day_pass_note === "Free trial only" ||
+  (typedGym.free_trial === true &&
+    (typedGym.day_pass_price === null ||
+      typedGym.day_pass_price === undefined));
+
   const canonicalSlug = `${slugify(typedGym.name)}-${typedGym.id}`;
 
   if (slug !== canonicalSlug) {
@@ -465,8 +471,9 @@ breadcrumbItems.push({
               </h1>
 
               <p className="mt-5 max-w-md text-[14px] leading-relaxed text-[#777]">
-                Check the gym day pass price for {typedGym.name}. See shower
-                availability, facilities and location before you go.
+                {isFreeTrialOnly
+                  ? `Check free trial access for ${typedGym.name}. See shower availability, facilities and location before you go.`
+                  : `Check the gym day pass price for ${typedGym.name}. See shower availability, facilities and location before you go.`}
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2">
