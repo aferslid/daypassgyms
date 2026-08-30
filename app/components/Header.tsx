@@ -16,22 +16,28 @@ export default function Header() {
         <Link href="/gyms" className="transition hover:text-white">
           Gym day passes
         </Link>
+
         <Link href="/map" className="transition hover:text-white">
           Map
         </Link>
+
         <Link href="/#how" className="transition hover:text-white">
           How it works
         </Link>
+
         <Link href="/blog" className="transition hover:text-white">
           Blog
         </Link>
-        <Link href="/suggest" className="transition hover:text-white">
-          Suggest a gym
-        </Link>
-        <Link href="/for-gym-owners">
+
+        <Link href="/for-gym-owners" className="transition hover:text-white">
           For gym owners
         </Link>
-        <Link href="/about">
+
+        <Link href="/partnerships" className="transition hover:text-white">
+          Partnerships
+        </Link>
+
+        <Link href="/about" className="transition hover:text-white">
           About
         </Link>
       </div>

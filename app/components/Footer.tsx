@@ -56,13 +56,13 @@ export default function Footer() {
                 About
                 </Link>
 
-                <Link href="/for-gym-owners" className="block hover:text-black">
-                For gym owners
+                <Link href="/partnerships" className="block hover:text-black">
+                  Partnerships
                 </Link>
 
                 <Link href="/suggest" className="block hover:text-black">
-                Suggest a gym
-</Link>
+                  Suggest a gym
+                </Link>
             </div>
           </div>
 
