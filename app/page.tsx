@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import Footer from "@/app/components/Footer";
 import Header from "./components/Header";
 import countriesList from "world-countries";
+import { slugify } from "@/lib/slugify";
 
 export const dynamic = "force-dynamic";
 
@@ -299,117 +300,7 @@ const maxCountryCount =
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="overflow-hidden rounded-[24px] border border-[#E4E4E1] bg-white">
-          <div className="grid lg:grid-cols-[0.75fr_1.25fr]">
-
-            <div className="flex flex-col bg-[#0C0C0C] p-8 md:p-12">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
-                DAYPASSGYMS DATA
-              </p>
-
-              <h2 className="mt-3 text-[34px] font-extrabold leading-[1] tracking-[-1.2px] text-white md:text-[46px]">
-                A global directory,
-                <br />
-                built city by city.
-              </h2>
-
-              <p className="mt-5 max-w-md text-[14px] leading-7 text-[#999]">
-                DayPassGyms tracks gyms offering day passes and flexible access
-                around the world.
-              </p>
-
-              <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-8">
-                <div>
-                  <div className="text-[32px] font-extrabold tracking-[-1px] text-[#C8F135]">
-                    {totalGyms || 0}+
-                  </div>
-                  <div className="mt-1 text-[11px] text-[#777]">
-                    gyms listed
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-[32px] font-extrabold tracking-[-1px] text-white">
-                    {countriesCount}
-                  </div>
-                  <div className="mt-1 text-[11px] text-[#777]">
-                    countries
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-[32px] font-extrabold tracking-[-1px] text-white">
-                    {citiesCount}
-                  </div>
-                  <div className="mt-1 text-[11px] text-[#777]">
-                    cities
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-[32px] font-extrabold tracking-[-1px] text-[#C8F135]">
-                    100%
-                  </div>
-                  <div className="mt-1 text-[11px] leading-4 text-[#777]">
-                    displayed prices verified
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-9 border-t border-[#242424] pt-6">
-                <p className="max-w-sm text-[11px] leading-5 text-[#666]">
-                  Prices shown on DayPassGyms are checked against official gym sources.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-8 md:p-12">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
-                MOST REPRESENTED COUNTRIES
-              </p>
-
-              <h3 className="mt-3 text-[26px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
-                Where our directory is strongest
-              </h3>
-
-              <div className="mt-8 space-y-5">
-                {topCountries.map((country) => (
-                  <div key={country.code}>
-                    <div className="mb-2 flex items-center justify-between gap-4">
-                      <span className="text-[13px] font-bold text-[#333]">
-                        {country.name}
-                      </span>
-
-                      <span className="text-[12px] font-bold text-[#888]">
-                        {country.count}
-                      </span>
-                    </div>
-
-                    <div className="h-2 overflow-hidden rounded-full bg-[#EFEFEB]">
-                      <div
-                        className="h-full rounded-full bg-[#C8F135]"
-                        style={{
-                          width: `${Math.max(
-                            4,
-                            (country.count / maxCountryCount) * 100
-                          )}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <p className="mt-7 text-[11px] leading-5 text-[#999]">
-                Counts reflect gyms currently listed on DayPassGyms, not the total
-                number of day-pass gyms in each country.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
+      
 
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="mb-8">
@@ -502,6 +393,131 @@ const maxCountryCount =
           >
             Read the full travel gym guide →
           </Link>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="overflow-hidden rounded-[24px] border border-[#E4E4E1] bg-white">
+          <div className="grid lg:grid-cols-[0.75fr_1.25fr]">
+
+            <div className="flex flex-col bg-[#0C0C0C] p-8 md:p-12">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
+                DAYPASSGYMS DATA
+              </p>
+
+              <h2 className="mt-3 text-[34px] font-extrabold leading-[1] tracking-[-1.2px] text-white md:text-[46px]">
+                A global directory,
+                <br />
+                built city by city.
+              </h2>
+
+              <p className="mt-5 max-w-md text-[14px] leading-7 text-[#999]">
+                DayPassGyms tracks gyms offering day passes and flexible access
+                around the world.
+              </p>
+
+              <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-8">
+                <div>
+                  <div className="text-[32px] font-extrabold tracking-[-1px] text-[#C8F135]">
+                    {totalGyms || 0}+
+                  </div>
+                  <div className="mt-1 text-[11px] text-[#777]">
+                    gyms listed
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[32px] font-extrabold tracking-[-1px] text-white">
+                    {countriesCount}
+                  </div>
+                  <div className="mt-1 text-[11px] text-[#777]">
+                    countries
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[32px] font-extrabold tracking-[-1px] text-white">
+                    {citiesCount}
+                  </div>
+                  <div className="mt-1 text-[11px] text-[#777]">
+                    cities
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[32px] font-extrabold tracking-[-1px] text-[#C8F135]">
+                    100%
+                  </div>
+                  <div className="mt-1 text-[11px] leading-4 text-[#777]">
+                    displayed prices verified
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-9 border-t border-[#242424] pt-6">
+                <p className="max-w-sm text-[11px] leading-5 text-[#666]">
+                  Prices shown on DayPassGyms are checked against official gym sources.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-12">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
+                EXPLORE OUR COVERAGE
+              </p>
+
+              <h3 className="mt-3 text-[26px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
+                Popular countries on DayPassGyms
+              </h3>
+
+              <div className="mt-8 space-y-5">
+                {topCountries.map((country) => (
+                  <Link
+                    key={country.code}
+                    href={`/gyms/${slugify(country.name)}`}
+                    className="group block"
+                  >
+                    <div className="mb-2 flex items-center justify-between gap-4">
+                      <span className="text-[13px] font-bold text-[#333] transition group-hover:text-[#8BAA00]">
+                        {country.name}
+                      </span>
+
+                      <span className="text-[12px] font-bold text-[#888]">
+                        {country.count} gyms
+                      </span>
+                    </div>
+
+                    <div className="h-2 overflow-hidden rounded-full bg-[#EFEFEB]">
+                      <div
+                        className="h-full rounded-full bg-[#C8F135] transition-opacity group-hover:opacity-70"
+                        style={{
+                          width: `${Math.max(
+                            4,
+                            (country.count / maxCountryCount) * 100
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-7 flex flex-col gap-4 border-t border-[#EFEFEB] pt-6 sm:flex-row sm:items-center sm:justify-between">
+                <p className="max-w-md text-[11px] leading-5 text-[#999]">
+                  Counts reflect gyms currently listed on DayPassGyms, not the total
+                  number of day-pass gyms in each country.
+                </p>
+
+                <Link
+                  href="/gyms"
+                  className="shrink-0 text-[12px] font-bold text-[#0C0C0C] hover:text-[#8BAA00]"
+                >
+                  Explore all countries →
+                </Link>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
