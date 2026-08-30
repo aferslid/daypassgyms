@@ -2,171 +2,121 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export const metadata = {
-  title: "Partner with DayPassGyms",
+  title: "Partnerships | DayPassGyms",
   description:
-    "Partner with DayPassGyms to reach travelers looking for gyms and day passes around the world.",
+    "Partner with DayPassGyms to reach travelers and fitness-focused communities around the world.",
 };
+
+const partnershipTypes = [
+  {
+    title: "Gyms & fitness chains",
+    text: "List your locations, keep your information up to date and help travelers discover where they can train.",
+  },
+  {
+    title: "Travel brands",
+    text: "Work with us on cross-promotion, useful travel content, member benefits and relevant affiliate partnerships.",
+  },
+  {
+    title: "Travel & nomad communities",
+    text: "Give your members an easier way to find gyms with flexible access wherever they travel.",
+  },
+  {
+    title: "Creators & publishers",
+    text: "Collaborate on destination guides, fitness travel content, data insights and stories powered by DayPassGyms.",
+  },
+];
 
 export default function PartnershipsPage() {
   return (
-    <>
-      <Header />
+    <main className="min-h-screen bg-[#F7F7F5]">
+      {/* HERO */}
+      <section className="relative overflow-hidden bg-[#0C0C0C]">
+        <div className="mx-auto max-w-7xl px-6 py-5">
+          <Header />
 
-      <main
-        style={{
-          minHeight: "100vh",
-          background: "#080808",
-          color: "white",
-          padding: "80px 24px",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1100px",
-            margin: "0 auto",
-          }}
-        >
-          <p
-            style={{
-              color: "#c7ff00",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              marginBottom: "18px",
-            }}
-          >
-            Partnerships
+          <div className="pb-20 pt-16 md:pb-24 md:pt-20">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
+              PARTNERSHIPS
+            </p>
+
+            <h1 className="mt-3 max-w-4xl text-[48px] font-extrabold leading-[0.95] tracking-[-2px] text-white md:text-[72px]">
+              Let&apos;s build the future of
+              <span className="text-[#C8F135]"> fitness travel.</span>
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-[17px] leading-7 text-[#B8B8B8]">
+              DayPassGyms helps travelers find gyms offering day passes,
+              drop-ins and flexible access around the world. We partner with
+              gyms, travel companies, communities, creators and brands serving
+              the same audience.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* PARTNERSHIP TYPES */}
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="max-w-2xl">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
+            WORK WITH US
           </p>
 
-          <h1
-            style={{
-              fontSize: "clamp(48px, 7vw, 88px)",
-              lineHeight: 0.95,
-              marginBottom: "32px",
-              maxWidth: "900px",
-            }}
-          >
-            Grow with
-            <br />
-            <span style={{ color: "#c7ff00" }}>DayPassGyms.</span>
-          </h1>
+          <h2 className="mt-3 text-[36px] font-extrabold tracking-[-1.5px] text-[#0C0C0C] md:text-[48px]">
+            Different ways to partner.
+          </h2>
 
-          <p
-            style={{
-              fontSize: "20px",
-              lineHeight: 1.6,
-              color: "#aaa",
-              maxWidth: "720px",
-              marginBottom: "70px",
-            }}
-          >
-            DayPassGyms helps travelers discover gyms offering day passes,
-            drop-ins and flexible access around the world. We are building
-            partnerships with gyms, travel companies, communities, creators
-            and brands that share the same audience.
+          <p className="mt-4 text-[17px] leading-7 text-[#666]">
+            We&apos;re open to collaborations that make traveling and staying
+            active easier.
           </p>
+        </div>
 
-          <section
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-              gap: "20px",
-              marginBottom: "80px",
-            }}
-          >
-            {[
-              {
-                title: "Gyms & fitness chains",
-                text: "Get your locations listed, update your information and reach travelers actively looking for places to train.",
-              },
-              {
-                title: "Travel brands",
-                text: "Collaborate through useful travel content, member benefits, cross-promotion and affiliate partnerships.",
-              },
-              {
-                title: "Communities",
-                text: "Give digital nomads, travelers and fitness communities an easier way to find gyms wherever they go.",
-              },
-              {
-                title: "Creators & publishers",
-                text: "Work with DayPassGyms on destination guides, fitness travel content, data insights and collaborations.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                style={{
-                  border: "1px solid #252525",
-                  borderRadius: "18px",
-                  padding: "30px",
-                  background: "#0d0d0d",
-                }}
-              >
-                <h2
-                  style={{
-                    fontSize: "24px",
-                    marginBottom: "14px",
-                  }}
-                >
-                  {item.title}
-                </h2>
-
-                <p
-                  style={{
-                    color: "#999",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {item.text}
-                </p>
-              </div>
-            ))}
-          </section>
-
-          <section
-            style={{
-              borderTop: "1px solid #222",
-              paddingTop: "60px",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "42px",
-                marginBottom: "20px",
-              }}
+        <div className="mt-12 grid gap-5 md:grid-cols-2">
+          {partnershipTypes.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-[20px] border border-[#E4E4E1] bg-white p-8 md:p-10"
             >
-              Want to work together?
+              <h3 className="text-[24px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
+                {item.title}
+              </h3>
+
+              <p className="mt-4 max-w-lg text-[15px] leading-7 text-[#666]">
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="border-t border-[#E4E4E1] bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="rounded-[24px] bg-[#0C0C0C] px-8 py-12 md:px-12 md:py-14">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
+              LET&apos;S TALK
+            </p>
+
+            <h2 className="mt-3 max-w-2xl text-[36px] font-extrabold leading-[1] tracking-[-1.5px] text-white md:text-[48px]">
+              Have an idea for DayPassGyms?
             </h2>
 
-            <p
-              style={{
-                color: "#aaa",
-                fontSize: "18px",
-                marginBottom: "30px",
-              }}
-            >
-              Tell us about your company, community or idea and how you would
-              like to collaborate with DayPassGyms.
+            <p className="mt-5 max-w-xl text-[16px] leading-7 text-[#AFAFAF]">
+              Tell us about your company, community or project and how you
+              would like to work together.
             </p>
 
             <a
-              href="mailto:hello@daypassgyms.com"
-              style={{
-                display: "inline-block",
-                background: "#c7ff00",
-                color: "#000",
-                padding: "16px 26px",
-                borderRadius: "10px",
-                fontWeight: 700,
-                textDecoration: "none",
-              }}
+              href="mailto:aferslid@gmail.com?subject=DayPassGyms Partnership"
+              className="mt-8 inline-flex rounded-[10px] bg-[#C8F135] px-6 py-3 text-[14px] font-bold text-[#0C0C0C] transition hover:opacity-90"
             >
               Contact DayPassGyms
             </a>
-          </section>
+          </div>
         </div>
-      </main>
+      </section>
 
       <Footer />
-    </>
+    </main>
   );
 }
