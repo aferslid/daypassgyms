@@ -491,50 +491,77 @@ const priceRangeText =
         )}
       </section>
 
-            <section className="border-t border-[#E4E4E1] bg-white">
+            <section className="border-t border-[#E4E4E1] bg-[#F7F7F5]">
               <div className="mx-auto max-w-7xl px-6 py-16">
-                <div className="max-w-3xl">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
-                    TRAINING IN {cityName.toUpperCase()}
-                  </p>
+                <div className="overflow-hidden rounded-[24px] border border-[#E4E4E1] bg-white">
+                  <div className="grid md:grid-cols-[1.5fr_0.7fr]">
+                    
+                    <div className="p-8 md:p-12">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
+                        TRAINING IN {cityName.toUpperCase()}
+                      </p>
 
-                  <h2 className="mt-3 text-[32px] font-extrabold tracking-[-1px] text-[#0C0C0C] md:text-[40px]">
-                    Finding a gym day pass in {cityName}
-                  </h2>
+                      <h2 className="mt-3 max-w-xl text-[32px] font-extrabold leading-[1] tracking-[-1px] text-[#0C0C0C] md:text-[42px]">
+                        Finding a gym day pass in {cityName}
+                      </h2>
 
-                  <div className="mt-6 space-y-5 text-[16px] leading-7 text-[#666]">
-                    <p>
-                      DayPassGyms currently lists{" "}
-                      <strong className="text-[#0C0C0C]">
-                        {gyms.length} {gyms.length === 1 ? "gym" : "gyms"}
-                      </strong>{" "}
-                      in {cityName}, {countryName} with day-pass information.
-                      {priceRangeText !== "Unknown" && (
-                        <>
-                          {" "}
-                          Listed day-pass prices currently range from{" "}
+                      <div className="mt-6 max-w-2xl space-y-4 text-[15px] leading-7 text-[#666]">
+                        <p>
+                          DayPassGyms currently lists{" "}
                           <strong className="text-[#0C0C0C]">
-                            {priceRangeText}
-                          </strong>
-                          .
-                        </>
-                      )}
-                    </p>
+                            {gyms.length} {gyms.length === 1 ? "gym" : "gyms"}
+                          </strong>{" "}
+                          in {cityName}, {countryName} with day-pass information.
+                        </p>
 
-                    <p>
-                      A gym day pass is useful if you&apos;re visiting {cityName} and
-                      want to train without committing to a long-term membership.
-                      Compare the gyms above for day-pass prices, visitor access and
-                      available facilities before you visit.
-                    </p>
+                        <p>
+                          If you&apos;re visiting {cityName}, a day pass lets you train
+                          without committing to a long-term membership. Compare prices
+                          and facilities above before choosing where to work out.
+                        </p>
+                      </div>
+
+                      <Link
+                        href={`/gyms/${resolvedCountry.canonicalSlug}`}
+                        className="mt-7 inline-flex items-center text-[14px] font-bold text-[#0C0C0C] transition hover:text-[#8BAA00]"
+                      >
+                        Browse all gym day passes in {countryName} →
+                      </Link>
+                    </div>
+
+                    <div className="flex flex-col justify-center bg-[#0C0C0C] p-8 md:p-10">
+                      <div className="border-b border-[#242424] pb-6">
+                        <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
+                          Gyms listed
+                        </div>
+
+                        <div className="mt-2 text-[38px] font-extrabold tracking-[-1.5px] text-[#C8F135]">
+                          {gyms.length}
+                        </div>
+                      </div>
+
+                      <div className="border-b border-[#242424] py-6">
+                        <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
+                          Day-pass prices
+                        </div>
+
+                        <div className="mt-2 text-[22px] font-extrabold tracking-[-0.5px] text-white">
+                          {priceRangeText}
+                        </div>
+                      </div>
+
+                      <div className="pt-6">
+                        <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
+                          Location
+                        </div>
+
+                        <div className="mt-2 text-[18px] font-bold text-white">
+                          {cityName}, {countryName}
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
-
-                  <Link
-                    href={`/gyms/${resolvedCountry.canonicalSlug}`}
-                    className="mt-8 inline-flex items-center text-[14px] font-bold text-[#0C0C0C] transition hover:text-[#8BAA00]"
-                  >
-                    Browse all gym day passes in {countryName} →
-                  </Link>
                 </div>
               </div>
             </section>
