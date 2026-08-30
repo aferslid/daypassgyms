@@ -303,7 +303,7 @@ const maxCountryCount =
         <div className="overflow-hidden rounded-[24px] border border-[#E4E4E1] bg-white">
           <div className="grid lg:grid-cols-[0.75fr_1.25fr]">
 
-            <div className="bg-[#0C0C0C] p-8 md:p-12">
+            <div className="flex flex-col bg-[#0C0C0C] p-8 md:p-12">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C8F135]">
                 DAYPASSGYMS DATA
               </p>
@@ -319,18 +319,18 @@ const maxCountryCount =
                 around the world.
               </p>
 
-              <div className="mt-10 grid grid-cols-3 gap-5">
+              <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-8">
                 <div>
-                  <div className="text-[30px] font-extrabold text-[#C8F135]">
+                  <div className="text-[32px] font-extrabold tracking-[-1px] text-[#C8F135]">
                     {totalGyms || 0}+
                   </div>
                   <div className="mt-1 text-[11px] text-[#777]">
-                    gyms
+                    gyms listed
                   </div>
                 </div>
 
                 <div>
-                  <div className="text-[30px] font-extrabold text-white">
+                  <div className="text-[32px] font-extrabold tracking-[-1px] text-white">
                     {countriesCount}
                   </div>
                   <div className="mt-1 text-[11px] text-[#777]">
@@ -339,13 +339,28 @@ const maxCountryCount =
                 </div>
 
                 <div>
-                  <div className="text-[30px] font-extrabold text-[#C8F135]">
+                  <div className="text-[32px] font-extrabold tracking-[-1px] text-white">
                     {citiesCount}
                   </div>
                   <div className="mt-1 text-[11px] text-[#777]">
                     cities
                   </div>
                 </div>
+
+                <div>
+                  <div className="text-[32px] font-extrabold tracking-[-1px] text-[#C8F135]">
+                    100%
+                  </div>
+                  <div className="mt-1 text-[11px] leading-4 text-[#777]">
+                    displayed prices verified
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-9 border-t border-[#242424] pt-6">
+                <p className="max-w-sm text-[11px] leading-5 text-[#666]">
+                  Prices shown on DayPassGyms are checked against official gym sources.
+                </p>
               </div>
             </div>
 
