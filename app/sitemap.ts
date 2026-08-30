@@ -58,7 +58,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/gyms`, priority: 0.9, lastModified: now },
     { url: `${baseUrl}/blog`, priority: 0.8, lastModified: now },
     { url: `${baseUrl}/about`, priority: 0.6, lastModified: now },
-    { url: `${baseUrl}/for-gym-owners`, priority: 0.6, lastModified: now },
+    { url: `${baseUrl}/for-gym-owners`, priority: 0.6 },
+    { url: `${baseUrl}/partnerships`, priority: 0.6 },
   ];
 
   blogPosts.forEach((post) => {

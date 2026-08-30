@@ -4,7 +4,6 @@ import { supabase } from "@/lib/supabase";
 import countriesList from "world-countries";
 import Footer from "@/app/components/Footer";
 import Header from "../components/Header";
-import CountrySearch from "@/app/components/CountrySearch";
 import CountriesGrid from "../components/CountriesGrid";
 import { slugify } from "@/lib/slugify";
 
@@ -94,10 +93,6 @@ async function fetchAllSpots(): Promise<any[]> {
 export default async function GymsPage() {
   const data = await fetchAllSpots();
 
-  console.log("count =", data?.length);
-  console.log("Rows:", data?.length);
-  console.log(data?.slice(-10));
-
   const countryCounts = new Map<string, number>();
   (data || []).forEach((spot) => {
     const code = String(spot.country).toUpperCase();
@@ -131,8 +126,7 @@ export default async function GymsPage() {
       )
   ).size;
 
-  console.log("data =", data);
-  console.log("count =", data?.length);
+  
 
   return (
     <>

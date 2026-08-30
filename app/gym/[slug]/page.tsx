@@ -5,7 +5,7 @@ import countriesList from "world-countries";
 import GymMiniMapClient from "@/app/components/GymMiniMapClient";
 import Footer from "@/app/components/Footer";
 import Header from "../../components/Header";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import fs from "fs";
 import path from "path";
 import Breadcrumbs, {
@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: GymPageProps) {
   const { data: gym } = await supabase
     .from("spots")
     .select(
-      "id, name, city, country_full, day_pass_price, day_pass_note, currency"
+      "id, name, city, country_full, day_pass_price, day_pass_note, currency, free_trial"
     )
     .eq("id", gymId)
     .single();
@@ -96,15 +96,30 @@ export async function generateMetadata({ params }: GymPageProps) {
 
   const locationLabel = [gym.city, gym.country_full].filter(Boolean).join(", ");
 
-  const description = price
-    ? `View the ${price} day pass price for ${gym.name}${locationLabel ? ` in ${locationLabel}` : ""}. Check showers, lockers, Wi-Fi, facilities and visitor access information.`
-    : `View day pass information for ${gym.name}${locationLabel ? ` in ${locationLabel}` : ""}. Check showers, lockers, Wi-Fi, facilities and visitor access details.`;
+  const isFreeTrialOnly =
+    gym.day_pass_note === "Free trial only" ||
+    (gym.free_trial === true &&
+      (gym.day_pass_price === null || gym.day_pass_price === undefined));
+
+  const description = isFreeTrialOnly
+  ? `View free trial information for ${gym.name}${
+      locationLabel ? ` in ${locationLabel}` : ""
+    }. Check showers, lockers, Wi-Fi, facilities and visitor access information.`
+  : price
+    ? `View the ${price} day pass price for ${gym.name}${
+        locationLabel ? ` in ${locationLabel}` : ""
+      }. Check showers, lockers, Wi-Fi, facilities and visitor access information.`
+    : `View day pass information for ${gym.name}${
+        locationLabel ? ` in ${locationLabel}` : ""
+      }. Check showers, lockers, Wi-Fi, facilities and visitor access details.`;
 
   const locationParts = [gym.city, gym.country_full].filter(Boolean);
   const locationText =
     locationParts.length > 0 ? ` | ${locationParts.join(", ")}` : "";
 
-  const title = `${gym.name} Day Pass Price${locationText}`;
+  const title = isFreeTrialOnly
+    ? `${gym.name} Free Trial${locationText} | DayPassGyms`
+    : `${gym.name} Day Pass Price${locationText} | DayPassGyms`;
   const canonicalSlug = `${slugify(gym.name)}-${gym.id}`;
 
   const canonicalUrl =
@@ -273,7 +288,7 @@ export default async function GymPage({ params }: GymPageProps) {
   const canonicalSlug = `${slugify(typedGym.name)}-${typedGym.id}`;
 
   if (slug !== canonicalSlug) {
-    redirect(`/gym/${canonicalSlug}`);
+    permanentRedirect(`/gym/${canonicalSlug}`);
   }
 
   const countryName =
