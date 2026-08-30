@@ -259,7 +259,9 @@ export default async function CityPage({ params }: CityPageProps) {
         name: `Can I get a day pass gym in ${cityName}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Yes. Many gyms in ${cityName} offer day passes without requiring a membership.`,
+          text: `Yes. DayPassGyms currently lists ${gyms.length} ${
+            gyms.length === 1 ? "gym" : "gyms"
+          } in ${cityName} with day-pass information.`,
         },
       },
       {
@@ -488,6 +490,55 @@ const priceRangeText =
           </div>
         )}
       </section>
+
+            <section className="border-t border-[#E4E4E1] bg-white">
+              <div className="mx-auto max-w-7xl px-6 py-16">
+                <div className="max-w-3xl">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
+                    TRAINING IN {cityName.toUpperCase()}
+                  </p>
+
+                  <h2 className="mt-3 text-[32px] font-extrabold tracking-[-1px] text-[#0C0C0C] md:text-[40px]">
+                    Finding a gym day pass in {cityName}
+                  </h2>
+
+                  <div className="mt-6 space-y-5 text-[16px] leading-7 text-[#666]">
+                    <p>
+                      DayPassGyms currently lists{" "}
+                      <strong className="text-[#0C0C0C]">
+                        {gyms.length} {gyms.length === 1 ? "gym" : "gyms"}
+                      </strong>{" "}
+                      in {cityName}, {countryName} with day-pass information.
+                      {priceRangeText !== "Unknown" && (
+                        <>
+                          {" "}
+                          Listed day-pass prices currently range from{" "}
+                          <strong className="text-[#0C0C0C]">
+                            {priceRangeText}
+                          </strong>
+                          .
+                        </>
+                      )}
+                    </p>
+
+                    <p>
+                      A gym day pass is useful if you&apos;re visiting {cityName} and
+                      want to train without committing to a long-term membership.
+                      Compare the gyms above for day-pass prices, visitor access and
+                      available facilities before you visit.
+                    </p>
+                  </div>
+
+                  <Link
+                    href={`/gyms/${resolvedCountry.canonicalSlug}`}
+                    className="mt-8 inline-flex items-center text-[14px] font-bold text-[#0C0C0C] transition hover:text-[#8BAA00]"
+                  >
+                    Browse all gym day passes in {countryName} →
+                  </Link>
+                </div>
+              </div>
+            </section>
+
         <TravelGuides
           title={`Training in ${cityName}?`}
           description={`Before visiting a gym in ${cityName}, learn how gym day passes work, what to bring and how to compare gyms while travelling.`}
