@@ -685,9 +685,9 @@ breadcrumbItems.push({
                   <div className="mt-1 text-[18px] font-extrabold text-[#111]">
                     {typedGym.access_gender === "mixed"
                       ? "Mixed"
-                      : typedGym.access_gender === "women_only"
+                      : typedGym.access_gender === "women"
                       ? "Women only"
-                      : typedGym.access_gender === "men_only"
+                      : typedGym.access_gender === "men"
                       ? "Men only"
                       : typedGym.access_gender}
                   </div>
