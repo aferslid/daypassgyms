@@ -138,40 +138,54 @@ export async function generateMetadata({
 }: CountryPageProps) {
   const { country } = await params;
 
-  const normalizedCountryCode = country.toLowerCase();
+  const resolvedCountry = resolveCountryFromSlug(country);
 
-  const countryName =
-    countriesList.find(
-      (item) =>
-        item.cca2.toLowerCase() === normalizedCountryCode
-    )?.name.common ?? formatCountry(country);
+  if (!resolvedCountry) {
+    return {
+      title: "Country not found | DayPassGyms",
+    };
+  }
+
+  const countryName = resolvedCountry.name;
 
   const title = `Gym Day Passes in ${countryName} | DayPassGyms`;
 
   const description =
-  `Find the best gyms offering day passes in ${countryName}. ` +
-  `Compare prices, showers, lockers, Wi-Fi, and visitor information before your workout.`;
+    `Find gyms offering day passes in ${countryName}. ` +
+    `Compare prices, showers, lockers, Wi-Fi and visitor access before you train.`;
+
+  const canonicalUrl =
+    `https://www.daypassgyms.com/gyms/${resolvedCountry.canonicalSlug}`;
 
   return {
     title,
     description,
 
+    alternates: {
+      canonical: canonicalUrl,
+    },
+
     openGraph: {
       title,
       description,
-      url: `https://www.daypassgyms.com/gyms/${country}`,
+      url: canonicalUrl,
       siteName: "DayPassGyms",
       type: "website",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "DayPassGyms",
+        },
+      ],
     },
 
     twitter: {
       card: "summary_large_image",
       title,
       description,
-    },
-
-    alternates: {
-      canonical: `https://www.daypassgyms.com/gyms/${country}`,
+      images: ["/og-image.png"],
     },
   };
 }
@@ -457,6 +471,97 @@ export default async function CountryPage({ params }: CountryPageProps) {
           </div>
         )}
       </section>
+
+            <section className="border-t border-[#E4E4E1] bg-[#F7F7F5]">
+                <div className="mx-auto max-w-7xl px-6 py-16">
+                  <div className="overflow-hidden rounded-[24px] border border-[#E4E4E1] bg-white">
+                    <div className="grid md:grid-cols-[1.5fr_0.7fr]">
+
+                      <div className="p-8 md:p-12">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
+                          TRAINING IN {countryName.toUpperCase()}
+                        </p>
+
+                        <h2 className="mt-3 max-w-xl text-[32px] font-extrabold leading-[1] tracking-[-1px] text-[#0C0C0C] md:text-[42px]">
+                          Finding a gym day pass in {countryName}
+                        </h2>
+
+                        <div className="mt-6 max-w-2xl space-y-4 text-[15px] leading-7 text-[#666]">
+                          <p>
+                            DayPassGyms currently lists{" "}
+                            <strong className="text-[#0C0C0C]">
+                              {gyms.length} {gyms.length === 1 ? "gym" : "gyms"}
+                            </strong>{" "}
+                            across{" "}
+                            <strong className="text-[#0C0C0C]">
+                              {cities.length} {cities.length === 1 ? "city" : "cities"}
+                            </strong>{" "}
+                            in {countryName} with day-pass information.
+                          </p>
+
+                          <p>
+                            If you&apos;re traveling in {countryName}, a gym day pass
+                            lets you train without committing to a long-term membership.
+                            Browse the city directories and gym listings above to compare
+                            prices and facilities before choosing where to work out.
+                          </p>
+                        </div>
+
+                        <Link
+                          href="/gyms"
+                          className="mt-7 inline-flex items-center text-[14px] font-bold text-[#0C0C0C] transition hover:text-[#8BAA00]"
+                        >
+                          Browse gym day passes worldwide →
+                        </Link>
+                      </div>
+
+                      <div className="flex flex-col justify-center bg-[#0C0C0C] p-8 md:p-10">
+                        <div className="border-b border-[#242424] pb-6">
+                          <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
+                            Gyms listed
+                          </div>
+
+                          <div className="mt-2 text-[38px] font-extrabold tracking-[-1.5px] text-[#C8F135]">
+                            {gyms.length}
+                          </div>
+                        </div>
+
+                        <div className="border-b border-[#242424] py-6">
+                          <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
+                            Cities covered
+                          </div>
+
+                          <div className="mt-2 text-[38px] font-extrabold tracking-[-1.5px] text-white">
+                            {cities.length}
+                          </div>
+                        </div>
+
+                        <div className="border-b border-[#242424] py-6">
+                          <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
+                            Day-pass prices
+                          </div>
+
+                          <div className="mt-2 text-[22px] font-extrabold tracking-[-0.5px] text-[#C8F135]">
+                            {priceRangeText}
+                          </div>
+                        </div>
+
+                        <div className="pt-6">
+                          <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#777]">
+                            Country
+                          </div>
+
+                          <div className="mt-2 text-[18px] font-bold text-white">
+                            {countryName}
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </section>
+
         <TravelGuides
           title={`Training while traveling in ${countryName}?`}
           description={`Read our practical guides before buying a gym day pass or visiting a gym in ${countryName}.`}
