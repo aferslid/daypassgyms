@@ -214,6 +214,13 @@ export default async function CityPage({ params }: CityPageProps) {
     notFound();
   }
 
+    if (
+      resolvedCountry.code === "SE" &&
+      (city === "goteborg" || city === "goeteborg")
+    ) {
+      permanentRedirect("/gyms/sweden/gothenburg");
+    }
+
   if (
     country.toLowerCase() !==
     resolvedCountry.canonicalSlug
