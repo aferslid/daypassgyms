@@ -39,14 +39,59 @@ const CITY_SLUG_ALIASES: Record<string, Record<string, string>> = {
     milano: "milan",
     napoli: "naples",
   },
+
   SE: {
     goteborg: "gothenburg",
     goeteborg: "gothenburg",
   },
+
+  NO: {
+    troms: "tromso",
+    "mosj-en": "mosjoen",
+    "kv-fjord": "kvaefjord",
+    "b-rum": "baerum",
+    "s-rreisa": "sorreisa",
+    "sandnessj-en": "sandnessjoen",
+  },
+
+  CO: {
+    bogot: "bogota",
+    "medell-n": "medellin",
+  },
+
+  PL: {
+    "krak-w": "krakow",
+    "wa-brzych": "walbrzych",
+    "g-ogow": "glogow",
+    "p-ock": "plock",
+  },
+
+  ES: {
+    "m-laga": "malaga",
+  },
+
+  FR: {
+    chirolles: "echirolles",
+  },
+
+  GT: {
+    "santiago-atitl-n": "santiago-atitlan",
+  },
+
+  EC: {
+    "ba-os-de-agua-santa": "banos-de-agua-santa",
+    "monta-ita": "montanita",
+  },
+
+  NI: {
+    "le-n": "leon",
+  },
 };
 
 function resolveCitySlug(countryCode: string, citySlug: string) {
-  const normalizedCitySlug = citySlug.toLowerCase();
+  const normalizedCitySlug = citySlug
+    .toLowerCase()
+    .replace(/-3$/, "");
 
   return (
     CITY_SLUG_ALIASES[countryCode]?.[normalizedCitySlug] ||
@@ -60,9 +105,18 @@ function resolveCountryFromSlug(slug: string) {
 
   const specialCases: Record<string, string> = {
     "sint-maarten": "SX",
+    "saint-maarten": "SX",
     "saint-martin": "MF",
+
     turkey: "TR",
     turkiye: "TR",
+
+    usa: "US",
+    england: "GB",
+    wales: "GB",
+    "the-netherlands": "NL",
+    "cote-d-ivoire": "CI",
+    barhain: "BH",
   };
 
   const specialCode = specialCases[normalizedSlug];
@@ -101,9 +155,18 @@ function formatSlug(slug: string) {
 function getCountryCodeFromSlug(slug: string) {
   const specialCases: Record<string, string> = {
     "sint-maarten": "SX",
+    "saint-maarten": "SX",
     "saint-martin": "MF",
-    "turkey": "TR",
-    "turkiye": "TR",
+
+    turkey: "TR",
+    turkiye: "TR",
+
+    usa: "US",
+    england: "GB",
+    wales: "GB",
+    "the-netherlands": "NL",
+    "cote-d-ivoire": "CI",
+    barhain: "BH",
   };
 
   if (specialCases[slug]) return specialCases[slug];
