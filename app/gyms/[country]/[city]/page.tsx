@@ -33,6 +33,27 @@ type Gym = {
   shower: boolean | null;
 };
 
+const CITY_SLUG_ALIASES: Record<string, Record<string, string>> = {
+  IT: {
+    roma: "rome",
+    milano: "milan",
+    napoli: "naples",
+  },
+  SE: {
+    goteborg: "gothenburg",
+    goeteborg: "gothenburg",
+  },
+};
+
+function resolveCitySlug(countryCode: string, citySlug: string) {
+  const normalizedCitySlug = citySlug.toLowerCase();
+
+  return (
+    CITY_SLUG_ALIASES[countryCode]?.[normalizedCitySlug] ||
+    normalizedCitySlug
+  );
+}
+
 
 function resolveCountryFromSlug(slug: string) {
   const normalizedSlug = slug.toLowerCase();
@@ -125,7 +146,12 @@ export async function generateMetadata({ params }: CityPageProps) {
 
   const countryName = resolvedCountry.name;
 
-  const cityName = city
+  const canonicalCitySlug = resolveCitySlug(
+    resolvedCountry.code,
+    city
+  );
+
+  const cityName = canonicalCitySlug
     .split("-")
     .map(
       (word) =>
@@ -141,7 +167,7 @@ export async function generateMetadata({ params }: CityPageProps) {
     `Compare prices, showers, lockers, Wi-Fi, facilities, and visitor access information.`;
 
   const canonicalUrl =
-    `https://www.daypassgyms.com/gyms/${resolvedCountry.canonicalSlug}/${city}`;
+    `https://www.daypassgyms.com/gyms/${resolvedCountry.canonicalSlug}/${canonicalCitySlug}`;
 
   return {
     title,
@@ -214,12 +240,16 @@ export default async function CityPage({ params }: CityPageProps) {
     notFound();
   }
 
-    if (
-      resolvedCountry.code === "SE" &&
-      (city === "goteborg" || city === "goeteborg")
-    ) {
-      permanentRedirect("/gyms/sweden/gothenburg");
-    }
+  const canonicalCitySlug = resolveCitySlug(
+    resolvedCountry.code,
+    city
+  );
+
+  if (city.toLowerCase() !== canonicalCitySlug) {
+    permanentRedirect(
+      `/gyms/${resolvedCountry.canonicalSlug}/${canonicalCitySlug}`
+    );
+  }
 
   if (
     country.toLowerCase() !==
