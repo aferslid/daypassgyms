@@ -6,7 +6,7 @@ import Header from "./components/Header";
 import countriesList from "world-countries";
 import { slugify } from "@/lib/slugify";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: {
