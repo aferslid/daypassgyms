@@ -152,33 +152,6 @@ function formatSlug(slug: string) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function getCountryCodeFromSlug(slug: string) {
-  const specialCases: Record<string, string> = {
-    "sint-maarten": "SX",
-    "saint-maarten": "SX",
-    "saint-martin": "MF",
-
-    turkey: "TR",
-    turkiye: "TR",
-
-    usa: "US",
-    england: "GB",
-    wales: "GB",
-    "the-netherlands": "NL",
-    "cote-d-ivoire": "CI",
-    barhain: "BH",
-  };
-
-  if (specialCases[slug]) return specialCases[slug];
-
-  const formatted = formatSlug(slug);
-
-  const country = countriesList.find(
-    (c) => slugify(c.name.common) === slug || c.name.common === formatted
-  );
-
-  return country?.cca2.toUpperCase() || null;
-}
 
 function formatPrice(gym: Gym) {
   if (gym.day_pass_price === null || gym.day_pass_price === undefined) {

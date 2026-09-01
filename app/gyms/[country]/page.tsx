@@ -40,9 +40,18 @@ function resolveCountryFromSlug(slug: string) {
 
   const specialCases: Record<string, string> = {
     "sint-maarten": "SX",
+    "saint-maarten": "SX",
     "saint-martin": "MF",
+
     turkey: "TR",
     turkiye: "TR",
+
+    usa: "US",
+    england: "GB",
+    wales: "GB",
+    "the-netherlands": "NL",
+    "cote-d-ivoire": "CI",
+    barhain: "BH",
   };
 
   const specialCode = specialCases[normalizedSlug];
@@ -72,50 +81,6 @@ function resolveCountryFromSlug(slug: string) {
   };
 }
 
-function formatCountry(slug: string) {
-  return slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-function getCountryCodeFromSlug(slug: string) {
-  const specialCases: Record<string, string> = {
-    "sint-maarten": "SX",
-    "saint-martin": "MF",
-    "turkey": "TR",
-    "turkiye": "TR",
-  };
-
-  if (specialCases[slug]) return specialCases[slug];
-
-  const formatted = formatCountry(slug);
-
-  const country = countriesList.find(
-    (c) => slugify(c.name.common) === slug || c.name.common === formatted
-  );
-
-  return country?.cca2.toUpperCase() || null;
-}
-
-function getCountryName(code: string | null) {
-  if (!code) return "";
-
-  const specialCases: Record<string, string> = {
-    SX: "Sint Maarten",
-    MF: "Saint Martin",
-    TR: "Turkey",
-  };
-
-  if (specialCases[code.toUpperCase()]) {
-    return specialCases[code.toUpperCase()];
-  }
-
-  const country = countriesList.find(
-    (c) => c.cca2.toUpperCase() === code.toUpperCase()
-  );
-
-  return country?.name.common || code;
-}
 
 function formatPrice(gym: Gym) {
   if (gym.day_pass_price === null || gym.day_pass_price === undefined) {
