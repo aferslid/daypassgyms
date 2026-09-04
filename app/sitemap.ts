@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { blogPosts } from "@/app/blog/posts";
 import countriesList from "world-countries";
 import { slugify } from "@/lib/slugify";
+export const revalidate = 86400;
 
 function getCountryName(code: string | null) {
   if (!code) return null;
