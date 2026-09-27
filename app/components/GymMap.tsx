@@ -371,7 +371,7 @@ export default function GymMap() {
             {selectedSpot.week_pass_price !== null &&
               selectedSpot.week_pass_price !== undefined && (
                 <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
-                  Week: {Number(selectedSpot.week_pass_price).toLocaleString("en-US")}{" "}
+                  💰 Week: {Number(selectedSpot.week_pass_price).toLocaleString("en-US")}{" "}
                   {selectedSpot.currency || ""}
                 </span>
               )}
