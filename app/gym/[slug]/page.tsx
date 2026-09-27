@@ -38,6 +38,7 @@ type Gym = {
   phone: string | null;
   address: string | null;
   website_url: string | null;
+  instagram_url: string | null;
   google_maps_url: string | null;
   country_full: string | null;
 
@@ -274,7 +275,7 @@ export default async function GymPage({ params }: GymPageProps) {
   const { data: gym, error } = await supabase
     .from("spots")
     .select(
-      "id, name, type, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender"
+      "id, name, type, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender"
     )
     .eq("id", gymId)
     .single();
@@ -345,8 +346,11 @@ breadcrumbItems.push({
       description: typedGym.description,
     }),
 
-    ...(typedGym.website_url && {
-      sameAs: [typedGym.website_url],
+    ...((typedGym.website_url || typedGym.instagram_url) && {
+      sameAs: [
+        typedGym.website_url,
+        typedGym.instagram_url,
+      ].filter((url): url is string => Boolean(url)),
     }),
 
     ...(typedGym.phone && {
@@ -764,6 +768,17 @@ breadcrumbItems.push({
                   className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
                 >
                   Visit website →
+                </a>
+              )}
+
+              {typedGym.instagram_url && (
+                <a
+                  href={typedGym.instagram_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
+                >
+                  View Instagram →
                 </a>
               )}
 
