@@ -107,7 +107,7 @@ export default function PartnershipsPage() {
             </p>
 
             <a
-              href="mailto:aferslid@gmail.com?subject=DayPassGyms Partnership"
+              href="mailto:contact@daypassgyms.com?subject=DayPassGyms Partnership"
               className="mt-8 inline-flex rounded-[10px] bg-[#C8F135] px-6 py-3 text-[14px] font-bold text-[#0C0C0C] transition hover:opacity-90"
             >
               Contact DayPassGyms

@@ -77,7 +77,7 @@ export default function Footer() {
                 </Link>
 
                 <a
-                href="mailto:aferslid@gmail.com"
+                href="mailto:contact@daypassgyms.com"
                 className="block hover:text-black"
                 >
                 Contact
