@@ -3,8 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { useRouter } from "next/navigation";
-
-const ADMIN_EMAIL = "a.fers-lidou@outlook.fr";
+import AdminNav from "@/app/components/AdminNav";
 
 type SpotReport = {
   id: number;
@@ -37,7 +36,6 @@ export default function AdminReportsPage() {
 
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
-  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
   const [reports, setReports] = useState<SpotReport[]>([]);
   const [spotsMap, setSpotsMap] = useState<Record<number, Spot>>({});
@@ -87,23 +85,29 @@ export default function AdminReportsPage() {
 
   useEffect(() => {
     const init = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const response = await fetch("/api/admin/check", {
+          cache: "no-store",
+        });
 
-      const email = user?.email ?? null;
-      setCurrentUserEmail(email);
+        const result = await response.json();
 
-      if (!user || email !== ADMIN_EMAIL) {
+        if (!result.authorized) {
+          setAuthorized(false);
+          setLoading(false);
+          return;
+        }
+
+        setAuthorized(true);
+
+        await loadReports();
+        await fetchImprovements();
+      } catch (error) {
+        console.error("Admin auth check failed:", error);
         setAuthorized(false);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      setAuthorized(true);
-      await loadReports();
-      await fetchImprovements();
-      setLoading(false);
     };
 
     init();
@@ -299,9 +303,6 @@ export default function AdminReportsPage() {
           <p className="text-sm text-gray-600">
             This page is restricted to the admin account.
           </p>
-          <p className="text-xs text-gray-500">
-            Signed in as: {currentUserEmail || "Not signed in"}
-          </p>
           <button
             onClick={() => router.push("/")}
             className="bg-black text-white px-4 py-2 rounded-xl"
@@ -315,6 +316,24 @@ export default function AdminReportsPage() {
 
   return (
     <div className="p-4 max-w-5xl mx-auto w-full bg-gray-50 min-h-screen">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7E9700]">
+            DayPassGyms Admin
+          </p>
+
+          <h1 className="mt-2 text-3xl font-black text-black">
+            Admin reports
+          </h1>
+
+          <p className="mt-1 text-sm text-gray-500">
+            Review reported spots and submitted improvements.
+          </p>
+        </div>
+
+        <AdminNav />
+      </div>
+
       <div className="mb-4 flex flex-col sm:flex-row gap-2">
         <button
           onClick={() => router.push("/")}
@@ -329,13 +348,6 @@ export default function AdminReportsPage() {
         >
           Refresh
         </button>
-      </div>
-
-      <div className="mb-4">
-        <h1 className="text-2xl font-bold text-black">Admin reports</h1>
-        <p className="text-sm text-gray-500">
-          Review reported spots and decide what to do.
-        </p>
       </div>
 
       <div className="bg-white rounded-2xl shadow p-5 border border-gray-200 mt-6">

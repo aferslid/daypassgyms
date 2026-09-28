@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import AdminNav from "@/app/components/AdminNav";
 
 function getAdminClient() {
   return createClient(
@@ -76,8 +77,20 @@ export default async function AdminSuggestionsPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <main className="min-h-screen bg-[#F7F7F5] p-10">
-      <h1 className="text-4xl font-black">Gym suggestions</h1>
+  <main className="min-h-screen bg-[#F7F7F5] p-10">
+    <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7E9700]">
+          DayPassGyms Admin
+        </p>
+
+        <h1 className="mt-2 text-4xl font-black">
+          Gym suggestions
+        </h1>
+      </div>
+
+      <AdminNav />
+    </div>
 
       <div className="mt-8 space-y-4">
         {(suggestions || []).map((s) => (
