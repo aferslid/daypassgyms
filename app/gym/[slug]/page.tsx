@@ -16,6 +16,7 @@ import {
   formatGymType,
   getGymTypeBadgeClass,
 } from "@/lib/gymType";
+import TrackedOutboundLink from "@/app/components/TrackedOutboundLink";
 
 type GymPageProps = {
   params: Promise<{
@@ -748,17 +749,17 @@ breadcrumbItems.push({
                 src={`https://maps.google.com/maps?q=${typedGym.lat},${typedGym.lng}&z=15&output=embed`}
               />
 
-              <a
+              <TrackedOutboundLink
                 href={
                   typedGym.google_maps_url ||
                   `https://www.google.com/maps?q=${typedGym.lat},${typedGym.lng}`
                 }
-                target="_blank"
-                rel="noopener noreferrer"
+                spotId={typedGym.id}
+                eventType="google_maps"
                 className="mt-4 block rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-center text-[13px] font-bold text-white transition hover:bg-[#222]"
               >
                 Open in Google Maps →
-              </a>
+              </TrackedOutboundLink>
 
               {typedGym.website_url && (
                 <a
