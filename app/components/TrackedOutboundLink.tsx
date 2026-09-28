@@ -37,11 +37,11 @@ export default function TrackedOutboundLink({
 
   return (
     <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className}
-      onClick={trackClick}
+    href={href}
+    target={href.startsWith("tel:") ? undefined : "_blank"}
+    rel={href.startsWith("tel:") ? undefined : "noopener noreferrer"}
+    className={className}
+    onClick={trackClick}
     >
       {children}
     </a>
