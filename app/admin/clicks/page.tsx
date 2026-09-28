@@ -16,6 +16,7 @@ type ClickStatsRow = {
   clicks_7d: number | string | null;
   clicks_30d: number | string | null;
   last_click_at: string | null;
+  phone_clicks: number | string | null;
 };
 
 function n(value: number | string | null | undefined) {
@@ -70,6 +71,11 @@ export default async function AdminClicksPage() {
     (sum, row) => sum + n(row.instagram_clicks),
     0
   );
+
+  const phoneClicks = stats.reduce(
+  (sum, row) => sum + n(row.phone_clicks),
+  0
+);
 
   return (
     <main className="min-h-screen bg-[#F7F7F5] p-6 md:p-10">
@@ -130,7 +136,7 @@ export default async function AdminClicksPage() {
           </div>
         </div>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-2xl border bg-white p-5">
             <p className="text-xs font-bold uppercase text-[#999]">
               Google Maps
@@ -157,6 +163,15 @@ export default async function AdminClicksPage() {
               {instagramClicks.toLocaleString()}
             </p>
           </div>
+
+          <div className="rounded-2xl border bg-white p-5">
+            <p className="text-xs font-bold uppercase text-[#999]">
+                Phone
+            </p>
+            <p className="mt-2 text-2xl font-black">
+                {phoneClicks.toLocaleString()}
+            </p>
+            </div>
         </div>
 
         <div className="mt-8 overflow-x-auto rounded-2xl border bg-white">
@@ -170,6 +185,7 @@ export default async function AdminClicksPage() {
                 <th className="px-4 py-3">Maps</th>
                 <th className="px-4 py-3">Website</th>
                 <th className="px-4 py-3">Instagram</th>
+                <th className="px-4 py-3">Phone</th>
                 <th className="px-4 py-3">7d</th>
                 <th className="px-4 py-3">30d</th>
                 <th className="px-4 py-3">Last click</th>
@@ -220,6 +236,10 @@ export default async function AdminClicksPage() {
                   </td>
 
                   <td className="px-4 py-3">
+                    {n(row.phone_clicks)}
+                  </td>
+
+                  <td className="px-4 py-3">
                     {n(row.clicks_7d)}
                   </td>
 
@@ -238,7 +258,7 @@ export default async function AdminClicksPage() {
               {stats.length === 0 && (
                 <tr>
                   <td
-                    colSpan={10}
+                    colSpan={11}
                     className="px-4 py-10 text-center text-[#999]"
                   >
                     No outbound clicks yet.
