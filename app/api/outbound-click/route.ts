@@ -5,6 +5,7 @@ const allowedEventTypes = [
   "google_maps",
   "website",
   "instagram",
+  "phone",
 ] as const;
 
 export async function POST(request: NextRequest) {

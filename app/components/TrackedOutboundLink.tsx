@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 
-type EventType = "google_maps" | "website" | "instagram";
+type EventType = "google_maps" | "website" | "instagram" | "phone";
 
 type TrackedOutboundLinkProps = {
   href: string;

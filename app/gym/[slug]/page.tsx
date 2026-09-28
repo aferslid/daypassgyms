@@ -17,6 +17,8 @@ import {
   getGymTypeBadgeClass,
 } from "@/lib/gymType";
 import TrackedOutboundLink from "@/app/components/TrackedOutboundLink";
+import { SiGooglemaps } from "react-icons/si";
+import { FaInstagram, FaPhone, FaGlobe } from "react-icons/fa";
 
 type GymPageProps = {
   params: Promise<{
@@ -758,7 +760,10 @@ breadcrumbItems.push({
                 eventType="google_maps"
                 className="mt-4 block rounded-[10px] bg-[#0C0C0C] px-5 py-3 text-center text-[13px] font-bold text-white transition hover:bg-[#222]"
               >
-                Open in Google Maps →
+                <span className="flex items-center justify-center gap-2">
+                  <SiGooglemaps className="text-[16px]" />
+                  Open in Google Maps
+                </span>
               </TrackedOutboundLink>
 
               {typedGym.website_url && (
@@ -768,7 +773,10 @@ breadcrumbItems.push({
                   eventType="website"
                   className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
                 >
-                  Visit website →
+                  <span className="flex items-center justify-center gap-2">
+                    <FaGlobe className="text-[15px]" />
+                    Visit website
+                  </span>
                 </TrackedOutboundLink>
               )}
 
@@ -779,17 +787,25 @@ breadcrumbItems.push({
                   eventType="instagram"
                   className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
                 >
-                  View Instagram →
+                  <span className="flex items-center justify-center gap-2">
+                    <FaInstagram className="text-[16px]" />
+                    View Instagram
+                  </span>
                 </TrackedOutboundLink>
               )}
 
               {typedGym.phone && (
-                <a
+                <TrackedOutboundLink
                   href={`tel:${typedGym.phone.replace(/\s/g, "")}`}
+                  spotId={typedGym.id}
+                  eventType="phone"
                   className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#0C0C0C]"
                 >
-                  Call gym →
-                </a>
+                  <span className="flex items-center justify-center gap-2">
+                    <FaPhone className="text-[14px]" />
+                    Call gym
+                  </span>
+                </TrackedOutboundLink>
               )}
             </div>
           )}
