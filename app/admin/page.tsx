@@ -16,7 +16,7 @@ async function login(formData: FormData) {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
-    path: "/admin",
+    path: "/",
     maxAge: 60 * 60 * 24,
   });
 
