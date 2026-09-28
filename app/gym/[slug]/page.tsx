@@ -762,25 +762,25 @@ breadcrumbItems.push({
               </TrackedOutboundLink>
 
               {typedGym.website_url && (
-                <a
+                <TrackedOutboundLink
                   href={typedGym.website_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  spotId={typedGym.id}
+                  eventType="website"
                   className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
                 >
                   Visit website →
-                </a>
+                </TrackedOutboundLink>
               )}
 
               {typedGym.instagram_url && (
-                <a
+                <TrackedOutboundLink
                   href={typedGym.instagram_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  spotId={typedGym.id}
+                  eventType="instagram"
                   className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#111] hover:bg-[#F2F2F0]"
                 >
                   View Instagram →
-                </a>
+                </TrackedOutboundLink>
               )}
 
               {typedGym.phone && (
