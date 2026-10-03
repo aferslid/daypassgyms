@@ -59,7 +59,7 @@ export default function GymOwnersPage() {
               </Link>
 
               <Link
-                href="/suggest?type=owner"
+                href="/suggest?type=update&owner=1"
                 className="inline-flex rounded-[10px] border border-[#333] px-6 py-3 text-[14px] font-bold text-white transition hover:border-[#555]"
               >
                 Already listed? Update your gym
@@ -130,7 +130,7 @@ export default function GymOwnersPage() {
               </Link>
 
               <Link
-                href="/suggest?type=owner"
+                href="/suggest?type=update&owner=1"
                 className="inline-flex rounded-[10px] border border-[#333] px-6 py-3 text-[14px] font-bold text-white transition hover:border-[#555]"
               >
                 Update an existing listing

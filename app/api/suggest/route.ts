@@ -22,13 +22,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const allowedSubmissionTypes = ["new", "update", "owner"];
+    const submissionType =
+      body.submission_type === "update" ||
+      body.submission_type === "owner"
+        ? "update"
+        : "new";
 
-    const submissionType = allowedSubmissionTypes.includes(
-      body.submission_type
-    )
-      ? body.submission_type
-      : "new";
+    const submitterIsOwner =
+      body.submitter_is_owner === true ||
+      body.submission_type === "owner";
 
     const spotId =
       Number.isInteger(Number(body.spot_id)) &&
@@ -59,6 +61,7 @@ export async function POST(request: Request) {
         spot_id: spotId,
 
         submission_type: submissionType,
+        submitter_is_owner: submitterIsOwner,
 
         gym_name: gymName,
         gym_type: textOrNull(body.gym_type),

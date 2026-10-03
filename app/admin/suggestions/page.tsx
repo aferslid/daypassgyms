@@ -95,9 +95,7 @@ export default async function AdminSuggestionsPage() {
       <div className="mt-8 space-y-4">
         {(suggestions || []).map((s) => {
           const submissionLabel =
-            s.submission_type === "owner"
-              ? "Owner / manager"
-              : s.submission_type === "update"
+            s.submission_type === "update"
               ? "Update"
               : "New gym";
 
@@ -124,6 +122,12 @@ export default async function AdminSuggestionsPage() {
                     >
                       {submissionLabel}
                     </span>
+
+                    {s.submitter_is_owner && (
+                      <span className="rounded-full bg-[#EEF6C8] px-3 py-1 text-[11px] font-bold text-[#536600]">
+                        Owner / manager
+                      </span>
+                    )}
                   </div>
 
                   <p className="mt-2 text-sm text-[#777]">

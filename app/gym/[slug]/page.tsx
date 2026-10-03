@@ -821,19 +821,18 @@ breadcrumbItems.push({
 
               <div className="mt-5 rounded-[12px] border border-[#E4E4E1] bg-[#F7F7F5] p-5">
                 <p className="text-[14px] font-extrabold text-[#0C0C0C]">
-                  Own or manage this gym?
+                  See something outdated?
                 </p>
 
                 <p className="mt-1 text-[12px] leading-5 text-[#777]">
-                  Help travelers by keeping this listing accurate and up to date.
-                  No account required.
+                  Help us keep this gym information accurate for travelers.
                 </p>
 
                 <Link
                   href={{
                     pathname: "/suggest",
                     query: {
-                      type: "owner",
+                      type: "update",
                       spot_id: typedGym.id,
                       gym: typedGym.name,
                       city: typedGym.city || "",
@@ -842,7 +841,7 @@ breadcrumbItems.push({
                   }}
                   className="mt-4 inline-flex text-[13px] font-bold text-[#6F8700] hover:underline"
                 >
-                  Update this listing →
+                  Suggest an update →
                 </Link>
               </div>
             </div>
