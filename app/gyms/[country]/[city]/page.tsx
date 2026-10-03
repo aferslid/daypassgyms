@@ -196,7 +196,9 @@ export async function generateMetadata({ params }: CityPageProps) {
     .join(" ");
 
   const title =
-    `Gym Day Passes in ${cityName}, ${countryName} | DayPassGyms`;
+    `Gym Day Passes in ${cityName}, ${countryName}`;
+
+  const socialTitle = `${title} | DayPassGyms`;
 
   const description =
     `Find gyms offering day passes in ${cityName}, ${countryName}. ` +
@@ -214,7 +216,7 @@ export async function generateMetadata({ params }: CityPageProps) {
     },
 
     openGraph: {
-      title,
+      title: socialTitle,
       description,
       url: canonicalUrl,
       siteName: "DayPassGyms",
@@ -231,7 +233,7 @@ export async function generateMetadata({ params }: CityPageProps) {
 
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle,
       description,
       images: ["/og-image.png"],
     },

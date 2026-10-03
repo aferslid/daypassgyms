@@ -113,7 +113,8 @@ export async function generateMetadata({
 
   const countryName = resolvedCountry.name;
 
-  const title = `Gym Day Passes in ${countryName} | DayPassGyms`;
+  const title = `Gym Day Passes in ${countryName}`;
+  const socialTitle = `${title} | DayPassGyms`;
 
   const description =
     `Find gyms offering day passes in ${countryName}. ` +
@@ -131,7 +132,7 @@ export async function generateMetadata({
     },
 
     openGraph: {
-      title,
+      title: socialTitle,
       description,
       url: canonicalUrl,
       siteName: "DayPassGyms",
@@ -148,7 +149,7 @@ export async function generateMetadata({
 
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle,
       description,
       images: ["/og-image.png"],
     },

@@ -122,8 +122,8 @@ export async function generateMetadata({ params }: GymPageProps) {
     locationParts.length > 0 ? ` | ${locationParts.join(", ")}` : "";
 
   const title = isFreeTrialOnly
-    ? `${gym.name} Free Trial${locationText} | DayPassGyms`
-    : `${gym.name} Day Pass Price${locationText} | DayPassGyms`;
+    ? `${gym.name} Free Trial${locationText}`
+    : `${gym.name} Day Pass Price${locationText}`;
   const canonicalSlug = `${slugify(gym.name)}-${gym.id}`;
 
   const canonicalUrl =
