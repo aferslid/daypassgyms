@@ -15,6 +15,7 @@ export default async function SuggestPage({
 }: {
   searchParams: Promise<{
     type?: string;
+    owner?: string;
     gym?: string;
     city?: string;
     country?: string;
@@ -25,37 +26,26 @@ export default async function SuggestPage({
 
   const initialGymName = params.gym || "";
   const initialType =
-    params.type === "owner"
-      ? "owner"
-      : params.type === "update"
-      ? "update"
-      : "new";
+  params.type === "update" || params.type === "owner"
+    ? "update"
+    : "new";
+
+  const initialIsOwner =
+  params.owner === "1" || params.type === "owner";
   const initialSpotId =
     params.spot_id && !Number.isNaN(Number(params.spot_id))
       ? Number(params.spot_id)
       : null;
-  const isOwner = initialType === "owner";
-  const isUpdate = initialType === "update";
 
-  const eyebrow = isOwner
-    ? "GYM OWNER / MANAGER"
-    : isUpdate
-    ? "UPDATE A GYM"
-    : "ADD A GYM";
-
-  const pageTitle = isOwner
-    ? "Update your gym listing."
-    : isUpdate
-    ? "Update a gym."
-    : "Suggest a gym.";
-
-  const pageDescription = isOwner
-    ? "Keep your gym information accurate for travelers. No account required."
-    : isUpdate
-    ? "Found outdated or incorrect information? Send us the update and we’ll review it."
-    : "Know a gym that offers day passes? Send it in and we’ll review it.";
   const initialCity = params.city || "";
   const initialCountry = params.country || "";
+
+  const eyebrow = "GYM INFORMATION";
+
+  const pageTitle = "Add or update a gym.";
+
+  const pageDescription =
+    "Help keep DayPassGyms accurate by adding a new gym or updating an existing listing.";
   return (
     <main className="min-h-screen bg-[#F7F7F5]">
       <section className="relative overflow-hidden bg-[#0C0C0C]">
@@ -86,6 +76,7 @@ export default async function SuggestPage({
             initialCity={initialCity}
             initialCountry={initialCountry}
             initialSpotId={initialSpotId}
+            initialIsOwner={initialIsOwner}
           />
         </div>
       </section>

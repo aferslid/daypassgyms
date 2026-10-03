@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type SubmissionType = "new" | "update" | "owner";
+type SubmissionType = "new" | "update";
 
 type Props = {
   initialGymName?: string;
@@ -10,6 +10,7 @@ type Props = {
   initialCity?: string;
   initialCountry?: string;
   initialSpotId?: number | null;
+  initialIsOwner?: boolean;
 };
 
 const inputClass =
@@ -43,6 +44,7 @@ export default function SuggestForm({
   initialCity = "",
   initialCountry = "",
   initialSpotId = null,
+  initialIsOwner = false,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -69,6 +71,9 @@ export default function SuggestForm({
       submission_type: String(
         formData.get("submission_type") || "new"
       ),
+
+      submitter_is_owner:
+        formData.get("submitter_is_owner") === "on",
 
       gym_name: String(formData.get("gym_name") || "").trim(),
       gym_type: String(formData.get("gym_type") || "").trim(),
@@ -175,8 +180,26 @@ export default function SuggestForm({
         >
           <option value="new">Add a new gym</option>
           <option value="update">Update an existing gym</option>
-          <option value="owner">I own or manage this gym</option>
         </select>
+
+        <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-[12px] border border-[#EBEBEB] bg-[#F7F7F5] p-4">
+          <input
+            type="checkbox"
+            name="submitter_is_owner"
+            defaultChecked={initialIsOwner}
+            className="mt-1 h-4 w-4"
+          />
+
+          <span>
+            <span className="block text-[14px] font-bold text-[#0C0C0C]">
+              I own or manage this gym
+            </span>
+
+            <span className="mt-1 block text-[12px] leading-5 text-[#777]">
+              This helps us identify information submitted directly by the gym.
+            </span>
+          </span>
+        </label>
       </div>
 
       <SectionTitle description="Basic information about the gym.">
