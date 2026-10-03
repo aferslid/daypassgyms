@@ -52,7 +52,7 @@ export default function GymOwnersPage() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/suggest?type=new"
+                href="/suggest?type=new&owner=1"
                 className="inline-flex rounded-[10px] bg-[#C8F135] px-6 py-3 text-[14px] font-bold text-[#0C0C0C] transition hover:opacity-90"
               >
                 List your gym
