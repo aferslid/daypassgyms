@@ -107,7 +107,7 @@ export async function generateMetadata({
 
   if (!resolvedCountry) {
     return {
-      title: "Country not found | DayPassGyms",
+      title: "Country not found",
     };
   }
 

@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import { blogPosts } from "./posts";
 
 export const metadata: Metadata = {
-  title: "Travel Fitness Blog | DayPassGyms",
+  title: "Travel Fitness Blog",
   description:
     "Practical guides about gym day passes, training while traveling, gym etiquette and visitor access around the world.",
 };

@@ -24,7 +24,7 @@ export async function generateMetadata({
 
   if (!post) {
     return {
-      title: "Article not found | DayPassGyms",
+      title: "Article not found",
     };
   }
 
@@ -35,7 +35,7 @@ export async function generateMetadata({
   const metaDescription = post.metaDescription ?? post.excerpt;
 
   return {
-    title: `${metaTitle} | DayPassGyms`,
+    title: `${metaTitle}`,
     description: metaDescription,
 
     alternates: {

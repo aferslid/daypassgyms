@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export const metadata = {
-  title: "Partnerships | DayPassGyms",
+  title: "Partnerships",
   description:
     "Partner with DayPassGyms to reach travelers and fitness-focused communities around the world.",
 };

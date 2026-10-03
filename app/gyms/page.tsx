@@ -11,7 +11,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Gyms with Day Passes by Country | DayPassGyms",
+    absolute: "Gyms with Day Passes by Country",
   },
 
   description:

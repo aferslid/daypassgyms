@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export const metadata = {
-  title: "About | DayPassGyms",
+  title: "About",
   description:
     "Why we built DayPassGyms and how we help travelers and digital nomads find gyms with day passes.",
 };
