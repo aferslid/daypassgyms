@@ -50,12 +50,21 @@ export default function GymOwnersPage() {
               and flexible access while traveling. Listing your gym is free.
             </p>
 
-            <Link
-              href="/suggest"
-              className="mt-8 inline-flex rounded-[10px] bg-[#C8F135] px-6 py-3 text-[14px] font-bold text-[#0C0C0C] transition hover:opacity-90"
-            >
-              List your gym
-            </Link>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/suggest?type=new"
+                className="inline-flex rounded-[10px] bg-[#C8F135] px-6 py-3 text-[14px] font-bold text-[#0C0C0C] transition hover:opacity-90"
+              >
+                List your gym
+              </Link>
+
+              <Link
+                href="/suggest?type=owner"
+                className="inline-flex rounded-[10px] border border-[#333] px-6 py-3 text-[14px] font-bold text-white transition hover:border-[#555]"
+              >
+                Already listed? Update your gym
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -112,12 +121,21 @@ export default function GymOwnersPage() {
               the information before adding it to the directory.
             </p>
 
-            <Link
-              href="/suggest"
-              className="mt-8 inline-flex rounded-[10px] bg-[#C8F135] px-6 py-3 text-[14px] font-bold text-[#0C0C0C] transition hover:opacity-90"
-            >
-              Suggest a gym →
-            </Link>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/suggest?type=new"
+                className="inline-flex rounded-[10px] bg-[#C8F135] px-6 py-3 text-[14px] font-bold text-[#0C0C0C] transition hover:opacity-90"
+              >
+                List your gym →
+              </Link>
+
+              <Link
+                href="/suggest?type=owner"
+                className="inline-flex rounded-[10px] border border-[#333] px-6 py-3 text-[14px] font-bold text-white transition hover:border-[#555]"
+              >
+                Update an existing listing
+              </Link>
+            </div>
           </div>
         </div>
       </section>

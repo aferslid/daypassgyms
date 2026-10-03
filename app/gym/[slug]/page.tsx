@@ -57,6 +57,7 @@ type Gym = {
   free_trial_duration: string | null;
   week_pass_price: number | null;
   access_gender: string | null;
+  price_verified_at: string | null;
 };
 
 type RelatedGym = {
@@ -278,7 +279,7 @@ export default async function GymPage({ params }: GymPageProps) {
   const { data: gym, error } = await supabase
     .from("spots")
     .select(
-      "id, name, type, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender"
+      "id, name, type, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender, price_verified_at"
     )
     .eq("id", gymId)
     .single();
@@ -702,14 +703,24 @@ breadcrumbItems.push({
               )}
             </div>
 
-            {typedGym.created_at && (
-              <p className="mt-5 text-[12px] text-[#999]">
-                Price info checked around{" "}
-                {new Date(typedGym.created_at).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                })}
-              </p>
+            {typedGym.price_verified_at && (
+              <div className="mt-5 border-t border-[#EBEBEB] pt-4">
+                <p className="text-[12px] font-bold text-[#666]">
+                  Price last verified{" "}
+                  {new Date(
+                    `${typedGym.price_verified_at}T00:00:00`
+                  ).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+
+                <p className="mt-1 text-[11px] leading-5 text-[#999]">
+                  Prices and access conditions may change. Please confirm with the gym
+                  before visiting.
+                </p>
+              </div>
             )}
           </div>
 
@@ -807,6 +818,33 @@ breadcrumbItems.push({
                   </span>
                 </TrackedOutboundLink>
               )}
+
+              <div className="mt-5 rounded-[12px] border border-[#E4E4E1] bg-[#F7F7F5] p-5">
+                <p className="text-[14px] font-extrabold text-[#0C0C0C]">
+                  Own or manage this gym?
+                </p>
+
+                <p className="mt-1 text-[12px] leading-5 text-[#777]">
+                  Help travelers by keeping this listing accurate and up to date.
+                  No account required.
+                </p>
+
+                <Link
+                  href={{
+                    pathname: "/suggest",
+                    query: {
+                      type: "owner",
+                      spot_id: typedGym.id,
+                      gym: typedGym.name,
+                      city: typedGym.city || "",
+                      country: typedGym.country_full || typedGym.country || "",
+                    },
+                  }}
+                  className="mt-4 inline-flex text-[13px] font-bold text-[#6F8700] hover:underline"
+                >
+                  Update this listing →
+                </Link>
+              </div>
             </div>
           )}
 
