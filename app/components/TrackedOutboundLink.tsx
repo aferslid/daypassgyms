@@ -12,6 +12,23 @@ type TrackedOutboundLinkProps = {
   children: ReactNode;
 };
 
+function getVisitorId() {
+  const storageKey = "dpg_visitor_id";
+
+  try {
+    let visitorId = localStorage.getItem(storageKey);
+
+    if (!visitorId) {
+      visitorId = crypto.randomUUID();
+      localStorage.setItem(storageKey, visitorId);
+    }
+
+    return visitorId;
+  } catch {
+    return null;
+  }
+}
+
 export default function TrackedOutboundLink({
   href,
   spotId,
@@ -20,6 +37,8 @@ export default function TrackedOutboundLink({
   children,
 }: TrackedOutboundLinkProps) {
   function trackClick() {
+    const visitorId = getVisitorId();
+
     fetch("/api/outbound-click", {
       method: "POST",
       headers: {
@@ -28,6 +47,7 @@ export default function TrackedOutboundLink({
       body: JSON.stringify({
         spot_id: spotId,
         event_type: eventType,
+        visitor_id: visitorId,
       }),
       keepalive: true,
     }).catch(() => {
@@ -35,13 +55,15 @@ export default function TrackedOutboundLink({
     });
   }
 
+  const isPhoneLink = href.startsWith("tel:");
+
   return (
     <a
-    href={href}
-    target={href.startsWith("tel:") ? undefined : "_blank"}
-    rel={href.startsWith("tel:") ? undefined : "noopener noreferrer"}
-    className={className}
-    onClick={trackClick}
+      href={href}
+      target={isPhoneLink ? undefined : "_blank"}
+      rel={isPhoneLink ? undefined : "noopener noreferrer"}
+      className={className}
+      onClick={trackClick}
     >
       {children}
     </a>

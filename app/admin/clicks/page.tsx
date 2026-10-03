@@ -17,6 +17,12 @@ type ClickStatsRow = {
   clicks_30d: number | string | null;
   last_click_at: string | null;
   phone_clicks: number | string | null;
+  unique_visitors: number | string | null;
+};
+
+type GlobalClickStatsRow = {
+  total_clicks: number | string | null;
+  unique_visitors: number | string | null;
 };
 
 function n(value: number | string | null | undefined) {
@@ -36,11 +42,26 @@ export default async function AdminClicksPage() {
     .select("*")
     .order("total_clicks", { ascending: false });
 
+  const { data: globalData, error: globalError } = await supabaseAdmin
+    .from("outbound_click_global_stats")
+    .select("*")
+    .single();
+
+    if (globalError) {
+    throw new Error(
+        `Could not load global click stats: ${globalError.message}`
+    );
+    }  
+
   if (error) {
     throw new Error(`Could not load click stats: ${error.message}`);
   }
 
   const stats = (data || []) as ClickStatsRow[];
+
+  const globalStats = globalData as GlobalClickStatsRow;
+
+  const uniqueVisitors = n(globalStats.unique_visitors);
 
   const totalClicks = stats.reduce(
     (sum, row) => sum + n(row.total_clicks),
@@ -73,9 +94,11 @@ export default async function AdminClicksPage() {
   );
 
   const phoneClicks = stats.reduce(
-  (sum, row) => sum + n(row.phone_clicks),
-  0
-);
+    (sum, row) => sum + n(row.phone_clicks),
+    0
+    );
+
+
 
   return (
     <main className="min-h-screen bg-[#F7F7F5] p-6 md:p-10">
@@ -98,7 +121,7 @@ export default async function AdminClicksPage() {
           <AdminNav />
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <div className="rounded-2xl border bg-white p-5">
             <p className="text-xs font-bold uppercase text-[#999]">
               Total clicks
@@ -134,6 +157,15 @@ export default async function AdminClicksPage() {
               {stats.length.toLocaleString()}
             </p>
           </div>
+
+          <div className="rounded-2xl border bg-white p-5">
+            <p className="text-xs font-bold uppercase text-[#999]">
+                Unique visitors
+            </p>
+            <p className="mt-2 text-3xl font-black">
+                {uniqueVisitors.toLocaleString()}
+            </p>
+            </div>
         </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -182,6 +214,7 @@ export default async function AdminClicksPage() {
                 <th className="px-4 py-3">Gym</th>
                 <th className="px-4 py-3">Location</th>
                 <th className="px-4 py-3">Total</th>
+                <th className="px-4 py-3">Unique</th>
                 <th className="px-4 py-3">Maps</th>
                 <th className="px-4 py-3">Website</th>
                 <th className="px-4 py-3">Instagram</th>
@@ -224,6 +257,10 @@ export default async function AdminClicksPage() {
                   </td>
 
                   <td className="px-4 py-3">
+                    {n(row.unique_visitors)}
+                    </td>
+
+                  <td className="px-4 py-3">
                     {n(row.google_maps_clicks)}
                   </td>
 
@@ -258,7 +295,7 @@ export default async function AdminClicksPage() {
               {stats.length === 0 && (
                 <tr>
                   <td
-                    colSpan={11}
+                    colSpan={12}
                     className="px-4 py-10 text-center text-[#999]"
                   >
                     No outbound clicks yet.

@@ -14,6 +14,10 @@ export async function POST(request: NextRequest) {
 
     const spotId = Number(body.spot_id);
     const eventType = body.event_type;
+    const visitorId =
+      typeof body.visitor_id === "string" && body.visitor_id.length <= 100
+        ? body.visitor_id
+        : null;
 
     if (!Number.isInteger(spotId) || spotId <= 0) {
       return NextResponse.json(
@@ -34,6 +38,7 @@ export async function POST(request: NextRequest) {
       .insert({
         spot_id: spotId,
         event_type: eventType,
+        visitor_id: visitorId,
       });
 
     if (error) {
