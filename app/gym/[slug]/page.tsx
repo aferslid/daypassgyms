@@ -280,7 +280,7 @@ export default async function GymPage({ params }: GymPageProps) {
   const { data: gym, error } = await supabase
     .from("spots")
     .select(
-      "id, name, type, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender, price_verified_at"
+      "id, name, type, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, facebook_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender, price_verified_at"
     )
     .eq("id", gymId)
     .single();
