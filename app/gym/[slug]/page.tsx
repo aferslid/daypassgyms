@@ -815,7 +815,7 @@ breadcrumbItems.push({
                 >
                   <span className="flex items-center justify-center gap-2">
                     <FaFacebook className="text-[15px]" />
-                    Facebook
+                    View Facebook
                   </span>
                 </a>
               )}
