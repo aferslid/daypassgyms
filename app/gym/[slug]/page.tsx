@@ -18,7 +18,7 @@ import {
 } from "@/lib/gymType";
 import TrackedOutboundLink from "@/app/components/TrackedOutboundLink";
 import { SiGooglemaps } from "react-icons/si";
-import { FaInstagram, FaPhone, FaGlobe } from "react-icons/fa";
+import { FaInstagram, FaPhone, FaGlobe, FaFacebook } from "react-icons/fa";
 
 type GymPageProps = {
   params: Promise<{
@@ -42,6 +42,7 @@ type Gym = {
   address: string | null;
   website_url: string | null;
   instagram_url: string | null;
+  facebook_url: string | null;
   google_maps_url: string | null;
   country_full: string | null;
 
@@ -803,6 +804,20 @@ breadcrumbItems.push({
                     View Instagram
                   </span>
                 </TrackedOutboundLink>
+              )}
+
+              {typedGym.facebook_url && (
+                <a
+                  href={typedGym.facebook_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 block rounded-[10px] border border-[#EBEBEB] bg-white px-5 py-3 text-center text-[13px] font-bold text-[#0C0C0C]"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <FaFacebook className="text-[15px]" />
+                    Facebook
+                  </span>
+                </a>
               )}
 
               {typedGym.phone && (
