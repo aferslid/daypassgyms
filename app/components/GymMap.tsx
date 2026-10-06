@@ -11,6 +11,8 @@ import {
   formatGymType,
   getGymTypeBadgeClass,
 } from "@/lib/gymType";
+import { Ticket } from "lucide-react";
+
 
 type Spot = {
   id: number;
@@ -22,6 +24,7 @@ type Spot = {
   photo_url?: string | null;
   created_at?: string | null;
   day_pass_price?: number | null;
+  day_pass_note?: string | null;
   currency?: string | null;
   shower?: boolean | null;
   locker?: boolean | null;
@@ -44,6 +47,7 @@ type MapMarker = {
   photo_url: string | null;
   point_count: number;
   day_pass_price?: number | null;
+  day_pass_note?: string | null;
   currency?: string | null;
   shower?: boolean | null;
   locker?: boolean | null;
@@ -58,8 +62,15 @@ type MapMarker = {
 
 
 function formatPrice(spot: Spot) {
+  if (
+    spot.free_trial === true &&
+    (spot.day_pass_price === null || spot.day_pass_price === undefined)
+  ) {
+    return "Free trial only";
+  }
+
   if (spot.day_pass_price === null || spot.day_pass_price === undefined) {
-    return "Price unknown";
+    return spot.day_pass_note || "Price unknown";
   }
 
   return `${new Intl.NumberFormat().format(spot.day_pass_price)} ${
@@ -155,6 +166,7 @@ export default function GymMap() {
           description: m.description,
           photo_url: m.photo_url,
           day_pass_price: m.day_pass_price,
+          day_pass_note: m.day_pass_note,
           currency: m.currency,
           shower: m.shower,
           locker: m.locker,
@@ -365,7 +377,7 @@ export default function GymMap() {
 
           <div className="mt-4 flex flex-wrap gap-2 text-[11px]">
             <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
-              💰 Day: {formatPrice(selectedSpot)}
+              💰 {formatPrice(selectedSpot)}
             </span>
 
             {selectedSpot.week_pass_price !== null &&
@@ -380,9 +392,11 @@ export default function GymMap() {
               🚿 {formatShower(selectedSpot)}
             </span>
 
-            {selectedSpot.free_trial === true && (
-              <span className="rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
-                🎟️ Free trial
+            {selectedSpot.free_trial === true &&
+            selectedSpot.day_pass_price != null && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#F2F2F0] px-3 py-1 text-[#555]">
+                <Ticket className="h-3.5 w-3.5 text-[#7A9400]" />
+                Free trial
               </span>
             )}
           </div>
