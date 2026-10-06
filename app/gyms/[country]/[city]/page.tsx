@@ -29,8 +29,10 @@ type Gym = {
   city: string | null;
   photo_url: string | null;
   day_pass_price: number | null;
+  day_pass_note: string | null;
   currency: string | null;
   shower: boolean | null;
+  free_trial: boolean | null;
 };
 
 const CITY_SLUG_ALIASES: Record<string, Record<string, string>> = {
@@ -154,7 +156,15 @@ function formatSlug(slug: string) {
 
 
 function formatPrice(gym: Gym) {
+  if (
+    gym.free_trial === true &&
+    (gym.day_pass_price === null || gym.day_pass_price === undefined)
+  ) {
+    return "Free trial only";
+  }
+
   if (gym.day_pass_price === null || gym.day_pass_price === undefined) {
+    if (gym.day_pass_note) return gym.day_pass_note;
     return "Price unknown";
   }
 
@@ -251,7 +261,7 @@ async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
     const { data, error } = await supabase
       .from("spots")
       .select(
-        "id, name, type, description, country, city, photo_url, day_pass_price, currency, shower"
+        "id, name, type, description, country, city, photo_url, day_pass_price, day_pass_note, currency, shower, free_trial"
       )
       .eq("country", countryCode)
       .order("name")
@@ -376,6 +386,12 @@ export default async function CityPage({ params }: CityPageProps) {
   max: Math.max(...prices),
 }));
 
+const hasFreeTrialOnly = gyms.some(
+  (gym) =>
+    gym.free_trial === true &&
+    (gym.day_pass_price === null || gym.day_pass_price === undefined)
+);
+
 const priceRangeText =
   priceRanges.length > 0
     ? priceRanges
@@ -388,7 +404,9 @@ const priceRangeText =
             : `${min}-${max} ${range.currency}`;
         })
         .join(" • ")
-    : "Unknown";
+    : hasFreeTrialOnly
+      ? "Free trial only"
+      : "Unknown";
 
   return (
     <>
