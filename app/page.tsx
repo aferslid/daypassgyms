@@ -10,11 +10,11 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: {
-    absolute: "DayPassGyms | Find Gym Day Passes Worldwide",
+    absolute: "Find a Gym Day Pass Near You | DayPassGyms",
   },
 
   description:
-    "Find gyms offering day passes around the world. Compare prices, showers, lockers, Wi-Fi and locations before you train.",
+    "Find gyms with day passes near you or while traveling. Compare single-visit prices, showers, lockers, Wi-Fi and locations worldwide.",
 
   alternates: {
     canonical: "https://www.daypassgyms.com",
@@ -159,6 +159,14 @@ const maxCountryCount =
       },
       {
         "@type": "Question",
+        name: "How do I find a gym day pass near me?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Use DayPassGyms to browse gyms with day passes by country and city, or use the map to find nearby gyms offering single-visit access.",
+        },
+      },
+      {
+        "@type": "Question",
         name: "Do day pass gyms have showers?",
         acceptedAnswer: {
           "@type": "Answer",
@@ -202,9 +210,10 @@ const maxCountryCount =
               <span className="text-[#C8F135]">anywhere.</span>
             </h1>
 
-            <p className="mt-5 max-w-md text-[14px] leading-relaxed text-[#777]">
-              Find a gym day pass near you or while traveling. Browse by country,
-              compare day-pass prices, check showers and train on your terms.
+            <p className="mt-5 max-w-lg text-[14px] leading-relaxed text-[#777]">
+              Find gyms with day passes near you or while traveling. Browse gym day
+              passes by country and city, compare single-visit prices, check facilities
+              and train without a membership.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -539,6 +548,10 @@ const maxCountryCount =
           {
             q: "How much does a gym day pass cost?",
             a: "Gym day pass prices vary by country, city and gym. DayPassGyms helps you compare listed day pass prices before you visit.",
+          },
+          {
+            q: "How do I find a gym day pass near me?",
+            a: "Browse gyms with day passes by country and city, or use the DayPassGyms map to find nearby gyms offering single-visit access.",
           },
           {
             q: "Do day pass gyms have showers?",
