@@ -1,5 +1,7 @@
 import Header from "../components/Header";
 import SuggestForm from "./SuggestForm";
+import { headers } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 
 export const metadata = {
   title: "Add or Update a Gym",
@@ -10,6 +12,43 @@ export const metadata = {
     follow: false,
   },
 };
+
+async function logSuggestVisit() {
+  try {
+    const h = await headers();
+
+    const forwardedFor = h.get("x-forwarded-for");
+    const ip = forwardedFor?.split(",")[0]?.trim() || null;
+
+    const userAgent = h.get("user-agent");
+
+    const country =
+      h.get("x-vercel-ip-country") ||
+      h.get("cf-ipcountry") ||
+      null;
+
+    const referer = h.get("referer");
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SECRET_KEY!,
+      {
+        auth: {
+          persistSession: false,
+        },
+      }
+    );
+
+    await supabase.from("suggest_page_logs").insert({
+      ip,
+      user_agent: userAgent,
+      country,
+      referer,
+    });
+  } catch (error) {
+    console.error("Suggest page logging error:", error);
+  }
+}
 
 export default async function SuggestPage({
   searchParams,
@@ -23,6 +62,9 @@ export default async function SuggestPage({
     spot_id?: string;
   }>;
 }) {
+
+  await logSuggestVisit();
+  
   const params = await searchParams;
 
   const initialGymName = params.gym || "";
