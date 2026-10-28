@@ -341,7 +341,7 @@ export default async function CityPage({ params }: CityPageProps) {
     mainEntity: [
       {
         "@type": "Question",
-        name: `Can I get a day pass gym in ${cityName}?`,
+        name: `Can I get a gym day pass in ${cityName}?`,
         acceptedAnswer: {
           "@type": "Answer",
           text: `Yes. DayPassGyms currently lists ${gyms.length} ${
@@ -609,19 +609,38 @@ const priceRangeText =
                                       in {cityName}, {countryName} with day-pass information.
                                     </p>
 
+                                    {priceRangeText !== "Unknown" && (
+                                      <p>
+                                        Current listed day-pass pricing in {cityName}:{" "}
+                                        <strong className="text-[#0C0C0C]">{priceRangeText}</strong>.
+                                        Prices and access conditions can vary by gym, so check the
+                                        individual listing before visiting.
+                                      </p>
+                                    )}
+
                                     <p>
-                                      If you&apos;re visiting {cityName}, a day pass lets you train
-                                      without committing to a long-term membership. Compare prices
-                                      and facilities above before choosing where to work out.
+                                      If you&apos;re visiting {cityName}, a gym day pass lets you train
+                                      without committing to a long-term membership. Compare prices,
+                                      facilities and visitor access information above before choosing
+                                      where to work out.
                                     </p>
                                   </div>
 
-                                  <Link
-                                    href={`/gyms/${resolvedCountry.canonicalSlug}`}
-                                    className="mt-7 inline-flex items-center text-[14px] font-bold text-[#0C0C0C] transition hover:text-[#8BAA00]"
-                                  >
-                                    Browse all gym day passes in {countryName} →
-                                  </Link>
+                                  <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3">
+                                    <Link
+                                      href={`/gyms/${resolvedCountry.canonicalSlug}`}
+                                      className="inline-flex items-center text-[14px] font-bold text-[#0C0C0C] transition hover:text-[#8BAA00]"
+                                    >
+                                      Browse all gym day passes in {countryName} →
+                                    </Link>
+
+                                    <Link
+                                      href="/"
+                                      className="inline-flex items-center text-[14px] font-bold text-[#0C0C0C] transition hover:text-[#8BAA00]"
+                                    >
+                                      Find a gym day pass near you →
+                                    </Link>
+                                  </div>
                                 </div>
 
                                 <div className="flex flex-col justify-center bg-[#0C0C0C] p-8 md:p-10">
