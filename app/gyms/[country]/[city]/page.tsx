@@ -206,13 +206,12 @@ export async function generateMetadata({ params }: CityPageProps) {
     .join(" ");
 
   const title =
-    `Gym Day Passes in ${cityName}, ${countryName}`;
+  `${cityName} Gym Day Passes & Prices | ${countryName}`;
 
   const socialTitle = `${title} | DayPassGyms`;
 
   const description =
-    `Find gyms offering day passes in ${cityName}, ${countryName}. ` +
-    `Compare prices, showers, lockers, Wi-Fi, facilities, and visitor access information.`;
+  `Compare gym day passes in ${cityName}, ${countryName}. See single-visit prices, showers, facilities and visitor access, and find where to train without a membership.`;
 
   const canonicalUrl =
     `https://www.daypassgyms.com/gyms/${resolvedCountry.canonicalSlug}/${canonicalCitySlug}`;
