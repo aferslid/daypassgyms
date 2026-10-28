@@ -120,25 +120,21 @@ const title = isFreeTrialOnly
   ? `${gym.name} Free Trial${
       titleLocation ? ` | ${titleLocation}` : ""
     }`
-  : priceLabel
-    ? `${gym.name} Day Pass – ${priceLabel}${
-        titleLocation ? ` | ${titleLocation}` : ""
-      }`
-    : `${gym.name} Gym Day Pass${
-        titleLocation ? ` | ${titleLocation}` : ""
-      }`;
+  : `${gym.name} Gym Day Pass${
+      titleLocation ? ` | ${titleLocation}` : ""
+    }`;
 
 const description = isFreeTrialOnly
-  ? `Check free trial access for ${gym.name}${
+  ? `Free trial available at ${gym.name}${
       locationLabel ? ` in ${locationLabel}` : ""
-    }. See facilities, showers, lockers and visitor access information.`
+    }. Check trial access, facilities, showers, lockers and location before you train.`
   : priceLabel
-    ? `${gym.name} offers a gym day pass for ${priceLabel}${
+    ? `Gym day pass at ${gym.name}: ${priceLabel}${
         locationLabel ? ` in ${locationLabel}` : ""
       }. Check facilities, showers, lockers and visitor access before you train.`
     : `Find gym day pass information for ${gym.name}${
         locationLabel ? ` in ${locationLabel}` : ""
-      }. Check facilities, showers, lockers and visitor access details.`;
+      }. Check facilities, showers, lockers and visitor access before you train.`;
   const canonicalSlug = `${slugify(gym.name)}-${gym.id}`;
 
   const canonicalUrl =
