@@ -408,6 +408,45 @@ const priceRangeText =
       ? "Free trial only"
       : "Unknown";
 
+const relatedCitiesMap = new Map<
+  string,
+  { slug: string; name: string; count: number }
+>();
+
+allGyms.forEach((gym) => {
+  if (!gym.city) return;
+
+  const rawSlug = slugify(gym.city);
+
+  if (!rawSlug) return;
+
+  const canonicalSlug = resolveCitySlug(
+    countryCode,
+    rawSlug
+  );
+
+  // Exclude current city
+  if (canonicalSlug === city) return;
+
+  const existing = relatedCitiesMap.get(canonicalSlug);
+
+  if (existing) {
+    existing.count += 1;
+  } else {
+    relatedCitiesMap.set(canonicalSlug, {
+      slug: canonicalSlug,
+      name: formatSlug(canonicalSlug),
+      count: 1,
+    });
+  }
+});
+
+const relatedCities = Array.from(
+  relatedCitiesMap.values()
+)
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 8);
+
   return (
     <>
     <script
@@ -679,6 +718,61 @@ const priceRangeText =
                             </div>
                           </div>
                         </section>
+
+        {relatedCities.length > 0 && (
+            <section className="mx-auto max-w-7xl px-6 pb-16">
+              <div className="rounded-[24px] border border-[#E4E4E1] bg-white p-8 md:p-10">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
+                  MORE CITIES IN {countryName.toUpperCase()}
+                </p>
+
+                <h2 className="mt-3 text-[28px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
+                  Gym day passes in other {countryName} cities
+                </h2>
+
+                <p className="mt-3 max-w-2xl text-[14px] leading-6 text-[#777]">
+                  Explore other cities in {countryName} where DayPassGyms lists gyms
+                  with day-pass or flexible visitor access.
+                </p>
+
+                <div
+                  className="mt-7 grid gap-3"
+                  style={{
+                    gridTemplateColumns:
+                      "repeat(auto-fit, minmax(200px, 1fr))",
+                  }}
+                >
+                  {relatedCities.map((relatedCity) => (
+                    <Link
+                      key={relatedCity.slug}
+                      href={`/gyms/${resolvedCountry.canonicalSlug}/${relatedCity.slug}`}
+                      className="group rounded-[14px] border border-[#EBEBEB] bg-[#FAFAF8] p-5 transition hover:-translate-y-0.5 hover:border-[#C8F135]"
+                    >
+                      <div className="text-[16px] font-extrabold tracking-[-0.4px] text-[#111] transition group-hover:text-[#789000]">
+                        {relatedCity.name}
+                      </div>
+
+                      <div className="mt-2 text-[12px] text-[#888]">
+                        {relatedCity.count}{" "}
+                        {relatedCity.count === 1 ? "gym" : "gyms"} listed
+                      </div>
+
+                      <div className="mt-4 text-[12px] font-bold text-[#111]">
+                        View gym day passes →
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+
+                <Link
+                  href={`/gyms/${resolvedCountry.canonicalSlug}`}
+                  className="mt-7 inline-flex text-[13px] font-bold text-[#0C0C0C] transition hover:text-[#789000]"
+                >
+                  Browse all gym day passes in {countryName} →
+                </Link>
+              </div>
+            </section>
+          )}
 
         <TravelGuides
           title={`Training in ${cityName}?`}
