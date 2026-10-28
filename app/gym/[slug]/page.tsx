@@ -95,37 +95,50 @@ export async function generateMetadata({ params }: GymPageProps) {
     };
   }
 
-  const price =
-  gym.day_pass_price !== null && gym.day_pass_price !== undefined
-    ? `${gym.day_pass_price} ${gym.currency || ""}`.trim()
-    : gym.day_pass_note || null;
+  const hasPaidPrice =
+  gym.day_pass_price !== null &&
+  gym.day_pass_price !== undefined;
 
-  const locationLabel = [gym.city, gym.country_full].filter(Boolean).join(", ");
+const priceLabel = hasPaidPrice
+  ? `${new Intl.NumberFormat("en-US", {
+      maximumFractionDigits: 2,
+    }).format(Number(gym.day_pass_price))} ${gym.currency || ""}`.trim()
+  : null;
 
-  const isFreeTrialOnly =
-    gym.day_pass_note === "Free trial only" ||
-    (gym.free_trial === true &&
-      (gym.day_pass_price === null || gym.day_pass_price === undefined));
+const locationLabel = [gym.city, gym.country_full]
+  .filter(Boolean)
+  .join(", ");
 
-  const description = isFreeTrialOnly
-  ? `View free trial information for ${gym.name}${
+const titleLocation =
+  gym.city || gym.country_full || "";
+
+const isFreeTrialOnly =
+  gym.day_pass_note === "Free trial only" ||
+  (gym.free_trial === true && !hasPaidPrice);
+
+const title = isFreeTrialOnly
+  ? `${gym.name} Free Trial${
+      titleLocation ? ` | ${titleLocation}` : ""
+    }`
+  : priceLabel
+    ? `${gym.name} Day Pass – ${priceLabel}${
+        titleLocation ? ` | ${titleLocation}` : ""
+      }`
+    : `${gym.name} Gym Day Pass${
+        titleLocation ? ` | ${titleLocation}` : ""
+      }`;
+
+const description = isFreeTrialOnly
+  ? `Check free trial access for ${gym.name}${
       locationLabel ? ` in ${locationLabel}` : ""
-    }. Check showers, lockers, Wi-Fi, facilities and visitor access information.`
-  : price
-    ? `View the ${price} day pass price for ${gym.name}${
+    }. See facilities, showers, lockers and visitor access information.`
+  : priceLabel
+    ? `${gym.name} offers a gym day pass for ${priceLabel}${
         locationLabel ? ` in ${locationLabel}` : ""
-      }. Check showers, lockers, Wi-Fi, facilities and visitor access information.`
-    : `View day pass information for ${gym.name}${
+      }. Check facilities, showers, lockers and visitor access before you train.`
+    : `Find gym day pass information for ${gym.name}${
         locationLabel ? ` in ${locationLabel}` : ""
-      }. Check showers, lockers, Wi-Fi, facilities and visitor access details.`;
-
-  const locationParts = [gym.city, gym.country_full].filter(Boolean);
-  const locationText =
-    locationParts.length > 0 ? ` | ${locationParts.join(", ")}` : "";
-
-  const title = isFreeTrialOnly
-    ? `${gym.name} Free Trial${locationText}`
-    : `${gym.name} Day Pass Price${locationText}`;
+      }. Check facilities, showers, lockers and visitor access details.`;
   const canonicalSlug = `${slugify(gym.name)}-${gym.id}`;
 
   const canonicalUrl =
