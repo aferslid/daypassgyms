@@ -65,66 +65,57 @@ function normalizeCountryName(code: string, name: string) {
   return specialCases[code.toUpperCase()] || name;
 }
 
-async function fetchAllSpots(): Promise<any[]> {
-  const pageSize = 1000;
-  let from = 0;
-  let rows: any[] = [];
+type DirectoryStat = {
+  country_code: string;
+  gym_count: number;
+  city_count: number;
+};
 
-  while (true) {
-    const { data, error } = await supabase
-      .from("spots")
-      .select("country, city")
-      .not("country", "is", null)
-      .order("id", { ascending: true })
-      .range(from, from + pageSize - 1);
+async function fetchDirectoryStats(): Promise<DirectoryStat[]> {
+  const { data, error } = await supabase.rpc("get_directory_stats");
 
-    if (error) throw error;
-
-    rows.push(...(data || []));
-
-    if (!data || data.length < pageSize) break;
-
-    from += pageSize;
+  if (error) {
+    console.error("Directory stats error:", error);
+    throw error;
   }
 
-  return rows;
+  return ((data || []) as DirectoryStat[]).map((row: DirectoryStat) => ({
+    country_code: String(row.country_code),
+    gym_count: Number(row.gym_count),
+    city_count: Number(row.city_count),
+  }));
 }
 
 export default async function GymsPage() {
-  const data = await fetchAllSpots();
+  const stats = await fetchDirectoryStats();
 
-  const countryCounts = new Map<string, number>();
-  (data || []).forEach((spot) => {
-    const code = String(spot.country).toUpperCase();
-    countryCounts.set(code, (countryCounts.get(code) || 0) + 1);
-  });
+  const countries = stats
+    .map((row) => {
+      const code = row.country_code.toUpperCase();
+      const name = normalizeCountryName(
+        code,
+        getCountryName(code)
+      );
 
-  const countries = Array.from(countryCounts.entries())
-  .map(([code, count]) => {
-    const name = normalizeCountryName(code, getCountryName(code));
+      return {
+        code,
+        count: row.gym_count,
+        name,
+        slug: slugify(name),
+        flag: getFlagUrl(code),
+      };
+    })
+    .sort((a, b) => b.count - a.count);
 
-    return {
-      code,
-      count,
-      name,
-      slug: slugify(name),
-      flag: getFlagUrl(code),
-    };
-  })
-  .sort((a, b) => b.count - a.count);
+  const totalGyms = stats.reduce(
+    (sum, row) => sum + row.gym_count,
+    0
+  );
 
-  const totalGyms = countries.reduce((sum, c) => sum + c.count, 0);
-
-  const citiesCount = new Set(
-    (data || [])
-      .filter((spot) => spot.country && spot.city)
-      .map(
-        (spot) =>
-          `${String(spot.country).trim().toUpperCase()}-${String(spot.city)
-            .trim()
-            .toLowerCase()}`
-      )
-  ).size;
+  const citiesCount = stats.reduce(
+    (sum, row) => sum + row.city_count,
+    0
+  );
 
   
 

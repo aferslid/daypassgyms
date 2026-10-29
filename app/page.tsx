@@ -47,95 +47,74 @@ export const metadata: Metadata = {
   },
 };
 
-async function fetchAll(select: string): Promise<any[]> {
-  const pageSize = 1000;
-  let from = 0;
-  let rows: any[] = [];
+type DirectoryStat = {
+  country_code: string;
+  gym_count: number;
+  city_count: number;
+};
 
-  while (true) {
-    const { data, error } = await supabase
-      .from("spots")
-      .select(select)
-      .order("id", { ascending: true })
-      .range(from, from + pageSize - 1);
+async function fetchDirectoryStats(): Promise<DirectoryStat[]> {
+  const { data, error } = await supabase.rpc("get_directory_stats");
 
-    if (error) throw error;
-
-    rows.push(...(data || []));
-
-    if (!data || data.length < pageSize) break;
-
-    from += pageSize;
+  if (error) {
+    console.error("Homepage directory stats error:", error);
+    throw error;
   }
 
-  return rows;
+  return ((data || []) as DirectoryStat[]).map(
+    (row: DirectoryStat) => ({
+      country_code: String(row.country_code),
+      gym_count: Number(row.gym_count),
+      city_count: Number(row.city_count),
+    })
+  );
 }
 
 export default async function Home() {
-  const { count: totalGyms } = await supabase
-    .from("spots")
-    .select("*", { count: "exact", head: true });
+  const stats = await fetchDirectoryStats();
 
-  const countriesData = (await fetchAll("country"))
-  .filter((row) => row.country);
-
-  const citiesData = (await fetchAll("country, city"))
-  .filter((row) => row.country && row.city);
-
-  const countriesCount = new Set(
-    (countriesData || []).map((row) =>
-      String(row.country).trim().toUpperCase()
-    )
-  ).size;
-
-  const citiesCount = new Set(
-    (citiesData || []).map(
-      (row) =>
-        `${String(row.country).trim().toUpperCase()}-${String(row.city)
-          .trim()
-          .toLowerCase()}`
-    )
-  ).size;
-
-  const countryCounts = new Map<string, number>();
-
-countriesData.forEach((row) => {
-  const code = String(row.country).trim().toUpperCase();
-
-  countryCounts.set(
-    code,
-    (countryCounts.get(code) || 0) + 1
+  const totalGyms = stats.reduce(
+    (sum, row) => sum + row.gym_count,
+    0
   );
-});
 
-const topCountries = Array.from(countryCounts.entries())
-  .map(([code, count]) => {
-    const country = countriesList.find(
-      (item) => item.cca2.toUpperCase() === code
-    );
+  const countriesCount = stats.length;
 
-    const specialCases: Record<string, string> = {
-      TR: "Turkey",
-      SX: "Sint Maarten",
-      MF: "Saint Martin",
-    };
+  const citiesCount = stats.reduce(
+    (sum, row) => sum + row.city_count,
+    0
+  );
 
-    return {
-      code,
-      name:
-        specialCases[code] ||
-        country?.name.common ||
+  const topCountries = stats
+    .map((row) => {
+      const code = row.country_code.toUpperCase();
+
+      const country = countriesList.find(
+        (item) => item.cca2.toUpperCase() === code
+      );
+
+      const specialCases: Record<string, string> = {
+        TR: "Turkey",
+        SX: "Sint Maarten",
+        MF: "Saint Martin",
+      };
+
+      return {
         code,
-      count,
-    };
-  })
-  .sort((a, b) => b.count - a.count)
-  .slice(0, 8);
+        name:
+          specialCases[code] ||
+          country?.name.common ||
+          code,
+        count: row.gym_count,
+      };
+    })
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
 
-const maxCountryCount =
-  topCountries.length > 0
-    ? topCountries[0].count
-    : 1;
+  const maxCountryCount =
+    topCountries.length > 0
+      ? topCountries[0].count
+      : 1;
 
   const faqStructuredData = {
     "@context": "https://schema.org",

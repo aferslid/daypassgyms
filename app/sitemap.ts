@@ -25,28 +25,27 @@ function getCountryName(code: string | null) {
   return country?.name.common || null;
 }
 
-async function getAllGyms() {
-  const pageSize = 1000;
-  let from = 0;
-  const rows = [];
+type SitemapGym = {
+  id: number;
+  name: string;
+  country: string | null;
+  country_full: string | null;
+  city: string | null;
+};
 
-  while (true) {
-    const { data, error } = await supabase
-      .from("spots")
-      .select("id,name,country,country_full,city")
-      .order("id")
-      .range(from, from + pageSize - 1);
+async function getAllGyms(): Promise<SitemapGym[]> {
+  const { data, error } = await supabase.rpc(
+    "get_sitemap_spots",
+    undefined,
+    { get: true }
+  );
 
-    if (error) throw error;
-
-    rows.push(...(data || []));
-
-    if (!data || data.length < pageSize) break;
-
-    from += pageSize;
+  if (error) {
+    console.error("Sitemap spots error:", error);
+    throw error;
   }
 
-  return rows;
+  return (data || []) as SitemapGym[];
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
