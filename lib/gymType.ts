@@ -10,6 +10,7 @@ export function formatGymType(type: string | null) {
     functional: "Functional training",
     boxing: "Boxing",
     yoga: "Yoga",
+    pilates: "Pilates",
     calisthenics: "Calisthenics",
     martial_arts: "Martial arts",
   };
@@ -32,6 +33,7 @@ export function getGymTypeBadgeClass(type: string | null) {
     functional: "bg-[#EDE3FF] text-[#6941A5]",
     boxing: "bg-[#FFE7C2] text-[#9A5200]",
     yoga: "bg-[#FFE2F1] text-[#9B2C64]",
+    pilates: "bg-[#F3E8FF] text-[#7E22CE]",
     calisthenics: "bg-[#D9F7F2] text-[#0F766E]",
     martial_arts: "bg-[#F1E7D3] text-[#72521F]",
   };

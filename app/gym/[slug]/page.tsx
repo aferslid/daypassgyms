@@ -873,28 +873,36 @@ breadcrumbItems.push({
 
           <div className="rounded-[16px] border border-[#0C0C0C] bg-[#0C0C0C] p-6 text-white">
             <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-              Data
+              Gym owners
             </p>
 
             <h3 className="mt-3 text-[24px] font-extrabold">
-              Help improve this listing
+              Own or manage this gym?
             </h3>
 
             <p className="mt-4 text-[13px] leading-relaxed text-[#999]">
-              Found outdated prices, missing opening hours or better information? Send an update and help travelers.
+              Claim this listing, correct information, add facilities, social links or photos,
+              and help travelers find accurate day-pass information.
             </p>
 
             <Link
-              href={`/suggest?type=update&gym=${encodeURIComponent(
-                gym.name
-              )}&city=${encodeURIComponent(
-                gym.city || ""
-              )}&country=${encodeURIComponent(
-                gym.country_full || gym.country || ""
-              )}`}
+              href={{
+                pathname: "/suggest",
+                query: {
+                  type: "owner",
+                  spot_id: typedGym.id,
+                  gym: typedGym.name,
+                  city: typedGym.city || "",
+                  country:
+                    typedGym.country_full ||
+                    typedGym.country ||
+                    "",
+                },
+              }}
               rel="nofollow"
+              className="mt-5 inline-flex rounded-[10px] bg-[#C8F135] px-5 py-3 text-[13px] font-bold text-[#0C0C0C] transition hover:opacity-90"
             >
-              Suggest an update
+              Claim or update this listing →
             </Link>
           </div>
         </aside>

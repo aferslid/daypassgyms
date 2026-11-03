@@ -32,6 +32,22 @@ export async function POST(request: Request) {
       body.submitter_is_owner === true ||
       body.submission_type === "owner";
 
+      if (submitterIsOwner) {
+        const contactName = textOrNull(body.contact_name);
+        const contactRole = textOrNull(body.contact_role);
+        const contactEmail = textOrNull(body.contact_email);
+
+        if (!contactName || !contactRole || !contactEmail) {
+          return NextResponse.json(
+            {
+              error:
+                "Name, role and email are required for gym owner submissions.",
+            },
+            { status: 400 }
+          );
+        }
+      }
+
     const spotId =
       Number.isInteger(Number(body.spot_id)) &&
       Number(body.spot_id) > 0
@@ -96,6 +112,9 @@ export async function POST(request: Request) {
         opening_hours: textOrNull(body.opening_hours),
 
         notes: textOrNull(body.notes),
+
+        contact_name: textOrNull(body.contact_name),
+        contact_role: textOrNull(body.contact_role),
 
         contact_email: textOrNull(body.contact_email),
 

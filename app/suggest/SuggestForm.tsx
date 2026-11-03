@@ -49,6 +49,7 @@ export default function SuggestForm({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isOwner, setIsOwner] = useState(initialIsOwner);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -74,6 +75,14 @@ export default function SuggestForm({
 
       submitter_is_owner:
         formData.get("submitter_is_owner") === "on",
+
+      contact_name: String(
+        formData.get("contact_name") || ""
+      ).trim(),
+
+      contact_role: String(
+        formData.get("contact_role") || ""
+      ).trim(),
 
       gym_name: String(formData.get("gym_name") || "").trim(),
       gym_type: String(formData.get("gym_type") || "").trim(),
@@ -186,7 +195,8 @@ export default function SuggestForm({
           <input
             type="checkbox"
             name="submitter_is_owner"
-            defaultChecked={initialIsOwner}
+            checked={isOwner}
+            onChange={(event) => setIsOwner(event.target.checked)}
             className="mt-1 h-4 w-4"
           />
 
@@ -200,6 +210,30 @@ export default function SuggestForm({
             </span>
           </span>
         </label>
+
+        {isOwner && (
+          <div className="grid gap-5 rounded-[12px] border border-[#DDE8A7] bg-[#F8FBEA] p-4 md:grid-cols-2">
+            <input
+              name="contact_name"
+              required
+              placeholder="Your name *"
+              className={inputClass}
+            />
+
+            <input
+              name="contact_role"
+              required
+              placeholder="Your role (owner, manager...) *"
+              className={inputClass}
+            />
+
+            <div className="md:col-span-2">
+              <p className="text-[12px] leading-5 text-[#667244]">
+                Owner submissions are reviewed manually before any listing information is changed.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       <SectionTitle description="Basic information about the gym.">
@@ -216,16 +250,16 @@ export default function SuggestForm({
 
       <select name="gym_type" className={inputClass} defaultValue="">
         <option value="">Gym type</option>
-        <option value="Gym">Gym</option>
-        <option value="CrossFit">CrossFit</option>
-        <option value="HYROX">HYROX</option>
-        <option value="Functional training">
-          Functional training
-        </option>
-        <option value="Boxing">Boxing</option>
-        <option value="Martial arts">Martial arts</option>
-        <option value="Yoga">Yoga</option>
-        <option value="Other">Other</option>
+        <option value="gym">Gym</option>
+        <option value="crossfit">CrossFit</option>
+        <option value="hyrox">HYROX</option>
+        <option value="functional">Functional training</option>
+        <option value="boxing">Boxing</option>
+        <option value="martial_arts">Martial arts</option>
+        <option value="yoga">Yoga</option>
+        <option value="calisthenics">Calisthenics</option>
+        <option value="pilates">Pilates</option>
+        <option value="other">Other</option>
       </select>
 
       <div className="grid gap-5 md:grid-cols-2">
@@ -380,11 +414,10 @@ export default function SuggestForm({
         className={inputClass}
       >
         <option value="">Gender/access policy</option>
-        <option value="Mixed">Mixed</option>
-        <option value="Men only">Men only</option>
-        <option value="Women only">Women only</option>
-        <option value="Separate areas">Separate areas</option>
-        <option value="Unknown">Unknown</option>
+        <option value="mixed">Mixed</option>
+        <option value="men">Men only</option>
+        <option value="women">Women only</option>
+        <option value="unknown">Unknown</option>
       </select>
 
       <textarea
@@ -411,12 +444,19 @@ export default function SuggestForm({
         <input
           name="contact_email"
           type="email"
-          placeholder="Your email (optional)"
+          required={isOwner}
+          placeholder={
+            isOwner
+              ? "Your business email *"
+              : "Your email (optional)"
+          }
           className={inputClass}
         />
 
         <p className="mt-2 text-[12px] leading-5 text-[#999]">
-          Used only if we need to verify or clarify your submission.
+          {isOwner
+            ? "Required so we can verify the submission with the gym if needed."
+            : "Used only if we need to verify or clarify your submission."}
         </p>
       </div>
 
