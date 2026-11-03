@@ -456,6 +456,10 @@ breadcrumbItems.push({
 
   const hasGymImage = fs.existsSync(gymImagePath);
 
+  const displayImageUrl =
+  typedGym.photo_url ||
+  (hasGymImage ? gymImageUrl : null);
+
   return (
     <>
     <script
@@ -520,9 +524,9 @@ breadcrumbItems.push({
 
             <div className="rounded-[24px] border border-[#1e1e1e] bg-[#111] p-4">
               <div className="rounded-[24px] border border-[#1e1e1e] bg-[#111] p-4">
-                {hasGymImage ? (
+                {displayImageUrl ? (
                   <img
-                    src={gymImageUrl}
+                    src={displayImageUrl}
                     alt={typedGym.name}
                     className="h-[320px] w-full rounded-[18px] object-cover"
                   />
