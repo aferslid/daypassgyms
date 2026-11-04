@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       }
     );
 
-    const { error } = await supabase
+    const { data: suggestion, error } = await supabase
       .from("gym_suggestions")
       .insert({
         spot_id: spotId,
@@ -121,6 +121,9 @@ export async function POST(request: Request) {
         status: "new",
       });
 
+      .select("id")
+      .single();
+
     if (error) {
       console.error("Gym suggestion insert error:", error);
 
@@ -130,7 +133,10 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({
+      ok: true,
+      suggestion_id: suggestion.id,
+    });
   } catch (error) {
     console.error("Gym suggestion API error:", error);
 

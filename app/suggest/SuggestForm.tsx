@@ -159,21 +159,67 @@ export default function SuggestForm({
       body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      const data = await response.json();
+    const data = await response.json();
 
+    if (!response.ok) {
       setLoading(false);
       setErrorMessage(
-        data.error || "Something went wrong. Please try again."
+        data.error ||
+          "Something went wrong. Please try again."
       );
 
       return;
     }
 
+    const photo = formData.get("photo");
+
+    if (
+      payload.submitter_is_owner &&
+      photo instanceof File &&
+      photo.size > 0
+    ) {
+      const photoFormData = new FormData();
+
+      photoFormData.append(
+        "suggestion_id",
+        String(data.suggestion_id)
+      );
+
+      photoFormData.append(
+        "photo",
+        photo
+      );
+
+      const photoResponse = await fetch(
+        "/api/suggest/photo",
+        {
+          method: "POST",
+          body: photoFormData,
+        }
+      );
+
+      if (!photoResponse.ok) {
+        const photoError = await photoResponse.json();
+
+        setLoading(false);
+        setSuccess(true);
+
+        setErrorMessage(
+          `The listing information was submitted, but the photo could not be uploaded: ${
+            photoError.error || "Unknown error"
+          }`
+        );
+
+        form.reset();
+        return;
+      }
+    }
+
     setLoading(false);
     setSuccess(true);
+    setErrorMessage("");
     form.reset();
-  }
+      }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -425,6 +471,25 @@ export default function SuggestForm({
         placeholder="Opening hours / schedule"
         className="h-28 w-full rounded-[12px] border border-[#EBEBEB] p-4 text-[14px]"
       />
+
+      {isOwner && (
+        <>
+          <SectionTitle description="Optional. Send an official or representative photo of the gym. Photos are reviewed before publication.">
+            Gym photo
+          </SectionTitle>
+
+          <input
+            type="file"
+            name="photo"
+            accept="image/jpeg,image/png,image/webp"
+            className={inputClass}
+          />
+
+          <p className="-mt-3 text-[12px] leading-5 text-[#999]">
+            JPG, PNG or WebP. Maximum 5 MB.
+          </p>
+        </>
+      )}
 
       <SectionTitle>
         Anything else?
