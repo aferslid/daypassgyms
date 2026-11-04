@@ -119,7 +119,7 @@ export async function POST(request: Request) {
         contact_email: textOrNull(body.contact_email),
 
         status: "new",
-      });
+      })
 
       .select("id")
       .single();
