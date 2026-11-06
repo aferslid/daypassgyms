@@ -500,9 +500,10 @@ const relatedCities = Array.from(
               <span className="text-[#C8F135]">{cityName}.</span>
             </h1>
 
-            <p className="mt-5 max-w-md text-[14px] leading-relaxed text-[#777]">
-              Browse gyms with day passes in {cityName}, {countryName}. Compare
-              prices, check shower info and find where to train.
+            <p className="mt-5 max-w-lg text-[14px] leading-relaxed text-[#777]">
+              Find gyms with day passes in {cityName}, {countryName}. Compare
+              single-visit prices, facilities and visitor access, and find a gym
+              without a membership.
             </p>
           </div>
         </div>
