@@ -28,10 +28,83 @@ type Gym = {
   description: string | null;
   country: string | null;
   city: string | null;
+  state_code: string | null;
   photo_url: string | null;
   day_pass_price: number | null;
   currency: string | null;
   shower: boolean | null;
+};
+
+const REGION_NAMES: Record<string, Record<string, string>> = {
+  US: {
+    AL: "Alabama",
+    AK: "Alaska",
+    AZ: "Arizona",
+    AR: "Arkansas",
+    CA: "California",
+    CO: "Colorado",
+    CT: "Connecticut",
+    DE: "Delaware",
+    DC: "District of Columbia",
+    FL: "Florida",
+    GA: "Georgia",
+    HI: "Hawaii",
+    ID: "Idaho",
+    IL: "Illinois",
+    IN: "Indiana",
+    IA: "Iowa",
+    KS: "Kansas",
+    KY: "Kentucky",
+    LA: "Louisiana",
+    ME: "Maine",
+    MD: "Maryland",
+    MA: "Massachusetts",
+    MI: "Michigan",
+    MN: "Minnesota",
+    MS: "Mississippi",
+    MO: "Missouri",
+    MT: "Montana",
+    NE: "Nebraska",
+    NV: "Nevada",
+    NH: "New Hampshire",
+    NJ: "New Jersey",
+    NM: "New Mexico",
+    NY: "New York",
+    NC: "North Carolina",
+    ND: "North Dakota",
+    OH: "Ohio",
+    OK: "Oklahoma",
+    OR: "Oregon",
+    PA: "Pennsylvania",
+    RI: "Rhode Island",
+    SC: "South Carolina",
+    SD: "South Dakota",
+    TN: "Tennessee",
+    TX: "Texas",
+    UT: "Utah",
+    VT: "Vermont",
+    VA: "Virginia",
+    WA: "Washington",
+    WV: "West Virginia",
+    WI: "Wisconsin",
+    WY: "Wyoming",
+  },
+
+  CA: {
+    AB: "Alberta",
+    BC: "British Columbia",
+    MB: "Manitoba",
+    NB: "New Brunswick",
+    NL: "Newfoundland and Labrador",
+    NS: "Nova Scotia",
+    NT: "Northwest Territories",
+    NU: "Nunavut",
+    ON: "Ontario",
+    PE: "Prince Edward Island",
+    QC: "Quebec",
+    SK: "Saskatchewan",
+    YT: "Yukon",
+  },
 };
 
 
@@ -167,7 +240,7 @@ async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
     const { data, error } = await supabase
       .from("spots")
       .select(
-        "id, name, type, description, country, city, photo_url, day_pass_price, currency, shower"
+        "id, name, type, description, country, city, state_code, photo_url, day_pass_price, currency, shower"
       )
       .eq("country", countryCode)
       .order("name")
@@ -213,6 +286,37 @@ export default async function CountryPage({ params }: CountryPageProps) {
       return acc;
     }, {} as Record<string, number>)
   ).sort((a, b) => b[1] - a[1]);
+
+  const supportsRegions =
+  countryCode === "US" || countryCode === "CA";
+
+const regions = supportsRegions
+  ? Object.entries(
+      gyms.reduce((acc, gym) => {
+        if (!gym.state_code) return acc;
+
+        const code = gym.state_code.toUpperCase();
+
+        if (!REGION_NAMES[countryCode]?.[code]) {
+          return acc;
+        }
+
+        acc[code] = (acc[code] || 0) + 1;
+
+        return acc;
+      }, {} as Record<string, number>)
+    )
+      .map(([code, count]) => ({
+        code,
+        name: REGION_NAMES[countryCode][code],
+        count,
+      }))
+      .sort(
+        (a, b) =>
+          b.count - a.count ||
+          a.name.localeCompare(b.name)
+      )
+  : [];
 
   const displayedGyms =
   gyms.length <= 18
@@ -374,6 +478,84 @@ export default async function CountryPage({ params }: CountryPageProps) {
           </div>
         </div>
       </section>
+
+      {regions.length > 0 && (
+        <section
+          id="regions"
+          className="mx-auto max-w-7xl px-6 pt-14"
+        >
+          <div className="mb-7">
+            <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
+              {countryCode === "US" ? "States" : "Provinces"}
+            </p>
+
+            <h2 className="mt-2 text-[26px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
+              {countryCode === "US"
+                ? `States in ${countryName}`
+                : `Provinces in ${countryName}`}
+            </h2>
+
+            <p className="mt-2 text-[13px] text-[#999]">
+              Browse gym day passes by{" "}
+              {countryCode === "US" ? "state" : "province"}.
+            </p>
+          </div>
+
+          <div
+            className="grid gap-2"
+            style={{
+              gridTemplateColumns:
+                "repeat(auto-fill, minmax(220px, 1fr))",
+            }}
+          >
+            {regions.map((region) => (
+              <Link
+                key={region.code}
+                href={`/gyms/${
+                  resolvedCountry.canonicalSlug
+                }/region/${slugify(region.name)}`}
+                className="group relative h-[62px] overflow-hidden rounded-[10px] border border-[#E2E2DE] bg-white px-4 py-3 transition hover:border-[#C8F135]"
+              >
+                {/* BIG NUMBER BACKGROUND */}
+                <span className="pointer-events-none absolute -bottom-[10px] right-1 text-[46px] font-extrabold leading-none tracking-[-3px] text-[#EEEEEA]">
+                  {region.count}
+                </span>
+
+                {/* NAME + FLAG */}
+                <div className="relative z-10 flex items-center gap-2 pr-8">
+
+                  {countryCode === "US" && (
+                    <img
+                      src={`https://flagcdn.com/24x18/us-${region.code.toLowerCase()}.png`}
+                      srcSet={`https://flagcdn.com/48x36/us-${region.code.toLowerCase()}.png 2x`}
+                      width="24"
+                      height="18"
+                      alt={`${region.name} flag`}
+                      className="shrink-0 rounded-[2px] object-cover"
+                    />
+                  )}
+
+                  <span className="truncate text-[13px] font-extrabold text-[#111]">
+                    {region.name}
+                  </span>
+
+                </div>
+
+                {/* SMALL COUNT */}
+                <div className="relative z-10 mt-1 text-[11px] text-[#999]">
+                  {region.count}{" "}
+                  {region.count === 1 ? "gym" : "gyms"}
+                </div>
+
+                {/* ARROW */}
+                <span className="absolute right-4 top-[18px] z-10 text-[15px] text-[#AAA] transition group-hover:translate-x-1 group-hover:text-[#789000]">
+                  →
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section id="cities" className="mx-auto max-w-7xl px-6 py-14">
         
