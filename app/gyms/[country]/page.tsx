@@ -107,6 +107,45 @@ const REGION_NAMES: Record<string, Record<string, string>> = {
   },
 };
 
+const CANADA_REGION_FLAG_FILES: Record<string, string> = {
+  AB: "Flag_of_Alberta.svg",
+  BC: "Flag_of_British_Columbia.svg",
+  MB: "Flag_of_Manitoba.svg",
+  NB: "Flag_of_New_Brunswick.svg",
+  NL: "Flag_of_Newfoundland_and_Labrador.svg",
+  NS: "Flag_of_Nova_Scotia.svg",
+  NT: "Flag_of_the_Northwest_Territories.svg",
+  NU: "Flag_of_Nunavut.svg",
+  ON: "Flag_of_Ontario.svg",
+  PE: "Flag_of_Prince_Edward_Island.svg",
+  QC: "Flag_of_Quebec.svg",
+  SK: "Flag_of_Saskatchewan.svg",
+  YT: "Flag_of_Yukon.svg",
+};
+
+function getRegionFlagUrl(
+  countryCode: string,
+  regionCode: string
+) {
+  if (countryCode === "US") {
+    return `https://flagcdn.com/24x18/us-${regionCode.toLowerCase()}.png`;
+  }
+
+  if (countryCode === "CA") {
+    const filename =
+      CANADA_REGION_FLAG_FILES[regionCode];
+
+    if (!filename) return null;
+
+    return (
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/" +
+      encodeURIComponent(filename)
+    );
+  }
+
+  return null;
+}
+
 
 function resolveCountryFromSlug(slug: string) {
   const normalizedSlug = slug.toLowerCase();
@@ -524,14 +563,14 @@ const regions = supportsRegions
                 {/* NAME + FLAG */}
                 <div className="relative z-10 flex items-center gap-2 pr-8">
 
-                  {countryCode === "US" && (
+                  {getRegionFlagUrl(countryCode, region.code) && (
                     <img
-                      src={`https://flagcdn.com/24x18/us-${region.code.toLowerCase()}.png`}
-                      srcSet={`https://flagcdn.com/48x36/us-${region.code.toLowerCase()}.png 2x`}
+                      src={getRegionFlagUrl(countryCode, region.code)!}
                       width="24"
                       height="18"
                       alt={`${region.name} flag`}
-                      className="shrink-0 rounded-[2px] object-cover"
+                      className="h-[18px] w-[24px] shrink-0 rounded-[2px] object-cover"
+                      loading="lazy"
                     />
                   )}
 
