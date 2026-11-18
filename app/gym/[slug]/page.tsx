@@ -33,6 +33,7 @@ type Gym = {
   description: string | null;
   country: string | null;
   city: string | null;
+  state_code: string | null;
   lat: number | null;
   lng: number | null;
   photo_url: string | null;
@@ -75,6 +76,79 @@ type RelatedGym = {
   week_pass_price: number | null;
   free_trial: boolean | null;
 };
+
+const REGION_NAMES: Record<string, Record<string, string>> = {
+  US: {
+    AL: "Alabama",
+    AK: "Alaska",
+    AZ: "Arizona",
+    AR: "Arkansas",
+    CA: "California",
+    CO: "Colorado",
+    CT: "Connecticut",
+    DE: "Delaware",
+    DC: "District of Columbia",
+    FL: "Florida",
+    GA: "Georgia",
+    HI: "Hawaii",
+    ID: "Idaho",
+    IL: "Illinois",
+    IN: "Indiana",
+    IA: "Iowa",
+    KS: "Kansas",
+    KY: "Kentucky",
+    LA: "Louisiana",
+    ME: "Maine",
+    MD: "Maryland",
+    MA: "Massachusetts",
+    MI: "Michigan",
+    MN: "Minnesota",
+    MS: "Mississippi",
+    MO: "Missouri",
+    MT: "Montana",
+    NE: "Nebraska",
+    NV: "Nevada",
+    NH: "New Hampshire",
+    NJ: "New Jersey",
+    NM: "New Mexico",
+    NY: "New York",
+    NC: "North Carolina",
+    ND: "North Dakota",
+    OH: "Ohio",
+    OK: "Oklahoma",
+    OR: "Oregon",
+    PA: "Pennsylvania",
+    RI: "Rhode Island",
+    SC: "South Carolina",
+    SD: "South Dakota",
+    TN: "Tennessee",
+    TX: "Texas",
+    UT: "Utah",
+    VT: "Vermont",
+    VA: "Virginia",
+    WA: "Washington",
+    WV: "West Virginia",
+    WI: "Wisconsin",
+    WY: "Wyoming",
+  },
+
+  CA: {
+    AB: "Alberta",
+    BC: "British Columbia",
+    MB: "Manitoba",
+    NB: "New Brunswick",
+    NL: "Newfoundland and Labrador",
+    NS: "Nova Scotia",
+    NT: "Northwest Territories",
+    NU: "Nunavut",
+    ON: "Ontario",
+    PE: "Prince Edward Island",
+    QC: "Quebec",
+    SK: "Saskatchewan",
+    YT: "Yukon",
+  },
+};
+
 
 export async function generateMetadata({ params }: GymPageProps) {
   const { slug } = await params;
@@ -289,7 +363,7 @@ export default async function GymPage({ params }: GymPageProps) {
   const { data: gym, error } = await supabase
     .from("spots")
     .select(
-      "id, name, type, description, country, city, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, facebook_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender, price_verified_at"
+      "id, name, type, description, country, city, state_code, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, facebook_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender, price_verified_at"
     )
     .eq("id", gymId)
     .single();
@@ -317,6 +391,15 @@ export default async function GymPage({ params }: GymPageProps) {
 
 const countrySlug = slugify(countryName);
 
+const countryCode = typedGym.country?.toUpperCase() || null;
+
+const gymRegionName =
+  countryCode && typedGym.state_code
+    ? REGION_NAMES[countryCode]?.[
+        typedGym.state_code.toUpperCase()
+      ] || null
+    : null;
+
 const breadcrumbItems: BreadcrumbItem[] = [
   {
     label: "Home",
@@ -335,6 +418,13 @@ if (typedGym.country) {
   });
 }
 
+if (typedGym.country && gymRegionName) {
+  breadcrumbItems.push({
+    label: gymRegionName,
+    href: `/gyms/${countrySlug}/region/${slugify(gymRegionName)}`,
+  });
+}
+
 if (typedGym.country && typedGym.city) {
   breadcrumbItems.push({
     label: typedGym.city,
@@ -346,6 +436,17 @@ breadcrumbItems.push({
   label: typedGym.name,
   href: `/gym/${slug}`,
 });
+
+const breadcrumbStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbItems.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.label,
+    item: `https://www.daypassgyms.com${item.href}`,
+  })),
+};
 
   const baseUrl = "https://www.daypassgyms.com";
   const gymUrl = `${baseUrl}/gym/${slug}`;
@@ -466,6 +567,15 @@ breadcrumbItems.push({
       type="application/ld+json"
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(gymStructuredData).replace(/</g, "\\u003c"),
+      }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(breadcrumbStructuredData).replace(
+          /</g,
+          "\\u003c"
+        ),
       }}
     />
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">
