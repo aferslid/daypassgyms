@@ -118,7 +118,7 @@ export default function PartnershipsPage() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-2">
+          <div className="mt-12 grid max-w-3xl gap-5">
             {partners.map((partner) => (
               <a
                 key={partner.name}
