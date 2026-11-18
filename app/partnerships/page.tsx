@@ -65,41 +65,6 @@ export default function PartnershipsPage() {
         </div>
       </section>
 
-      {/* PARTNERSHIP TYPES */}
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <div className="max-w-2xl">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
-            WORK WITH US
-          </p>
-
-          <h2 className="mt-3 text-[36px] font-extrabold tracking-[-1.5px] text-[#0C0C0C] md:text-[48px]">
-            Different ways to partner.
-          </h2>
-
-          <p className="mt-4 text-[17px] leading-7 text-[#666]">
-            We&apos;re open to collaborations that make traveling and staying
-            active easier.
-          </p>
-        </div>
-
-        <div className="mt-12 grid gap-5 md:grid-cols-2">
-          {partnershipTypes.map((item) => (
-            <div
-              key={item.title}
-              className="rounded-[20px] border border-[#E4E4E1] bg-white p-8 md:p-10"
-            >
-              <h3 className="text-[24px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
-                {item.title}
-              </h3>
-
-              <p className="mt-4 max-w-lg text-[15px] leading-7 text-[#666]">
-                {item.text}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* FEATURED PARTNERS */}
       <section className="border-t border-[#E4E4E1] bg-white">
         <div className="mx-auto max-w-7xl px-6 py-20">
@@ -157,6 +122,41 @@ export default function PartnershipsPage() {
               </a>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* PARTNERSHIP TYPES */}
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="max-w-2xl">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
+            WORK WITH US
+          </p>
+
+          <h2 className="mt-3 text-[36px] font-extrabold tracking-[-1.5px] text-[#0C0C0C] md:text-[48px]">
+            Different ways to partner.
+          </h2>
+
+          <p className="mt-4 text-[17px] leading-7 text-[#666]">
+            We&apos;re open to collaborations that make traveling and staying
+            active easier.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-5 md:grid-cols-2">
+          {partnershipTypes.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-[20px] border border-[#E4E4E1] bg-white p-8 md:p-10"
+            >
+              <h3 className="text-[24px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
+                {item.title}
+              </h3>
+
+              <p className="mt-4 max-w-lg text-[15px] leading-7 text-[#666]">
+                {item.text}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
