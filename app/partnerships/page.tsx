@@ -26,6 +26,17 @@ const partnershipTypes = [
   },
 ];
 
+const partners = [
+  {
+    name: "NomadWay",
+    logo: "/partners/nomadway.png",
+    url: "https://www.nomadway.app/",
+    category: "Digital nomad community",
+    description:
+      "NomadWay connects digital nomads and remote workers through local communities, events and useful services around the world.",
+  },
+];
+
 export default function PartnershipsPage() {
   return (
     <main className="min-h-screen bg-[#F7F7F5]">
@@ -86,6 +97,66 @@ export default function PartnershipsPage() {
               </p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* FEATURED PARTNERS */}
+      <section className="border-t border-[#E4E4E1] bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="max-w-2xl">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8BAA00]">
+              OUR PARTNERS
+            </p>
+
+            <h2 className="mt-3 text-[36px] font-extrabold tracking-[-1.5px] text-[#0C0C0C] md:text-[48px]">
+              Better travel through useful partnerships.
+            </h2>
+
+            <p className="mt-4 text-[17px] leading-7 text-[#666]">
+              We work with communities and travel platforms that help people stay
+              active, connected and productive wherever they go.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-2">
+            {partners.map((partner) => (
+              <a
+                key={partner.name}
+                href={partner.url}
+                target="_blank"
+                rel="noopener"
+                className="group rounded-[20px] border border-[#E4E4E1] bg-[#F7F7F5] p-8 transition hover:-translate-y-1 hover:border-[#C8F135] md:p-10"
+              >
+                <div className="flex items-center gap-5">
+                  <div className="flex h-[72px] w-[110px] shrink-0 items-center justify-center rounded-[16px] border border-[#E4E4E1] bg-white p-3">
+                    <img
+                      src={partner.logo}
+                      alt={`${partner.name} logo`}
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#8BAA00]">
+                      {partner.category}
+                    </p>
+
+                    <h3 className="mt-1 text-[26px] font-extrabold tracking-[-0.8px] text-[#0C0C0C]">
+                      {partner.name}
+                    </h3>
+                  </div>
+                </div>
+
+                <p className="mt-6 max-w-xl text-[15px] leading-7 text-[#666]">
+                  {partner.description}
+                </p>
+
+                <div className="mt-6 text-[13px] font-bold text-[#0C0C0C] transition group-hover:text-[#789000]">
+                  Visit {partner.name} →
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
