@@ -434,6 +434,17 @@ const breadcrumbItems = [
   },
 ];
 
+const breadcrumbStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbItems.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.label,
+    item: `https://www.daypassgyms.com${item.href}`,
+  })),
+};
+
   const itemListStructuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -570,6 +581,12 @@ const relatedCities = Array.from(
       type="application/ld+json"
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(faqStructuredData),
+      }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(breadcrumbStructuredData),
       }}
     />
     <main className="min-h-screen bg-[#F7F7F5] font-[family-name:var(--font-space)]">
