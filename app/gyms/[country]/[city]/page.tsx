@@ -27,6 +27,7 @@ type Gym = {
   description: string | null;
   country: string | null;
   city: string | null;
+  state_code: string | null;
   photo_url: string | null;
   day_pass_price: number | null;
   day_pass_note: string | null;
@@ -87,6 +88,78 @@ const CITY_SLUG_ALIASES: Record<string, Record<string, string>> = {
 
   NI: {
     "le-n": "leon",
+  },
+};
+
+const REGION_NAMES: Record<string, Record<string, string>> = {
+  US: {
+    AL: "Alabama",
+    AK: "Alaska",
+    AZ: "Arizona",
+    AR: "Arkansas",
+    CA: "California",
+    CO: "Colorado",
+    CT: "Connecticut",
+    DE: "Delaware",
+    DC: "District of Columbia",
+    FL: "Florida",
+    GA: "Georgia",
+    HI: "Hawaii",
+    ID: "Idaho",
+    IL: "Illinois",
+    IN: "Indiana",
+    IA: "Iowa",
+    KS: "Kansas",
+    KY: "Kentucky",
+    LA: "Louisiana",
+    ME: "Maine",
+    MD: "Maryland",
+    MA: "Massachusetts",
+    MI: "Michigan",
+    MN: "Minnesota",
+    MS: "Mississippi",
+    MO: "Missouri",
+    MT: "Montana",
+    NE: "Nebraska",
+    NV: "Nevada",
+    NH: "New Hampshire",
+    NJ: "New Jersey",
+    NM: "New Mexico",
+    NY: "New York",
+    NC: "North Carolina",
+    ND: "North Dakota",
+    OH: "Ohio",
+    OK: "Oklahoma",
+    OR: "Oregon",
+    PA: "Pennsylvania",
+    RI: "Rhode Island",
+    SC: "South Carolina",
+    SD: "South Dakota",
+    TN: "Tennessee",
+    TX: "Texas",
+    UT: "Utah",
+    VT: "Vermont",
+    VA: "Virginia",
+    WA: "Washington",
+    WV: "West Virginia",
+    WI: "Wisconsin",
+    WY: "Wyoming",
+  },
+
+  CA: {
+    AB: "Alberta",
+    BC: "British Columbia",
+    MB: "Manitoba",
+    NB: "New Brunswick",
+    NL: "Newfoundland and Labrador",
+    NS: "Nova Scotia",
+    NT: "Northwest Territories",
+    NU: "Nunavut",
+    ON: "Ontario",
+    PE: "Prince Edward Island",
+    QC: "Quebec",
+    SK: "Saskatchewan",
+    YT: "Yukon",
   },
 };
 
@@ -260,7 +333,7 @@ async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
     const { data, error } = await supabase
       .from("spots")
       .select(
-        "id, name, type, description, country, city, photo_url, day_pass_price, day_pass_note, currency, shower, free_trial"
+        "id, name, type, description, country, city, state_code, photo_url, day_pass_price, day_pass_note, currency, shower, free_trial"
       )
       .eq("country", countryCode)
       .order("name")
@@ -321,6 +394,45 @@ export default async function CityPage({ params }: CityPageProps) {
   if (!gyms || gyms.length === 0) {
       notFound();
     }
+
+  const cityRegionCode =
+  gyms.find((gym) => gym.state_code)?.state_code?.toUpperCase() || null;
+
+const cityRegionName =
+  cityRegionCode
+    ? REGION_NAMES[countryCode]?.[cityRegionCode] || null
+    : null;
+
+const breadcrumbItems = [
+  {
+    label: "Home",
+    href: "/",
+  },
+  {
+    label: "Gyms",
+    href: "/gyms",
+  },
+  {
+    label: countryName,
+    href: `/gyms/${resolvedCountry.canonicalSlug}`,
+  },
+
+  ...(cityRegionName
+    ? [
+        {
+          label: cityRegionName,
+          href:
+            `/gyms/${resolvedCountry.canonicalSlug}` +
+            `/region/${slugify(cityRegionName)}`,
+        },
+      ]
+    : []),
+
+  {
+    label: cityName,
+    href: `/gyms/${resolvedCountry.canonicalSlug}/${city}`,
+  },
+];
 
   const itemListStructuredData = {
     "@context": "https://schema.org",
@@ -471,24 +583,7 @@ const relatedCities = Array.from(
           <div className="pb-16 pt-14">
             <Breadcrumbs
               light
-              items={[
-                {
-                  label: "Home",
-                  href: "/",
-                },
-                {
-                  label: "Gyms",
-                  href: "/gyms",
-                },
-                {
-                  label: countryName,
-                  href: `/gyms/${resolvedCountry.canonicalSlug}`,
-                },
-                {
-                  label: cityName,
-                  href: `/gyms/${resolvedCountry.canonicalSlug}/${city}`,
-                },
-              ]}
+              items={breadcrumbItems}
             />
 
             <p className="mb-4 mt-8 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">

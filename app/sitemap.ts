@@ -25,6 +25,78 @@ function getCountryName(code: string | null) {
   return country?.name.common || null;
 }
 
+const REGION_NAMES: Record<string, Record<string, string>> = {
+  US: {
+    AL: "Alabama",
+    AK: "Alaska",
+    AZ: "Arizona",
+    AR: "Arkansas",
+    CA: "California",
+    CO: "Colorado",
+    CT: "Connecticut",
+    DE: "Delaware",
+    DC: "District of Columbia",
+    FL: "Florida",
+    GA: "Georgia",
+    HI: "Hawaii",
+    ID: "Idaho",
+    IL: "Illinois",
+    IN: "Indiana",
+    IA: "Iowa",
+    KS: "Kansas",
+    KY: "Kentucky",
+    LA: "Louisiana",
+    ME: "Maine",
+    MD: "Maryland",
+    MA: "Massachusetts",
+    MI: "Michigan",
+    MN: "Minnesota",
+    MS: "Mississippi",
+    MO: "Missouri",
+    MT: "Montana",
+    NE: "Nebraska",
+    NV: "Nevada",
+    NH: "New Hampshire",
+    NJ: "New Jersey",
+    NM: "New Mexico",
+    NY: "New York",
+    NC: "North Carolina",
+    ND: "North Dakota",
+    OH: "Ohio",
+    OK: "Oklahoma",
+    OR: "Oregon",
+    PA: "Pennsylvania",
+    RI: "Rhode Island",
+    SC: "South Carolina",
+    SD: "South Dakota",
+    TN: "Tennessee",
+    TX: "Texas",
+    UT: "Utah",
+    VT: "Vermont",
+    VA: "Virginia",
+    WA: "Washington",
+    WV: "West Virginia",
+    WI: "Wisconsin",
+    WY: "Wyoming",
+  },
+
+  CA: {
+    AB: "Alberta",
+    BC: "British Columbia",
+    MB: "Manitoba",
+    NB: "New Brunswick",
+    NL: "Newfoundland and Labrador",
+    NS: "Nova Scotia",
+    NT: "Northwest Territories",
+    NU: "Nunavut",
+    ON: "Ontario",
+    PE: "Prince Edward Island",
+    QC: "Quebec",
+    SK: "Saskatchewan",
+    YT: "Yukon",
+  },
+};
+
 type SitemapGym = {
   id: number;
   name: string;
@@ -32,6 +104,28 @@ type SitemapGym = {
   country_full: string | null;
   city: string | null;
 };
+
+type RegionStat = {
+  country: string;
+  state_code: string;
+  gym_count: number;
+  city_count: number;
+};
+
+async function getRegionStats(): Promise<RegionStat[]> {
+  const { data, error } = await supabase.rpc(
+    "get_region_stats",
+    undefined,
+    { get: true }
+  );
+
+  if (error) {
+    console.error("Sitemap region stats error:", error);
+    throw error;
+  }
+
+  return (data || []) as RegionStat[];
+}
 
 async function getAllGyms(): Promise<SitemapGym[]> {
   const { data, error } = await supabase.rpc(
@@ -70,7 +164,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   });
 
-  const gyms = await getAllGyms();
+  const [gyms, regionStats] = await Promise.all([
+    getAllGyms(),
+    getRegionStats(),
+  ]);
 
   if (gyms.length === 0) return urls;
 
@@ -98,6 +195,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   countries.forEach((country) => {
     urls.push({
       url: `${baseUrl}/gyms/${country}`,
+      priority: 0.8,
+    });
+  });
+
+  regionStats.forEach((region) => {
+    const countryCode = region.country?.toUpperCase();
+    const stateCode = region.state_code?.toUpperCase();
+
+    const countryName = getCountryName(countryCode);
+    const regionName =
+      REGION_NAMES[countryCode]?.[stateCode];
+
+    if (!countryName || !regionName) return;
+
+    urls.push({
+      url:
+        `${baseUrl}/gyms/${slugify(countryName)}` +
+        `/region/${slugify(regionName)}`,
       priority: 0.8,
     });
   });
