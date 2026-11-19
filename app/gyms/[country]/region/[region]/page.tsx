@@ -119,6 +119,40 @@ const REGIONS: Record<string, Record<string, RegionDefinition>> = {
     },
     yukon: { code: "YT", name: "Yukon" },
   },
+  AU: {
+    "new-south-wales": {
+        code: "NSW",
+        name: "New South Wales",
+    },
+    victoria: {
+        code: "VIC",
+        name: "Victoria",
+    },
+    queensland: {
+        code: "QLD",
+        name: "Queensland",
+    },
+    "western-australia": {
+        code: "WA",
+        name: "Western Australia",
+    },
+    "south-australia": {
+        code: "SA",
+        name: "South Australia",
+    },
+    tasmania: {
+        code: "TAS",
+        name: "Tasmania",
+    },
+    "australian-capital-territory": {
+        code: "ACT",
+        name: "Australian Capital Territory",
+    },
+    "northern-territory": {
+        code: "NT",
+        name: "Northern Territory",
+    },
+    },
 };
 
 function resolveCountryFromSlug(slug: string) {

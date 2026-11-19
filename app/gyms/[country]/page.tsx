@@ -105,6 +105,17 @@ const REGION_NAMES: Record<string, Record<string, string>> = {
     SK: "Saskatchewan",
     YT: "Yukon",
   },
+
+  AU: {
+    NSW: "New South Wales",
+    VIC: "Victoria",
+    QLD: "Queensland",
+    WA: "Western Australia",
+    SA: "South Australia",
+    TAS: "Tasmania",
+    ACT: "Australian Capital Territory",
+    NT: "Northern Territory",
+  },
 };
 
 const CANADA_REGION_FLAG_FILES: Record<string, string> = {
@@ -123,6 +134,17 @@ const CANADA_REGION_FLAG_FILES: Record<string, string> = {
   YT: "Flag_of_Yukon.svg",
 };
 
+const AUSTRALIA_REGION_FLAG_FILES: Record<string, string> = {
+  NSW: "Flag_of_New_South_Wales.svg",
+  VIC: "Flag_of_Victoria_(Australia).svg",
+  QLD: "Flag_of_Queensland.svg",
+  WA: "Flag_of_Western_Australia.svg",
+  SA: "Flag_of_South_Australia.svg",
+  TAS: "Flag_of_Tasmania.svg",
+  ACT: "Flag_of_the_Australian_Capital_Territory.svg",
+  NT: "Flag_of_the_Northern_Territory.svg",
+};
+
 function getRegionFlagUrl(
   countryCode: string,
   regionCode: string
@@ -134,6 +156,18 @@ function getRegionFlagUrl(
   if (countryCode === "CA") {
     const filename =
       CANADA_REGION_FLAG_FILES[regionCode];
+
+    if (!filename) return null;
+
+    return (
+      "https://commons.wikimedia.org/wiki/Special:Redirect/file/" +
+      encodeURIComponent(filename)
+    );
+  }
+
+  if (countryCode === "AU") {
+    const filename =
+      AUSTRALIA_REGION_FLAG_FILES[regionCode];
 
     if (!filename) return null;
 
@@ -327,7 +361,9 @@ export default async function CountryPage({ params }: CountryPageProps) {
   ).sort((a, b) => b[1] - a[1]);
 
   const supportsRegions =
-  countryCode === "US" || countryCode === "CA";
+    countryCode === "US" ||
+    countryCode === "CA" ||
+    countryCode === "AU";
 
 const regions = supportsRegions
   ? Object.entries(
@@ -525,18 +561,18 @@ const regions = supportsRegions
         >
           <div className="mb-7">
             <p className="inline-flex rounded-full bg-[#2F380B] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8F135]">
-              {countryCode === "US" ? "States" : "Provinces"}
+              {countryCode === "CA" ? "Provinces" : "States"}
             </p>
 
             <h2 className="mt-2 text-[26px] font-extrabold tracking-[-0.7px] text-[#0C0C0C]">
-              {countryCode === "US"
-                ? `States in ${countryName}`
-                : `Provinces in ${countryName}`}
+              {countryCode === "CA"
+                ? `Provinces in ${countryName}`
+                : `States in ${countryName}`}
             </h2>
 
             <p className="mt-2 text-[13px] text-[#999]">
               Browse gym day passes by{" "}
-              {countryCode === "US" ? "state" : "province"}.
+              {countryCode === "CA" ? "province" : "state"}
             </p>
           </div>
 

@@ -95,6 +95,17 @@ const REGION_NAMES: Record<string, Record<string, string>> = {
     SK: "Saskatchewan",
     YT: "Yukon",
   },
+
+  AU: {
+    NSW: "New South Wales",
+    VIC: "Victoria",
+    QLD: "Queensland",
+    WA: "Western Australia",
+    SA: "South Australia",
+    TAS: "Tasmania",
+    ACT: "Australian Capital Territory",
+    NT: "Northern Territory",
+  },
 };
 
 type SitemapGym = {
