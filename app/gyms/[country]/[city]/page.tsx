@@ -333,26 +333,100 @@ export async function generateMetadata({ params }: CityPageProps) {
   };
 }
 
-async function fetchAllCountryGyms(countryCode: string | null): Promise<Gym[]> {
+async function fetchCityGyms(
+  countryCode: string | null,
+  citySlug: string
+): Promise<Gym[]> {
   if (!countryCode) return [];
 
+  const fields =
+    "id, name, type, description, country, city, state_code, photo_url, day_pass_price, day_pass_note, currency, shower, free_trial";
+
+  // Cas normal : on demande directement la ville à Supabase.
+  const expectedCityName = formatSlug(citySlug);
+
+  const { data: directData, error: directError } = await supabase
+    .from("spots")
+    .select(fields)
+    .eq("country", countryCode)
+    .ilike("city", expectedCityName)
+    .order("name");
+
+  if (directError) throw directError;
+
+  if (directData && directData.length > 0) {
+    return directData as Gym[];
+  }
+
+  // Fallback pour les villes avec accents, ponctuation,
+  // anciens slugs, etc. On ne récupère ici QUE la colonne city.
   const pageSize = 1000;
   let from = 0;
-  let rows: Gym[] = [];
+  let cityRows: { city: string | null }[] = [];
 
   while (true) {
     const { data, error } = await supabase
       .from("spots")
-      .select(
-        "id, name, type, description, country, city, state_code, photo_url, day_pass_price, day_pass_note, currency, shower, free_trial"
-      )
+      .select("city")
       .eq("country", countryCode)
-      .order("name")
       .range(from, from + pageSize - 1);
 
     if (error) throw error;
 
-    rows.push(...((data || []) as Gym[]));
+    cityRows.push(...((data || []) as { city: string | null }[]));
+
+    if (!data || data.length < pageSize) break;
+
+    from += pageSize;
+  }
+
+  const matchingCityNames = [
+    ...new Set(
+      cityRows
+        .map((row) => row.city)
+        .filter((value): value is string => Boolean(value))
+        .filter(
+          (value) =>
+            resolveCitySlug(countryCode, slugify(value)) === citySlug
+        )
+    ),
+  ];
+
+  if (matchingCityNames.length === 0) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("spots")
+    .select(fields)
+    .eq("country", countryCode)
+    .in("city", matchingCityNames)
+    .order("name");
+
+  if (error) throw error;
+
+  return (data || []) as Gym[];
+}
+
+async function fetchCountryCities(
+  countryCode: string | null
+): Promise<{ city: string | null }[]> {
+  if (!countryCode) return [];
+
+  const pageSize = 1000;
+  let from = 0;
+  let rows: { city: string | null }[] = [];
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("spots")
+      .select("city")
+      .eq("country", countryCode)
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+
+    rows.push(...((data || []) as { city: string | null }[]));
 
     if (!data || data.length < pageSize) break;
 
@@ -396,11 +470,10 @@ export default async function CityPage({ params }: CityPageProps) {
 
   const cityName = formatSlug(city);
 
-  const allGyms = await fetchAllCountryGyms(countryCode);
-
-  const gyms = allGyms.filter(
-    (gym) => slugify(gym.city || "") === city
-  );
+  const [gyms, countryCities] = await Promise.all([
+    fetchCityGyms(countryCode, city),
+    fetchCountryCities(countryCode),
+  ]);
 
   if (!gyms || gyms.length === 0) {
       notFound();
@@ -546,7 +619,7 @@ const relatedCitiesMap = new Map<
   { slug: string; name: string; count: number }
 >();
 
-allGyms.forEach((gym) => {
+countryCities.forEach((gym) => {
   if (!gym.city) return;
 
   const rawSlug = slugify(gym.city);

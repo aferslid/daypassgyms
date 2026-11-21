@@ -19,6 +19,7 @@ import {
 import TrackedOutboundLink from "@/app/components/TrackedOutboundLink";
 import { SiGooglemaps } from "react-icons/si";
 import { FaInstagram, FaPhone, FaGlobe, FaFacebook } from "react-icons/fa";
+import { cache } from "react";
 
 type GymPageProps = {
   params: Promise<{
@@ -76,6 +77,22 @@ type RelatedGym = {
   week_pass_price: number | null;
   free_trial: boolean | null;
 };
+
+const getGymById = cache(async (gymId: number): Promise<Gym | null> => {
+  const { data, error } = await supabase
+    .from("spots")
+    .select(
+      "id, name, type, description, country, city, state_code, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, facebook_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender, price_verified_at"
+    )
+    .eq("id", gymId)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return (data as Gym | null) ?? null;
+});
 
 const REGION_NAMES: Record<string, Record<string, string>> = {
   US: {
@@ -165,13 +182,7 @@ export async function generateMetadata({ params }: GymPageProps) {
   const { slug } = await params;
   const gymId = getIdFromSlug(slug);
 
-  const { data: gym } = await supabase
-    .from("spots")
-    .select(
-      "id, name, city, country_full, day_pass_price, day_pass_note, currency, free_trial"
-    )
-    .eq("id", gymId)
-    .single();
+  const gym = await getGymById(gymId);
 
   if (!gym) {
     return {
@@ -371,19 +382,11 @@ export default async function GymPage({ params }: GymPageProps) {
     notFound();
   }
 
-  const { data: gym, error } = await supabase
-    .from("spots")
-    .select(
-      "id, name, type, description, country, city, state_code, lat, lng, photo_url, created_at, google_name, phone, address, website_url, instagram_url, facebook_url, google_maps_url, country_full, day_pass_price, day_pass_note, currency, shower, pool, wifi, locker, free_trial, free_trial_duration, week_pass_price, access_gender, price_verified_at"
-    )
-    .eq("id", gymId)
-    .single();
+  const typedGym = await getGymById(gymId);
 
-  if (error || !gym) {
-    notFound();
-  }
-
-  const typedGym = gym as Gym;
+if (!typedGym) {
+  notFound();
+}
 
   const isFreeTrialOnly =
   typedGym.day_pass_note === "Free trial only" ||
