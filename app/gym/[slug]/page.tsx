@@ -181,6 +181,12 @@ const REGION_NAMES: Record<string, Record<string, string>> = {
 export async function generateMetadata({ params }: GymPageProps) {
   const { slug } = await params;
   const gymId = getIdFromSlug(slug);
+    if (!gymId) {
+      return {
+        title: "Gym not found",
+        description: "This gym listing could not be found.",
+      };
+    }
 
   const gym = await getGymById(gymId);
 
@@ -260,9 +266,15 @@ const description = isFreeTrialOnly
   };
 }
 
-function getIdFromSlug(slug: string) {
+function getIdFromSlug(slug: string): number | null {
   const parts = slug.split("-");
-  return Number(parts[parts.length - 1]);
+  const id = Number(parts[parts.length - 1]);
+
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    return null;
+  }
+
+  return id;
 }
 
 function formatPrice(
