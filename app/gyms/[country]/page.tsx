@@ -150,8 +150,15 @@ function getRegionFlagUrl(
   regionCode: string
 ) {
   if (countryCode === "US") {
-    return `https://flagcdn.com/24x18/us-${regionCode.toLowerCase()}.png`;
-  }
+    if (regionCode === "DC") {
+      return (
+        "https://commons.wikimedia.org/wiki/Special:Redirect/file/" +
+        encodeURIComponent("Flag_of_Washington,_D.C..svg")
+      );
+    }
+
+  return `https://flagcdn.com/24x18/us-${regionCode.toLowerCase()}.png`;
+}
 
   if (countryCode === "CA") {
     const filename =
